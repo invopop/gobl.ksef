@@ -8,7 +8,7 @@ Copyright [Invopop Ltd.](https://invopop.com) 2023. Released publicly under the 
 
 The following list the steps to follow through on in order to accomplish the goal of using GOBL to submit electronic invoices to the Polish authorities:
 
-1. Figure out local taxes, Tax ID validation rules, and any "extensions" that may be required to be defined in GOBL, and send in a PR with the changes to the [GOBL Repository](https://github.com/invopop/gobl). For examples, see the [regimes](https://github.com/invopop/gobl/tree/main/regimes) directory. Key Concerns:
+1. Add the PL (`pl`) tax regime to [GOBL](https://github.com/invopop/gobl). Figure out local taxes, tax ID validation rules, and any "extensions" that may be required to be defined in GOBL, and send in a PR. For examples of existing regimes, see the [regimes](https://github.com/invopop/gobl/tree/main/regimes) directory. Key Concerns:
    - Basic B2B invoices support.
    - Tax ID validation as per local rules.
    - Support for "simplified" invoices.
