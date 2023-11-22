@@ -2,6 +2,7 @@ package ksef
 
 import (
 	"github.com/invopop/gobl/bill"
+	"github.com/invopop/gobl/regimes/common"
 )
 
 type Fa struct {
@@ -11,7 +12,7 @@ type Fa struct {
 	RodzajFaktury                      string     `xml:"RodzajFaktury"`
 	IssueDate                          string     `xml:"P_1"`
 	SequentialNumber                   string     `xml:"P_2"`
-	CmpletionDate                      string     `xml:"P_6,omitempty"`
+	CompletionDate                     string     `xml:"P_6,omitempty"`
 	StartDate                          string     `xml:"P_6_Od,omitempty"`
 	EndDate                            string     `xml:"P_6_Do,omitempty"`
 	BasicRateNetSale                   string     `xml:"P_13_1,omitempty"`
@@ -52,11 +53,34 @@ func NewAdnotacje(inv *bill.Invoice) *Adnotacje {
 }
 
 func NewFa(inv *bill.Invoice) *Fa {
-
 	Fa := &Fa{
-		Adnotacje:     NewAdnotacje(inv),
-		KodWaluty:     string(inv.Currency),
-		RodzajFaktury: "VAT",
+		Adnotacje:        NewAdnotacje(inv),
+		KodWaluty:        string(inv.Currency),
+		RodzajFaktury:    string(inv.Type),
+		IssueDate:        inv.IssueDate.String(),
+		SequentialNumber: inv.Series + inv.Code,
+		CompletionDate:   inv.OperationDate.String(),
+	}
+	cu := inv.Currency.Def().Units
+	for _, cat := range inv.Totals.Taxes.Categories {
+		if cat.Code != common.TaxCategoryVAT {
+			continue
+		}
+
+		for _, rate := range cat.Rates {
+			if rate.Key == common.TaxRateStandard {
+				Fa.BasicRateNetSale = rate.Base.Rescale(cu).String()
+				Fa.BasicRateTax = rate.Amount.Rescale(cu).String()
+			}
+			if rate.Key == common.TaxRateReduced {
+				Fa.FirstReducedRateNetSale = rate.Base.Rescale(cu).String()
+				Fa.FirstReducedRateTax = rate.Amount.Rescale(cu).String()
+			}
+			if rate.Key == common.TaxRateSuperReduced {
+				Fa.SecondReducedRateNetSale = rate.Base.Rescale(cu).String()
+				Fa.SecondReducedRateTax = rate.Amount.Rescale(cu).String()
+			}
+		}
 	}
 
 	return Fa

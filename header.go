@@ -48,5 +48,5 @@ func NewNaglowek(inv *bill.Invoice) *Naglowek {
 
 func formatIssueDate(date cal.Date) string {
 	dateTime := civil.DateTime{Date: date.Date, Time: civil.Time{}}
-	return dateTime.String() //TODO format date
+	return dateTime.String() + "Z"
 }

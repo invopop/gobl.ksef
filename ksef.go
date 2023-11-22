@@ -28,6 +28,10 @@ func NewDocument(env *gobl.Envelope) (*Document, error) {
 	document := &Document{
 
 		Naglowek: NewNaglowek(inv),
+		Podmiot1: NewPodmiot1(inv.Supplier),
+		Podmiot2: NewPodmiot2(inv.Customer),
+		Fa:       NewFa(inv),
+		Stopka:   NewStopka(inv),
 	}
 
 	return document, nil
