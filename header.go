@@ -9,41 +9,41 @@ import (
 
 // KSEF schema constants
 const (
-	kodSystemowy      = "FA (2)"
-	kodFormularza     = "FA"
-	wersjaSchemy      = "1-0E"
-	wariantFormularza = 2
-	systemInfo        = "GOBL.KSEF"
+	systemCode    = "FA (2)"
+	formCode      = "FA"
+	schemaVersion = "1-0E"
+	formVariant   = 2
+	systemInfo    = "GOBL.KSEF"
 )
 
-type Naglowek struct {
-	KodFormularza     *KodFormularza `xml:"KodFormularza"`
-	WariantFormularza int            `xml:"WariantFormularza"`
-	DataWytworzeniaFa string         `xml:"DataWytworzeniaFa"`
-	SystemInfo        string         `xml:"SystemInfo"`
+type Header struct {
+	FormCode     *FormCode `xml:"KodFormularza"`
+	FormVariant  int       `xml:"WariantFormularza"`
+	CreationDate string    `xml:"DataWytworzeniaFa"`
+	SystemInfo   string    `xml:"SystemInfo"`
 }
 
-type KodFormularza struct {
-	KodSystemowy  string `xml:"kodSystemowy,attr"`
-	WersjaSchemy  string `xml:"wersjaSchemy,attr"`
-	KodFormularza string `xml:",chardata"`
+type FormCode struct {
+	SystemCode    string `xml:"kodSystemowy,attr"`
+	SchemaVersion string `xml:"wersjaSchemy,attr"`
+	FormCode      string `xml:",chardata"`
 }
 
-func NewNaglowek(inv *bill.Invoice) *Naglowek {
+func NewHeader(inv *bill.Invoice) *Header {
 	date := formatIssueDate(inv.IssueDate)
 
-	naglowek := &Naglowek{
-		KodFormularza: &KodFormularza{
-			KodSystemowy:  kodSystemowy,
-			WersjaSchemy:  wersjaSchemy,
-			KodFormularza: kodFormularza,
+	header := &Header{
+		FormCode: &FormCode{
+			SystemCode:    systemCode,
+			SchemaVersion: schemaVersion,
+			FormCode:      formCode,
 		},
-		WariantFormularza: wariantFormularza,
-		DataWytworzeniaFa: date,
-		SystemInfo:        systemInfo,
+		FormVariant:  formVariant,
+		CreationDate: date,
+		SystemInfo:   systemInfo,
 	}
 
-	return naglowek
+	return header
 }
 
 func formatIssueDate(date cal.Date) string {

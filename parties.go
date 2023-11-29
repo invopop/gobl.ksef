@@ -4,67 +4,66 @@ import (
 	"github.com/invopop/gobl/org"
 )
 
-type Adres struct {
-	KodKraju string `xml:"KodKraju"`
-	AdresL1  string `xml:"AdresL1"`
-	AdresL2  string `xml:"AdresL2"`
+type Address struct {
+	CountryCode string `xml:"KodKraju"`
+	AddressL1   string `xml:"AdresL1"`
+	AddressL2   string `xml:"AdresL2"`
 }
 
-type Podmiot1 struct {
-	Adres *Adres `xml:"Adres"`
-	NIP   string `xml:"DaneIdentyfikacyjne>NIP"`
-	Nazwa string `xml:"DaneIdentyfikacyjne>Nazwa"`
+type Seller struct {
+	NIP     string   `xml:"DaneIdentyfikacyjne>NIP"`
+	Name    string   `xml:"DaneIdentyfikacyjne>Nazwa"`
+	Address *Address `xml:"Adres"`
 }
 
-type Podmiot2 struct {
-	Adres *Adres `xml:"Adres,omitempty"`
-
+type Buyer struct {
 	NIP string `xml:"DaneIdentyfikacyjne>NIP,omitempty"`
 	// or
-	KodUE   string `xml:"DaneIdentyfikacyjne>KodUE,omitempty"`
-	NrVatUE string `xml:"DaneIdentyfikacyjne>NrVatUE,omitempty"`
+	UECode      string `xml:"DaneIdentyfikacyjne>KodUE,omitempty"`
+	UEVatNumber string `xml:"DaneIdentyfikacyjne>NrVatUE,omitempty"`
 	// or
-	KodKraju string `xml:"DaneIdentyfikacyjne>KodKraju,omitempty"`
-	NrId     string `xml:"DaneIdentyfikacyjne>NrId,omitempty"`
+	CountryCode string `xml:"DaneIdentyfikacyjne>KodKraju,omitempty"`
+	IdNumber    string `xml:"DaneIdentyfikacyjne>NrId,omitempty"`
 	// or
-	BrakID int `xml:"DaneIdentyfikacyjne>BrakID,omitempty"`
+	NoId int `xml:"DaneIdentyfikacyjne>BrakID,omitempty"`
 
-	Nazwa string `xml:"DaneIdentyfikacyjne>Nazwa,omitempty"`
+	Name    string   `xml:"DaneIdentyfikacyjne>Nazwa,omitempty"`
+	Address *Address `xml:"Adres,omitempty"`
 }
 
-func NewAdres(address *org.Address) *Adres {
-	adres := &Adres{
-		KodKraju: string(address.Country),
-		AdresL1:  addressLine1(address),
-		AdresL2:  addressLine2(address),
+func NewAddress(address *org.Address) *Address {
+	adres := &Address{
+		CountryCode: string(address.Country),
+		AddressL1:   addressLine1(address),
+		AddressL2:   addressLine2(address),
 	}
 
 	return adres
 }
 
-func NewPodmiot1(supplier *org.Party) *Podmiot1 {
+func NewSeller(supplier *org.Party) *Seller {
 
-	podmiot1 := &Podmiot1{
-		Adres: NewAdres(supplier.Addresses[0]),
-		Nazwa: supplier.Name,
-		NIP:   string(supplier.TaxID.Code),
+	seller := &Seller{
+		Address: NewAddress(supplier.Addresses[0]),
+		Name:    supplier.Name,
+		NIP:     string(supplier.TaxID.Code),
 	}
 
-	return podmiot1
+	return seller
 }
 
-func NewPodmiot2(customer *org.Party) *Podmiot2 {
+func NewBuyer(customer *org.Party) *Buyer {
 
-	podmiot2 := &Podmiot2{
-		Nazwa: customer.Name,
-		NIP:   string(customer.TaxID.Code),
+	buyer := &Buyer{
+		Name: customer.Name,
+		NIP:  string(customer.TaxID.Code),
 		// TODO other DaneIdentyfikacyjne types
 	}
 	if len(customer.Addresses) > 0 {
-		podmiot2.Adres = NewAdres(customer.Addresses[0])
+		buyer.Address = NewAddress(customer.Addresses[0])
 	}
 
-	return podmiot2
+	return buyer
 }
 
 func addressLine1(address *org.Address) string {

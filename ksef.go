@@ -9,23 +9,35 @@ import (
 	"github.com/invopop/gobl/bill"
 )
 
-// Document is a pseudo-model for containing the XML document being created
-type Document struct {
-	Naglowek *Naglowek `xml:"Naglowek"`
-	Podmiot1 *Podmiot1 `xml:"Podmiot1"`
-	Podmiot2 *Podmiot2 `xml:"Podmiot2"`
-	Fa       *Fa       `xml:"Fa"`
-	Stopka   *Stopka   `xml:"Stopka,omitempty"`
+const (
+	XSINamespace = "http://www.w3.org/2001/XMLSchema-instance"
+	XSDNamespace = "http://www.w3.org/2001/XMLSchema"
+	XMLNamespace = "http://crd.gov.pl/wzor/2023/06/29/12648/"
+)
+
+// Faktura is a pseudo-model for containing the XML document being created
+type Faktura struct {
+	XSINamespace string    `xml:"xmlns:xsi,attr"`
+	XSDNamespace string    `xml:"xmlns:xsd,attr"`
+	XMLNamespace string    `xml:"xmlns,attr"`
+	Naglowek     *Naglowek `xml:"Naglowek"`
+	Podmiot1     *Podmiot1 `xml:"Podmiot1"`
+	Podmiot2     *Podmiot2 `xml:"Podmiot2"`
+	Fa           *Fa       `xml:"Fa"`
+	Stopka       *Stopka   `xml:"Stopka,omitempty"`
 }
 
 // NewDocument converts a GOBL envelope into a FA_VAT document
-func NewDocument(env *gobl.Envelope) (*Document, error) {
+func NewDocument(env *gobl.Envelope) (*Faktura, error) {
 	inv, ok := env.Extract().(*bill.Invoice)
 	if !ok {
 		return nil, fmt.Errorf("invalid type %T", env.Document)
 	}
 
-	document := &Document{
+	faktura := &Faktura{
+		XSINamespace: XSINamespace,
+		XSDNamespace: XSDNamespace,
+		XMLNamespace: XMLNamespace,
 
 		Naglowek: NewNaglowek(inv),
 		Podmiot1: NewPodmiot1(inv.Supplier),
@@ -34,11 +46,11 @@ func NewDocument(env *gobl.Envelope) (*Document, error) {
 		Stopka:   NewStopka(inv),
 	}
 
-	return document, nil
+	return faktura, nil
 }
 
 // Bytes returns the XML representation of the document in bytes
-func (d *Document) Bytes() ([]byte, error) {
+func (d *Faktura) Bytes() ([]byte, error) {
 	bytes, err := xml.MarshalIndent(d, "", "  ")
 	if err != nil {
 		return nil, err

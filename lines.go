@@ -2,8 +2,8 @@ package ksef
 
 import "github.com/invopop/gobl/bill"
 
-type FaWiersz struct {
-	NrWierszaFa   int    `xml:"NrWierszaFa"`
+type Line struct {
+	LineNumber    int    `xml:"NrWierszaFa"`
 	Name          string `xml:"P_7"`
 	Measure       string `xml:"P_8A"`
 	Quantity      string `xml:"P_8B"`
@@ -12,16 +12,26 @@ type FaWiersz struct {
 	TaxRate       string `xml:"P_12"`
 }
 
-func NewFaWiersz(line *bill.Line) *FaWiersz {
-	FaWiersz := &FaWiersz{
-		NrWierszaFa:   line.Index,
+func NewLine(line *bill.Line) *Line {
+	Line := &Line{
+		LineNumber:    line.Index,
 		Name:          line.Item.Name,
 		Measure:       string(line.Item.Unit.UNECE()),
 		NetUnitPrice:  line.Item.Price.String(),
 		Quantity:      line.Quantity.String(),
 		NetPriceTotal: line.Sum.String(),
-		TaxRate:       line.Taxes[0].Percent.String(),
+		TaxRate:       line.Taxes[0].Percent.Rescale(2).StringWithoutSymbol(),
 	}
 
-	return FaWiersz
+	return Line
+}
+
+func NewLines(lines []*bill.Line) []*Line {
+	var Lines []*Line
+
+	for _, line := range lines {
+		Lines = append(Lines, NewLine(line))
+	}
+
+	return Lines
 }
