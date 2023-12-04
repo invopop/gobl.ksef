@@ -41,11 +41,22 @@ func NewAddress(address *org.Address) *Address {
 	return adres
 }
 
-func NewSeller(supplier *org.Party) *Seller {
+func NameToString(name org.Name) string {
+	return name.Prefix + nameMaybe(name.Given) +
+		nameMaybe(name.Middle) + nameMaybe(name.Surname) +
+		nameMaybe(name.Surname2) + nameMaybe(name.Suffix)
+}
 
+func NewSeller(supplier *org.Party) *Seller {
+	var name string
+	if supplier.Name != "" {
+		name = supplier.Name
+	} else {
+		name = NameToString(supplier.People[0].Name)
+	}
 	seller := &Seller{
 		Address: NewAddress(supplier.Addresses[0]),
-		Name:    supplier.Name,
+		Name:    name,
 		NIP:     string(supplier.TaxID.Code),
 	}
 
@@ -85,6 +96,13 @@ func addressLine2(address *org.Address) string {
 func addressMaybe(element string) string {
 	if element != "" {
 		return ", " + element
+	}
+	return ""
+}
+
+func nameMaybe(element string) string {
+	if element != "" {
+		return " " + element
 	}
 	return ""
 }
