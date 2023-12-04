@@ -10,47 +10,51 @@ import (
 )
 
 const (
-	XSINamespace = "http://www.w3.org/2001/XMLSchema-instance"
-	XSDNamespace = "http://www.w3.org/2001/XMLSchema"
-	XMLNamespace = "http://crd.gov.pl/wzor/2023/06/29/12648/"
+	XSINamespace    = "http://www.w3.org/2001/XMLSchema-instance"
+	XSDNamespace    = "http://www.w3.org/2001/XMLSchema"
+	XMLNamespace    = "http://crd.gov.pl/wzor/2023/06/29/12648/"
+	RootElementName = "Faktura"
 )
 
-// Faktura is a pseudo-model for containing the XML document being created
-type Faktura struct {
-	XSINamespace string    `xml:"xmlns:xsi,attr"`
-	XSDNamespace string    `xml:"xmlns:xsd,attr"`
-	XMLNamespace string    `xml:"xmlns,attr"`
-	Naglowek     *Naglowek `xml:"Naglowek"`
-	Podmiot1     *Podmiot1 `xml:"Podmiot1"`
-	Podmiot2     *Podmiot2 `xml:"Podmiot2"`
-	Fa           *Fa       `xml:"Fa"`
-	Stopka       *Stopka   `xml:"Stopka,omitempty"`
+// Invoice is a pseudo-model for containing the XML document being created
+type Invoice struct {
+	XMLName      xml.Name
+	XSINamespace string  `xml:"xmlns:xsi,attr"`
+	XSDNamespace string  `xml:"xmlns:xsd,attr"`
+	XMLNamespace string  `xml:"xmlns,attr"`
+	Header       *Header `xml:"Naglowek"`
+	Seller       *Seller `xml:"Podmiot1"`
+	Buyer        *Buyer  `xml:"Podmiot2"`
+	ThirdParty   *Buyer  `xml:"Podmiot3,omitempty"` // third party
+	Inv          *Inv    `xml:"Fa"`
+	Footer       *Footer `xml:"Stopka,omitempty"`
 }
 
 // NewDocument converts a GOBL envelope into a FA_VAT document
-func NewDocument(env *gobl.Envelope) (*Faktura, error) {
+func NewDocument(env *gobl.Envelope) (*Invoice, error) {
 	inv, ok := env.Extract().(*bill.Invoice)
 	if !ok {
 		return nil, fmt.Errorf("invalid type %T", env.Document)
 	}
 
-	faktura := &Faktura{
+	invoice := &Invoice{
+		XMLName:      xml.Name{Local: RootElementName},
 		XSINamespace: XSINamespace,
 		XSDNamespace: XSDNamespace,
 		XMLNamespace: XMLNamespace,
 
-		Naglowek: NewNaglowek(inv),
-		Podmiot1: NewPodmiot1(inv.Supplier),
-		Podmiot2: NewPodmiot2(inv.Customer),
-		Fa:       NewFa(inv),
-		Stopka:   NewStopka(inv),
+		Header: NewHeader(inv),
+		Seller: NewSeller(inv.Supplier),
+		Buyer:  NewBuyer(inv.Customer),
+		Inv:    NewInv(inv),
+		Footer: NewFooter(inv),
 	}
 
-	return faktura, nil
+	return invoice, nil
 }
 
 // Bytes returns the XML representation of the document in bytes
-func (d *Faktura) Bytes() ([]byte, error) {
+func (d *Invoice) Bytes() ([]byte, error) {
 	bytes, err := xml.MarshalIndent(d, "", "  ")
 	if err != nil {
 		return nil, err

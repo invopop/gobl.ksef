@@ -4,12 +4,12 @@ import (
 	"github.com/invopop/gobl/bill"
 )
 
-type Stopka struct {
+type Footer struct {
 }
 
-func NewStopka(inv *bill.Invoice) *Stopka {
+func NewFooter(inv *bill.Invoice) *Footer {
 
-	stopka := &Stopka{}
+	footer := &Footer{}
 
-	return stopka
+	return footer
 }

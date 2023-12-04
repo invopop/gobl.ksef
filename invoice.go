@@ -1,13 +1,16 @@
 package ksef
 
+/**/
 import (
 	"github.com/invopop/gobl/bill"
 	"github.com/invopop/gobl/regimes/common"
+	"github.com/invopop/gobl/regimes/pl"
 )
 
 type Inv struct {
 	CurrencyCode                       string       `xml:"KodWaluty"`
 	IssueDate                          string       `xml:"P_1"`
+	IssuePlace                         string       `xml:"P_1M,omitempty"`
 	SequentialNumber                   string       `xml:"P_2"`
 	CompletionDate                     string       `xml:"P_6,omitempty"`
 	StartDate                          string       `xml:"P_6_Od,omitempty"`
@@ -21,33 +24,52 @@ type Inv struct {
 	SecondReducedRateNetSale           string       `xml:"P_13_3,omitempty"`
 	SecondReducedRateTax               string       `xml:"P_14_3,omitempty"`
 	SecondReducedRateTaxConvertedToPln string       `xml:"P_14_3W,omitempty"`
+	TaxiRateNetSale                    string       `xml:"P_13_4,omitempty"`
+	TaxiRateTax                        string       `xml:"P_14_4,omitempty"`
+	TaxiRateTaxConvertedToPln          string       `xml:"P_14_4W,omitempty"`
+	SpecialProcedureNetSale            string       `xml:"P_13_5,omitempty"`
+	SpecialProcedureTax                string       `xml:"P_14_5,omitempty"`
+	ZeroTaxExceptIntraCommunityNetSale string       `xml:"P_13_6_1,omitempty"`
+	IntraCommunityNetSale              string       `xml:"P_13_6_2,omitempty"`
+	ExportNetSale                      string       `xml:"P_13_6_3,omitempty"`
+	TaxExemptNetSale                   string       `xml:"P_13_7,omitempty"`
+	P_13_8                             string       `xml:"P_13_8,omitempty"`
+	P_13_9                             string       `xml:"P_13_9,omitempty"`
+	P_13_10                            string       `xml:"P_13_10,omitempty"`
+	P_13_11                            string       `xml:"P_13_11,omitempty"`
 	TotalAmountRecivable               string       `xml:"P_15"`
+	ExchangeRate                       string       `xml:"KursWalutyZ"`
 	Annotations                        *Annotations `xml:"Adnotacje"`
 	InvoiceType                        string       `xml:"RodzajFaktury"`
+	FP                                 string       `xml:"FP"`
+	TP                                 string       `xml:"TP"`
 	Lines                              []*Line      `xml:"FaWiersz"`
 }
 
 type Annotations struct {
-	P_16      int `xml:"P_16"`
-	P_17      int `xml:"P_17"`
-	P_18      int `xml:"P_18"`
-	P_18A     int `xml:"P_18A"`
-	P_19N     int `xml:"Zwolnienie>P_19N"`
-	P_22N     int `xml:"NoweSrodkiTransportu>P_22N"`
-	P_23      int `xml:"P_23"`
-	P_PMarzyN int `xml:"PMarzy>P_PMarzyN"`
+	CashAccounting                      int `xml:"P_16"`
+	SelfBilling                         int `xml:"P_17"`
+	ReverseCharge                       int `xml:"P_18"`
+	SplitPaymentMechanism               int `xml:"P_18A"`
+	NoTaxExemptGoods                    int `xml:"Zwolnienie>P_19N"`
+	NoNewTransportIntraCommunitySupply  int `xml:"NoweSrodkiTransportu>P_22N"`
+	SimplifiedProcedureBySecondTaxpayer int `xml:"P_23"`
+	NoMarginProcedures                  int `xml:"PMarzy>P_PMarzyN"`
 }
 
 func NewAnnotations(inv *bill.Invoice) *Annotations {
-	Annotations := &Annotations{ // default values for the most common case
-		P_16:      2,
-		P_17:      2,
-		P_18:      2,
-		P_18A:     2,
-		P_19N:     1,
-		P_22N:     1,
-		P_23:      2,
-		P_PMarzyN: 1,
+	// default values for the most common case,
+	// For fields P_16 to P_18 and field P_23 2 means "no", 1 means "yes".
+	// for others 1 means "yes", no value means "no"
+	Annotations := &Annotations{
+		CashAccounting:                      2,
+		SelfBilling:                         2,
+		ReverseCharge:                       2,
+		SplitPaymentMechanism:               2,
+		NoTaxExemptGoods:                    1,
+		NoNewTransportIntraCommunitySupply:  1,
+		SimplifiedProcedureBySecondTaxpayer: 2,
+		NoMarginProcedures:                  1,
 	}
 	return Annotations
 }
@@ -57,12 +79,14 @@ func NewInv(inv *bill.Invoice) *Inv {
 	Inv := &Inv{
 		Annotations:          NewAnnotations(inv),
 		CurrencyCode:         string(inv.Currency),
-		InvoiceType:          "VAT", // TODO
 		IssueDate:            inv.IssueDate.String(),
 		SequentialNumber:     inv.Series + inv.Code,
 		TotalAmountRecivable: inv.Totals.Payable.Rescale(cu).String(),
 		Lines:                NewLines(inv.Lines),
 	}
+
+	ss := inv.ScenarioSummary()
+	Inv.InvoiceType = ss.Codes[pl.KeyFacturaEInvoiceClass].String()
 	if inv.OperationDate != nil {
 		Inv.CompletionDate = inv.OperationDate.String()
 	}
