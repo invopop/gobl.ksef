@@ -44,6 +44,7 @@ type Inv struct {
 	FP                                 string       `xml:"FP"`
 	TP                                 string       `xml:"TP"`
 	Lines                              []*Line      `xml:"FaWiersz"`
+	Payment                            *Payment     `xml:"Platnosc"`
 }
 
 type Annotations struct {
@@ -83,6 +84,7 @@ func NewInv(inv *bill.Invoice) *Inv {
 		SequentialNumber:     inv.Series + inv.Code,
 		TotalAmountRecivable: inv.Totals.Payable.Rescale(cu).String(),
 		Lines:                NewLines(inv.Lines),
+		Payment:              NewPayment(inv),
 	}
 
 	ss := inv.ScenarioSummary()
