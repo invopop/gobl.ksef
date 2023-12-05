@@ -1,6 +1,7 @@
 package ksef
 
 import (
+	"github.com/invopop/gobl/l10n"
 	"github.com/invopop/gobl/org"
 )
 
@@ -11,15 +12,21 @@ type Address struct {
 }
 
 type Seller struct {
-	NIP     string   `xml:"DaneIdentyfikacyjne>NIP"`
-	Name    string   `xml:"DaneIdentyfikacyjne>Nazwa"`
-	Address *Address `xml:"Adres"`
+	NIP     string          `xml:"DaneIdentyfikacyjne>NIP"`
+	Name    string          `xml:"DaneIdentyfikacyjne>Nazwa"`
+	Address *Address        `xml:"Adres"`
+	Contact *ContactDetails `xml:"DaneKontaktowe,omitempty"`
+}
+
+type ContactDetails struct {
+	Phone string `xml:"Telefon,omitempty"`
+	Email string `xml:"Email,omitempty"`
 }
 
 type Buyer struct {
 	NIP string `xml:"DaneIdentyfikacyjne>NIP,omitempty"`
 	// or
-	UECode      string `xml:"DaneIdentyfikacyjne>KodUE,omitempty"`
+	UECode      string `xml:"DaneIdentyfikacyjne>KodUE,omitempty"` //TODO
 	UEVatNumber string `xml:"DaneIdentyfikacyjne>NrVatUE,omitempty"`
 	// or
 	CountryCode string `xml:"DaneIdentyfikacyjne>KodKraju,omitempty"`
@@ -27,8 +34,9 @@ type Buyer struct {
 	// or
 	NoId int `xml:"DaneIdentyfikacyjne>BrakID,omitempty"`
 
-	Name    string   `xml:"DaneIdentyfikacyjne>Nazwa,omitempty"`
-	Address *Address `xml:"Adres,omitempty"`
+	Name    string          `xml:"DaneIdentyfikacyjne>Nazwa,omitempty"`
+	Address *Address        `xml:"Adres,omitempty"`
+	Contact *ContactDetails `xml:"DaneKontaktowe,omitempty"`
 }
 
 func NewAddress(address *org.Address) *Address {
@@ -56,8 +64,19 @@ func NewSeller(supplier *org.Party) *Seller {
 	}
 	seller := &Seller{
 		Address: NewAddress(supplier.Addresses[0]),
-		Name:    name,
 		NIP:     string(supplier.TaxID.Code),
+		Name:    name,
+	}
+	if len(supplier.Telephones) > 0 {
+		seller.Contact = &ContactDetails{
+			Phone: supplier.Telephones[0].Number,
+		}
+	}
+	if len(supplier.Emails) > 0 {
+		if seller.Contact == nil {
+			seller.Contact = &ContactDetails{}
+		}
+		seller.Contact.Email = supplier.Emails[0].Address
 	}
 
 	return seller
@@ -68,10 +87,34 @@ func NewBuyer(customer *org.Party) *Buyer {
 	buyer := &Buyer{
 		Name: customer.Name,
 		NIP:  string(customer.TaxID.Code),
-		// TODO other DaneIdentyfikacyjne types
 	}
+
+	if customer.TaxID.Country == l10n.PL {
+		buyer.NIP = string(customer.TaxID.Code)
+	} else {
+		if len(customer.TaxID.Code) > 0 {
+			buyer.IdNumber = string(customer.TaxID.Code)
+			buyer.CountryCode = string(customer.TaxID.Country)
+		} else {
+			buyer.NoId = 1
+		}
+	}
+	// TODO NrVatUE and UECode if applicable
+
 	if len(customer.Addresses) > 0 {
 		buyer.Address = NewAddress(customer.Addresses[0])
+	}
+
+	if len(customer.Telephones) > 0 {
+		buyer.Contact = &ContactDetails{
+			Phone: customer.Telephones[0].Number,
+		}
+	}
+	if len(customer.Emails) > 0 {
+		if buyer.Contact == nil {
+			buyer.Contact = &ContactDetails{}
+		}
+		buyer.Contact.Email = customer.Emails[0].Address
 	}
 
 	return buyer

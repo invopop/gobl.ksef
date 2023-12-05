@@ -35,7 +35,7 @@ type Discount struct { // TODO
 type Payment struct {
 	PaidMarker             string            `xml:"Zaplacono,omitempty"`
 	PaymentDate            string            `xml:"DataZaplaty,omitempty"`
-	PartialPaymentMarker   string            `xml:"ZnacznikZaplatyCzesciowej,omitempty"`
+	PartiallyPaidMarker    string            `xml:"ZnacznikZaplatyCzesciowej,omitempty"`
 	AdvancePayments        []*AdvancePayment `xml:"ZaplataCzesciowa,omitempty"`
 	PartialPayments        []*PartialPayment `xml:"TerminPlatnosci,omitempty"`
 	PaymentMean            string            `xml:"FormaPlatnosci,omitempty"`
@@ -73,7 +73,7 @@ func NewPayment(inv *bill.Invoice) *Payment {
 
 	if advances := inv.Payment.Advances; advances != nil {
 		if len(advances) > 1 || len(inv.Payment.Terms.DueDates) > 0 {
-			payment.PartialPaymentMarker = "1"
+			payment.PartiallyPaidMarker = "1"
 			for _, advance := range inv.Payment.Advances {
 				payment.AdvancePayments = append(payment.AdvancePayments, &AdvancePayment{
 					PaymentAmount: advance.Amount.String(),
