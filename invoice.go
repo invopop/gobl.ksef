@@ -3,6 +3,7 @@ package ksef
 /**/
 import (
 	"github.com/invopop/gobl/bill"
+	"github.com/invopop/gobl/num"
 	"github.com/invopop/gobl/regimes/common"
 	"github.com/invopop/gobl/regimes/pl"
 )
@@ -15,15 +16,15 @@ type Inv struct {
 	CompletionDate                     string       `xml:"P_6,omitempty"`
 	StartDate                          string       `xml:"P_6_Od,omitempty"`
 	EndDate                            string       `xml:"P_6_Do,omitempty"`
-	BasicRateNetSale                   string       `xml:"P_13_1,omitempty"`
-	BasicRateTax                       string       `xml:"P_14_1,omitempty"`
-	BasicRateTaxConvertedToPln         string       `xml:"P_14_1W,omitempty"`
-	FirstReducedRateNetSale            string       `xml:"P_13_2,omitempty"`
-	FirstReducedRateTax                string       `xml:"P_14_2,omitempty"`
-	FirstReducedRateTaxConvertedToPln  string       `xml:"P_14_2W,omitempty"`
-	SecondReducedRateNetSale           string       `xml:"P_13_3,omitempty"`
-	SecondReducedRateTax               string       `xml:"P_14_3,omitempty"`
-	SecondReducedRateTaxConvertedToPln string       `xml:"P_14_3W,omitempty"`
+	StandardRateNetSale                string       `xml:"P_13_1,omitempty"`
+	StandardRateTax                    string       `xml:"P_14_1,omitempty"`
+	StandardRateTaxConvertedToPln      string       `xml:"P_14_1W,omitempty"`
+	ReducedRateNetSale                 string       `xml:"P_13_2,omitempty"`
+	ReducedRateTax                     string       `xml:"P_14_2,omitempty"`
+	ReducedRateTaxConvertedToPln       string       `xml:"P_14_2W,omitempty"`
+	SuperReducedRateNetSale            string       `xml:"P_13_3,omitempty"`
+	SuperReducedRateTax                string       `xml:"P_14_3,omitempty"`
+	SuperReducedRateTaxConvertedToPln  string       `xml:"P_14_3W,omitempty"`
 	TaxiRateNetSale                    string       `xml:"P_13_4,omitempty"`
 	TaxiRateTax                        string       `xml:"P_14_4,omitempty"`
 	TaxiRateTaxConvertedToPln          string       `xml:"P_14_4W,omitempty"`
@@ -37,7 +38,7 @@ type Inv struct {
 	P_13_9                             string       `xml:"P_13_9,omitempty"`
 	P_13_10                            string       `xml:"P_13_10,omitempty"`
 	P_13_11                            string       `xml:"P_13_11,omitempty"`
-	TotalAmountRecivable               string       `xml:"P_15"`
+	TotalAmountReceivable              string       `xml:"P_15"`
 	ExchangeRate                       string       `xml:"KursWalutyZ"`
 	Annotations                        *Annotations `xml:"Adnotacje"`
 	InvoiceType                        string       `xml:"RodzajFaktury"`
@@ -78,13 +79,13 @@ func NewAnnotations(inv *bill.Invoice) *Annotations {
 func NewInv(inv *bill.Invoice) *Inv {
 	cu := inv.Currency.Def().Units
 	Inv := &Inv{
-		Annotations:          NewAnnotations(inv),
-		CurrencyCode:         string(inv.Currency),
-		IssueDate:            inv.IssueDate.String(),
-		SequentialNumber:     inv.Series + inv.Code,
-		TotalAmountRecivable: inv.Totals.Payable.Rescale(cu).String(),
-		Lines:                NewLines(inv.Lines),
-		Payment:              NewPayment(inv),
+		Annotations:           NewAnnotations(inv),
+		CurrencyCode:          string(inv.Currency),
+		IssueDate:             inv.IssueDate.String(),
+		SequentialNumber:      inv.Series + inv.Code,
+		TotalAmountReceivable: inv.Totals.Payable.Rescale(cu).String(),
+		Lines:                 NewLines(inv.Lines),
+		Payment:               NewPayment(inv),
 	}
 
 	ss := inv.ScenarioSummary()
@@ -98,17 +99,17 @@ func NewInv(inv *bill.Invoice) *Inv {
 		}
 
 		for _, rate := range cat.Rates {
-			if rate.Key == common.TaxRateStandard {
-				Inv.BasicRateNetSale = rate.Base.Rescale(cu).String()
-				Inv.BasicRateTax = rate.Amount.Rescale(cu).String()
-			}
-			if rate.Key == common.TaxRateReduced {
-				Inv.FirstReducedRateNetSale = rate.Base.Rescale(cu).String()
-				Inv.FirstReducedRateTax = rate.Amount.Rescale(cu).String()
-			}
-			if rate.Key == common.TaxRateSuperReduced {
-				Inv.SecondReducedRateNetSale = rate.Base.Rescale(cu).String()
-				Inv.SecondReducedRateTax = rate.Amount.Rescale(cu).String()
+			if rate.Percent != nil {
+				if rate.Percent.Amount.Compare(num.MakePercentage(15, 0).Amount) == 1 {
+					Inv.StandardRateNetSale = rate.Base.Rescale(cu).String()
+					Inv.StandardRateTax = rate.Amount.Rescale(cu).String()
+				} else if rate.Percent.Amount.Compare(num.MakePercentage(6, 0).Amount) == 1 {
+					Inv.ReducedRateNetSale = rate.Base.Rescale(cu).String()
+					Inv.ReducedRateTax = rate.Amount.Rescale(cu).String()
+				} else if rate.Percent.Amount.Compare(num.MakePercentage(4, 0).Amount) == 1 {
+					Inv.SuperReducedRateNetSale = rate.Base.Rescale(cu).String()
+					Inv.SuperReducedRateTax = rate.Amount.Rescale(cu).String()
+				}
 			}
 		}
 	}
