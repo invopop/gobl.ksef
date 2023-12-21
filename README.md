@@ -18,3 +18,34 @@ The following list the steps to follow through on in order to accomplish the goa
 3. Build a CLI (copy from gobl.cfdi and gobl.facture projects) to convert GOBL JSON documents into FA_VAT XML.
 4. Build a second part of this project that allows documents to be sent directly to the KSeF. A partial example of this can be found in the [gobl.ticketbai project](https://github.com/invopop/gobl.ticketbai/tree/refactor/internal/gateways). It'd probably be useful to be able to upload via the CLI too.
 
+## KSeF API
+
+Useful links:
+
+- [National e-Invoice System](https://www.podatki.gov.pl/ksef/) - for details on system in general.
+- [KSeF Test Zone](https://www.podatki.gov.pl/ksef/strefa-testowa-ksef/)
+
+KSeF provide three environments:
+
+1.  [Test Environment](https://ksef-test.mf.gov.pl/) for application development with fictitious data.
+2.  [Pre-production "demo"](https://ksef-demo.mf.gov.pl/) area with production data, but not officially declared.
+3.  [Production](https://ksef.mf.gov.pl)
+
+A translation of the Interface Specification 1.5 is available in the [docs](./docs) folder.
+
+OpenAPI documentation is available for three specific interfaces:
+
+1. Batches ([test openapi 'batch' spec](https://ksef-test.mf.gov.pl/openapi/gtw/svc/api/KSeF-batch.yaml)) - for sending multiple documents at the same time.
+2. Common ([test openapi 'common' spec](https://ksef-test.mf.gov.pl/openapi/gtw/svc/api/KSeF-common.yaml)) - general operations that don't require authentication.
+3. Interactive ([test openapi 'online' spec](https://ksef-test.mf.gov.pl/openapi/gtw/svc/api/KSeF-online.yaml))
+
+## Authentication
+
+Authentication with KSeF appears to be done using digital certificates issued by trusted service providers approved by [NCCert Poland](https://www.nccert.pl/).
+
+There is an online process to register a company:
+
+- [Test Company login](https://ksef-test.mf.gov.pl/web/login)
+- [Generate a fake NIP (tax ID)](http://generatory.it/)
+
+Once inside the test environment, you can create an Authorization token to use to make requests to the API.
