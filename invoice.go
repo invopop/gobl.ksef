@@ -3,9 +3,8 @@ package ksef
 /**/
 import (
 	"github.com/invopop/gobl/bill"
-	"github.com/invopop/gobl/num"
-	"github.com/invopop/gobl/regimes/common"
 	"github.com/invopop/gobl/regimes/pl"
+	"github.com/invopop/gobl/tax"
 )
 
 type Inv struct {
@@ -89,24 +88,24 @@ func NewInv(inv *bill.Invoice) *Inv {
 	}
 
 	ss := inv.ScenarioSummary()
-	Inv.InvoiceType = ss.Codes[pl.KeyFacturaEInvoiceClass].String()
+	Inv.InvoiceType = ss.Codes[pl.KeyFAVATInvoiceType].String()
 	if inv.OperationDate != nil {
 		Inv.CompletionDate = inv.OperationDate.String()
 	}
 	for _, cat := range inv.Totals.Taxes.Categories {
-		if cat.Code != common.TaxCategoryVAT {
+		if cat.Code != tax.CategoryVAT {
 			continue
 		}
 
 		for _, rate := range cat.Rates {
 			if rate.Percent != nil {
-				if rate.Percent.Amount.Compare(num.MakePercentage(15, 0).Amount) == 1 {
+				if rate.Percent.Amount.Float64() >= 0.15 {
 					Inv.StandardRateNetSale = rate.Base.Rescale(cu).String()
 					Inv.StandardRateTax = rate.Amount.Rescale(cu).String()
-				} else if rate.Percent.Amount.Compare(num.MakePercentage(6, 0).Amount) == 1 {
+				} else if rate.Percent.Amount.Float64() >= 0.06 {
 					Inv.ReducedRateNetSale = rate.Base.Rescale(cu).String()
 					Inv.ReducedRateTax = rate.Amount.Rescale(cu).String()
-				} else if rate.Percent.Amount.Compare(num.MakePercentage(4, 0).Amount) == 1 {
+				} else if rate.Percent.Amount.Float64() >= 0.04 {
 					Inv.SuperReducedRateNetSale = rate.Base.Rescale(cu).String()
 					Inv.SuperReducedRateTax = rate.Amount.Rescale(cu).String()
 				}

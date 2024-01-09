@@ -109,7 +109,7 @@ func findPaymentMeansCode(key cbc.Key) (string, error) {
 		return "", fmt.Errorf("FormaPlatnosci Code not found for payment method key '%s'", key)
 	}
 
-	code := keyDef.Map[pl.KeyFA_VATPaymentType]
+	code := keyDef.Map[pl.KeyFAVATPaymentType]
 	if code == "" {
 		return "", fmt.Errorf("FormaPlatnosci Code not found for payment method key '%s'", key)
 	}
