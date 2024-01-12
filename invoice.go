@@ -4,8 +4,8 @@ package ksef
 import (
 	"github.com/invopop/gobl/bill"
 	"github.com/invopop/gobl/num"
-	"github.com/invopop/gobl/regimes/common"
 	"github.com/invopop/gobl/regimes/pl"
+	"github.com/invopop/gobl/tax"
 )
 
 type Inv struct {
@@ -89,12 +89,12 @@ func NewInv(inv *bill.Invoice) *Inv {
 	}
 
 	ss := inv.ScenarioSummary()
-	Inv.InvoiceType = ss.Codes[pl.KeyFacturaEInvoiceClass].String()
+	Inv.InvoiceType = ss.Codes[pl.KeyFAVATInvoiceType].String()
 	if inv.OperationDate != nil {
 		Inv.CompletionDate = inv.OperationDate.String()
 	}
 	for _, cat := range inv.Totals.Taxes.Categories {
-		if cat.Code != common.TaxCategoryVAT {
+		if cat.Code != tax.CategoryVAT {
 			continue
 		}
 

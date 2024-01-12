@@ -8,7 +8,7 @@
   </Naglowek>
   <Podmiot1>
     <DaneIdentyfikacyjne>
-      <NIP>9876543210</NIP>
+      <NIP>1234567788</NIP>
       <Nazwa>Provide One S.L.</Nazwa>
     </DaneIdentyfikacyjne>
     <Adres>
@@ -19,7 +19,7 @@
   </Podmiot1>
   <Podmiot2>
     <DaneIdentyfikacyjne>
-      <NIP>1234567788</NIP>
+      <NIP>9876543210</NIP>
       <Nazwa>Sample Consumer</Nazwa>
     </DaneIdentyfikacyjne>
     <Adres>
