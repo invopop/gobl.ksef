@@ -23,4 +23,17 @@ func TestNewDocument(t *testing.T) {
 		assert.NotNil(t, doc.Inv)
 		assert.NotNil(t, doc.Footer)
 	})
+
+	t.Run("should return bytes of the KSeF document", func(t *testing.T) {
+		doc, err := test.NewDocumentFrom("invoice-pl-pl.json")
+		require.NoError(t, err)
+
+		bytes, bytes_err := doc.Bytes()
+		require.NoError(t, bytes_err)
+
+		output, output_err := test.LoadOutputFile("invoice-pl-pl.xml")
+		require.NoError(t, output_err)
+
+		assert.Equal(t, output, bytes)
+	})
 }

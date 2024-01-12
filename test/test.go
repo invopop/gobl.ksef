@@ -60,6 +60,23 @@ func GenerateKSeFFrom(inv *bill.Invoice) (*ksef.Invoice, error) {
 	return ksef.NewDocument(env)
 }
 
+// LoadOutputFile returns byte data from a file in the `test/data/out` folder
+func LoadOutputFile(name string) ([]byte, error) {
+	src, _ := os.Open(filepath.Join(GetOutPath(), name))
+
+	buf := new(bytes.Buffer)
+	if _, err := buf.ReadFrom(src); err != nil {
+		return nil, err
+	}
+
+	return buf.Bytes(), nil
+}
+
+// GetOutPath returns the path to the `test/data/out` folder
+func GetOutPath() string {
+	return filepath.Join(GetDataPath(), "out")
+}
+
 // GetDataPath returns the path to the `test/data` folder
 func GetDataPath() string {
 	return filepath.Join(GetTestPath(), "data")
