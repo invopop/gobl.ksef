@@ -6,6 +6,7 @@ import (
 	"github.com/invopop/gobl.ksef/test"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
+	xsdvalidate "github.com/terminalstatic/go-xsd-validate"
 )
 
 func TestNewDocument(t *testing.T) {
@@ -35,5 +36,27 @@ func TestNewDocument(t *testing.T) {
 		require.NoError(t, output_err)
 
 		assert.Equal(t, output, bytes)
+	})
+
+	t.Run("should generate valid KSeF document", func(t *testing.T) {
+		xsdvalidate_err := xsdvalidate.Init()
+		require.NoError(t, xsdvalidate_err)
+		defer xsdvalidate.Cleanup()
+
+		xsd_buf, xsd_err := test.LoadSchemaFile("FA2.xsd")
+		require.NoError(t, xsd_err)
+
+		xsdhandler, xsdhandler_err := xsdvalidate.NewXsdHandlerMem(xsd_buf, xsdvalidate.ParsErrVerbose)
+		require.NoError(t, xsdhandler_err)
+		defer xsdhandler.Free()
+
+		doc, err := test.NewDocumentFrom("invoice-pl-pl.json")
+		require.NoError(t, err)
+
+		bytes, bytes_err := doc.Bytes()
+		require.NoError(t, bytes_err)
+
+		validation_err := xsdhandler.ValidateMem(bytes, xsdvalidate.ParsErrDefault)
+		assert.Nil(t, validation_err)
 	})
 }
