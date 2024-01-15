@@ -38,11 +38,8 @@ type Inv struct {
 	P_13_10                            string       `xml:"P_13_10,omitempty"`
 	P_13_11                            string       `xml:"P_13_11,omitempty"`
 	TotalAmountReceivable              string       `xml:"P_15"`
-	ExchangeRate                       string       `xml:"KursWalutyZ"`
 	Annotations                        *Annotations `xml:"Adnotacje"`
 	InvoiceType                        string       `xml:"RodzajFaktury"`
-	FP                                 string       `xml:"FP"`
-	TP                                 string       `xml:"TP"`
 	Lines                              []*Line      `xml:"FaWiersz"`
 	Payment                            *Payment     `xml:"Platnosc"`
 }
