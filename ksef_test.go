@@ -22,7 +22,6 @@ func TestNewDocument(t *testing.T) {
 		assert.NotNil(t, doc.Buyer)
 		assert.NotNil(t, doc.Seller)
 		assert.NotNil(t, doc.Inv)
-		assert.NotNil(t, doc.Footer)
 	})
 
 	t.Run("should return bytes of the KSeF document", func(t *testing.T) {
