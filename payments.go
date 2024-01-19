@@ -15,8 +15,8 @@ type AdvancePayment struct {
 	PaymentDate   string `xml:"DataZaplatyCzesciowej,omitempty"`
 }
 
-// PartialPayment defines the XML structure for KSeF due date
-type PartialPayment struct {
+// DueDate defines the XML structure for KSeF due date
+type DueDate struct {
 	Date        string `xml:"Termin,omitempty"`
 	Description string `xml:"TerminOpis,omitempty"`
 }
@@ -42,7 +42,7 @@ type Payment struct {
 	PaymentDate            string            `xml:"DataZaplaty,omitempty"`
 	PartiallyPaidMarker    string            `xml:"ZnacznikZaplatyCzesciowej,omitempty"`
 	AdvancePayments        []*AdvancePayment `xml:"ZaplataCzesciowa,omitempty"`
-	PartialPayments        []*PartialPayment `xml:"TerminPlatnosci,omitempty"`
+	DueDates               []*DueDate        `xml:"TerminPlatnosci,omitempty"`
 	PaymentMean            string            `xml:"FormaPlatnosci,omitempty"`
 	OtherPaymentMeanMarker string            `xml:"PlatnoscInna,omitempty"`
 	OtherPaymentMean       string            `xml:"OpisPlatnosci,omitempty"`
@@ -52,57 +52,60 @@ type Payment struct {
 }
 
 // NewPayment gets payment data from GOBL invoice
-func NewPayment(inv *bill.Invoice) *Payment {
+func NewPayment(pay *bill.Payment, totals *bill.Totals) *Payment {
+	if pay == nil {
+		return nil
+	}
 
 	var payment = &Payment{
-		PartialPayments: []*PartialPayment{},
+		DueDates:        []*DueDate{},
 		AdvancePayments: []*AdvancePayment{},
 	}
 
-	PaymentMeansCode, err := findPaymentMeansCode(inv.Payment.Instructions.Key)
+	if instructions := pay.Instructions; instructions != nil {
+		PaymentMeansCode, err := findPaymentMeansCode(instructions.Key)
 
-	if err != nil {
-		payment.OtherPaymentMeanMarker = "1"
-		payment.OtherPaymentMean = inv.Payment.Instructions.Key.String()
-	} else {
-		payment.PaymentMean = PaymentMeansCode
+		if err != nil {
+			payment.OtherPaymentMeanMarker = "1"
+			payment.OtherPaymentMean = instructions.Key.String()
+		} else {
+			payment.PaymentMean = PaymentMeansCode
+		}
+
+		payment.BankAccounts = []*BankAccount{}
+		payment.FactorBankAccounts = []*BankAccount{}
+
+		for _, account := range instructions.CreditTransfer {
+			payment.BankAccounts = append(payment.BankAccounts, &BankAccount{
+				AccountNumber: account.Number,
+				SWIFT:         account.BIC,
+				BankName:      account.Name,
+			})
+		}
 	}
 
-	if terms := inv.Payment.Terms; terms != nil {
-		for _, dueDate := range inv.Payment.Terms.DueDates {
-			payment.PartialPayments = append(payment.PartialPayments, &PartialPayment{
+	if terms := pay.Terms; terms != nil {
+		for _, dueDate := range pay.Terms.DueDates {
+			payment.DueDates = append(payment.DueDates, &DueDate{
 				Date:        dueDate.Date.String(),
 				Description: dueDate.Amount.String(),
 			})
 		}
 	}
 
-	if advances := inv.Payment.Advances; advances != nil {
-		if len(advances) > 1 || len(inv.Payment.Terms.DueDates) > 0 {
+	if advances := pay.Advances; advances != nil {
+		if totals.Due.IsZero() {
+			payment.PaidMarker = "1"
+			payment.PaymentDate = advances[len(advances)-1].Date.String()
+		} else if !totals.Advances.IsZero() {
 			payment.PartiallyPaidMarker = "1"
-			for _, advance := range inv.Payment.Advances {
+			for _, advance := range advances {
 				payment.AdvancePayments = append(payment.AdvancePayments, &AdvancePayment{
 					PaymentAmount: advance.Amount.String(),
 					PaymentDate:   advance.Date.String(),
 				})
 			}
-		} else {
-			if len(advances) == 1 {
-				payment.PaidMarker = "1"
-				payment.PaymentDate = advances[0].Date.String()
-			}
 		}
-	}
-
-	payment.BankAccounts = []*BankAccount{}
-	payment.FactorBankAccounts = []*BankAccount{}
-
-	for _, account := range inv.Payment.Instructions.CreditTransfer {
-		payment.BankAccounts = append(payment.BankAccounts, &BankAccount{
-			AccountNumber: account.Number,
-			SWIFT:         account.BIC,
-			BankName:      account.Name,
-		})
 	}
 
 	return payment

@@ -85,7 +85,7 @@ func NewInv(inv *bill.Invoice) *Inv {
 		SequentialNumber:      inv.Series + inv.Code,
 		TotalAmountReceivable: inv.Totals.Payable.Rescale(cu).String(),
 		Lines:                 NewLines(inv.Lines),
-		//Payment:               NewPayment(inv),
+		Payment:               NewPayment(inv.Payment, inv.Totals),
 	}
 
 	ss := inv.ScenarioSummary()
