@@ -28,7 +28,6 @@ type Invoice struct {
 	Buyer        *Buyer  `xml:"Podmiot2"`
 	ThirdParty   *Buyer  `xml:"Podmiot3,omitempty"` // third party
 	Inv          *Inv    `xml:"Fa"`
-	Footer       *Footer `xml:"Stopka,omitempty"`
 }
 
 // NewDocument converts a GOBL envelope into a FA_VAT document
@@ -48,7 +47,6 @@ func NewDocument(env *gobl.Envelope) (*Invoice, error) {
 		Seller: NewSeller(inv.Supplier),
 		Buyer:  NewBuyer(inv.Customer),
 		Inv:    NewInv(inv),
-		Footer: NewFooter(),
 	}
 
 	return invoice, nil
@@ -56,10 +54,10 @@ func NewDocument(env *gobl.Envelope) (*Invoice, error) {
 
 // Bytes returns the XML representation of the document in bytes
 func (d *Invoice) Bytes() ([]byte, error) {
-	bytes, err := xml.MarshalIndent(d, "", "  ")
+	data, err := xml.MarshalIndent(d, "", "  ")
 	if err != nil {
 		return nil, err
 	}
 
-	return append([]byte(xml.Header), bytes...), nil
+	return append([]byte(xml.Header), data...), nil
 }
