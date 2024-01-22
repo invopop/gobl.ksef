@@ -2,6 +2,7 @@ package ksef
 
 import "github.com/invopop/gobl/bill"
 
+// Line defines the XML structure for KSeF item line
 type Line struct {
 	LineNumber              int    `xml:"NrWierszaFa"`
 	Name                    string `xml:"P_7"`
@@ -19,7 +20,7 @@ type Line struct {
 	BeforeCorrectionMarker  string `xml:"StanPrzed,omitempty"`
 }
 
-func NewLine(line *bill.Line) *Line {
+func newLine(line *bill.Line) *Line {
 	Line := &Line{
 		LineNumber:    line.Index,
 		Name:          line.Item.Name,
@@ -34,11 +35,12 @@ func NewLine(line *bill.Line) *Line {
 	return Line
 }
 
+// NewLines generates lines for the KSeF invoice
 func NewLines(lines []*bill.Line) []*Line {
 	var Lines []*Line
 
 	for _, line := range lines {
-		Lines = append(Lines, NewLine(line))
+		Lines = append(Lines, newLine(line))
 	}
 
 	return Lines

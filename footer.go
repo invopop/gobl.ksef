@@ -1,13 +1,11 @@
 package ksef
 
-import (
-	"github.com/invopop/gobl/bill"
-)
-
+// Footer element of the KSeF invoice
 type Footer struct {
 }
 
-func NewFooter(inv *bill.Invoice) *Footer {
+// NewFooter generates footer element for KSeF invoice
+func NewFooter() *Footer {
 
 	footer := &Footer{}
 

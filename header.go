@@ -16,6 +16,7 @@ const (
 	systemInfo    = "GOBL.KSEF"
 )
 
+// Header defines the XML structure for KSeF header
 type Header struct {
 	FormCode     *FormCode `xml:"KodFormularza"`
 	FormVariant  int       `xml:"WariantFormularza"`
@@ -23,12 +24,14 @@ type Header struct {
 	SystemInfo   string    `xml:"SystemInfo"`
 }
 
+// FormCode defines the XML structure for KSeF schema versioning
 type FormCode struct {
 	SystemCode    string `xml:"kodSystemowy,attr"`
 	SchemaVersion string `xml:"wersjaSchemy,attr"`
 	FormCode      string `xml:",chardata"`
 }
 
+// NewHeader gets header data from GOBL invoice
 func NewHeader(inv *bill.Invoice) *Header {
 	date := formatIssueDate(inv.IssueDate)
 

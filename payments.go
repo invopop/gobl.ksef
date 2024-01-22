@@ -9,16 +9,19 @@ import (
 	"github.com/invopop/gobl/tax"
 )
 
+// AdvancePayment defines the XML structure for KSeF advance payments
 type AdvancePayment struct {
 	PaymentAmount string `xml:"KwotaZaplatyCzesciowej,omitempty"`
 	PaymentDate   string `xml:"DataZaplatyCzesciowej,omitempty"`
 }
 
+// PartialPayment defines the XML structure for KSeF due date
 type PartialPayment struct {
 	Date        string `xml:"Termin,omitempty"`
 	Description string `xml:"TerminOpis,omitempty"`
 }
 
+// BankAccount defines the XML structure for KSeF bank accounts
 type BankAccount struct {
 	AccountNumber         string `xml:"NrRB"`
 	SWIFT                 string `xml:"SWIFT,omitempty"`
@@ -27,11 +30,13 @@ type BankAccount struct {
 	AccountDescription    string `xml:"OpisRachunku,omitempty"`
 }
 
+// Discount defines the XML structure for KSeF discount
 type Discount struct { // TODO
 	Conditions string `xml:"WarunkiSkonta,omitempty"`
 	Amount     string `xml:"WysokoscSkonta,omitempty"`
 }
 
+// Payment defines the XML structure for KSeF payment
 type Payment struct {
 	PaidMarker             string            `xml:"Zaplacono,omitempty"`
 	PaymentDate            string            `xml:"DataZaplaty,omitempty"`
@@ -46,6 +51,7 @@ type Payment struct {
 	Discount               *Discount         `xml:"Skonto,omitempty"`                 // it's some special discount for early payments
 }
 
+// NewPayment gets payment data from GOBL invoice
 func NewPayment(inv *bill.Invoice) *Payment {
 
 	var payment = &Payment{
