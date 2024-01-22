@@ -9,6 +9,7 @@ import (
 	"github.com/invopop/gobl/bill"
 )
 
+// Constants for KSeF XML
 const (
 	XSINamespace    = "http://www.w3.org/2001/XMLSchema-instance"
 	XSDNamespace    = "http://www.w3.org/2001/XMLSchema"
@@ -47,7 +48,7 @@ func NewDocument(env *gobl.Envelope) (*Invoice, error) {
 		Seller: NewSeller(inv.Supplier),
 		Buyer:  NewBuyer(inv.Customer),
 		Inv:    NewInv(inv),
-		Footer: NewFooter(inv),
+		Footer: NewFooter(),
 	}
 
 	return invoice, nil

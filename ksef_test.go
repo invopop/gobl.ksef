@@ -29,34 +29,34 @@ func TestNewDocument(t *testing.T) {
 		doc, err := test.NewDocumentFrom("invoice-pl-pl.json")
 		require.NoError(t, err)
 
-		bytes, bytes_err := doc.Bytes()
-		require.NoError(t, bytes_err)
+		bytes, bytesErr := doc.Bytes()
+		require.NoError(t, bytesErr)
 
-		output, output_err := test.LoadOutputFile("invoice-pl-pl.xml")
-		require.NoError(t, output_err)
+		output, outputErr := test.LoadOutputFile("invoice-pl-pl.xml")
+		require.NoError(t, outputErr)
 
 		assert.Equal(t, output, bytes)
 	})
 
 	t.Run("should generate valid KSeF document", func(t *testing.T) {
-		xsdvalidate_err := xsdvalidate.Init()
-		require.NoError(t, xsdvalidate_err)
+		xsdvalidateErr := xsdvalidate.Init()
+		require.NoError(t, xsdvalidateErr)
 		defer xsdvalidate.Cleanup()
 
-		xsd_buf, xsd_err := test.LoadSchemaFile("FA2.xsd")
-		require.NoError(t, xsd_err)
+		xsdBuf, xsdErr := test.LoadSchemaFile("FA2.xsd")
+		require.NoError(t, xsdErr)
 
-		xsdhandler, xsdhandler_err := xsdvalidate.NewXsdHandlerMem(xsd_buf, xsdvalidate.ParsErrVerbose)
-		require.NoError(t, xsdhandler_err)
+		xsdhandler, xsdhandlerErr := xsdvalidate.NewXsdHandlerMem(xsdBuf, xsdvalidate.ParsErrVerbose)
+		require.NoError(t, xsdhandlerErr)
 		defer xsdhandler.Free()
 
 		doc, err := test.NewDocumentFrom("invoice-pl-pl.json")
 		require.NoError(t, err)
 
-		bytes, bytes_err := doc.Bytes()
-		require.NoError(t, bytes_err)
+		bytes, bytesErr := doc.Bytes()
+		require.NoError(t, bytesErr)
 
-		validation_err := xsdhandler.ValidateMem(bytes, xsdvalidate.ParsErrDefault)
-		assert.Nil(t, validation_err)
+		validationErr := xsdhandler.ValidateMem(bytes, xsdvalidate.ParsErrDefault)
+		assert.Nil(t, validationErr)
 	})
 }

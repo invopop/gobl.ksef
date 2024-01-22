@@ -7,6 +7,7 @@ import (
 	"github.com/invopop/gobl/tax"
 )
 
+// Inv defines the XML structure for KSeF invoice
 type Inv struct {
 	CurrencyCode                       string       `xml:"KodWaluty"`
 	IssueDate                          string       `xml:"P_1"`
@@ -33,10 +34,10 @@ type Inv struct {
 	IntraCommunityNetSale              string       `xml:"P_13_6_2,omitempty"`
 	ExportNetSale                      string       `xml:"P_13_6_3,omitempty"`
 	TaxExemptNetSale                   string       `xml:"P_13_7,omitempty"`
-	P_13_8                             string       `xml:"P_13_8,omitempty"`
-	P_13_9                             string       `xml:"P_13_9,omitempty"`
-	P_13_10                            string       `xml:"P_13_10,omitempty"`
-	P_13_11                            string       `xml:"P_13_11,omitempty"`
+	InternationalNetSale               string       `xml:"P_13_8,omitempty"`
+	OtherNetSale                       string       `xml:"P_13_9,omitempty"`
+	EUServiceNetSale                   string       `xml:"P_13_10,omitempty"`
+	MarginNetSale                      string       `xml:"P_13_11,omitempty"`
 	TotalAmountReceivable              string       `xml:"P_15"`
 	Annotations                        *Annotations `xml:"Adnotacje"`
 	InvoiceType                        string       `xml:"RodzajFaktury"`
@@ -44,6 +45,7 @@ type Inv struct {
 	Payment                            *Payment     `xml:"Platnosc"`
 }
 
+// Annotations defines the XML structure for KSeF annotations
 type Annotations struct {
 	CashAccounting                      int `xml:"P_16"`
 	SelfBilling                         int `xml:"P_17"`
@@ -55,7 +57,8 @@ type Annotations struct {
 	NoMarginProcedures                  int `xml:"PMarzy>P_PMarzyN"`
 }
 
-func NewAnnotations(inv *bill.Invoice) *Annotations {
+// newAnnotations sets annotations data
+func newAnnotations() *Annotations {
 	// default values for the most common case,
 	// For fields P_16 to P_18 and field P_23 2 means "no", 1 means "yes".
 	// for others 1 means "yes", no value means "no"
@@ -72,10 +75,11 @@ func NewAnnotations(inv *bill.Invoice) *Annotations {
 	return Annotations
 }
 
+// NewInv gets invoice data from GOBL invoice
 func NewInv(inv *bill.Invoice) *Inv {
 	cu := inv.Currency.Def().Units
 	Inv := &Inv{
-		Annotations:           NewAnnotations(inv),
+		Annotations:           newAnnotations(),
 		CurrencyCode:          string(inv.Currency),
 		IssueDate:             inv.IssueDate.String(),
 		SequentialNumber:      inv.Series + inv.Code,

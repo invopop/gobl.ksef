@@ -72,7 +72,7 @@ func LoadOutputFile(name string) ([]byte, error) {
 	return buf.Bytes(), nil
 }
 
-// LoadOutputFile returns byte data from a file in the `test/data/out` folder
+// LoadSchemaFile returns byte data from a file in the `test/data/schema` folder
 func LoadSchemaFile(name string) ([]byte, error) {
 	src, _ := os.Open(filepath.Join(GetSchemaPath(), name))
 
@@ -84,7 +84,7 @@ func LoadSchemaFile(name string) ([]byte, error) {
 	return buf.Bytes(), nil
 }
 
-// GetOutPath returns the path to the `test/data/schema` folder
+// GetSchemaPath returns the path to the `test/data/schema` folder
 func GetSchemaPath() string {
 	return filepath.Join(GetDataPath(), "schema")
 }

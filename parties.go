@@ -5,12 +5,14 @@ import (
 	"github.com/invopop/gobl/org"
 )
 
+// Address defines the XML structure for KSeF addresses
 type Address struct {
 	CountryCode string `xml:"KodKraju"`
 	AddressL1   string `xml:"AdresL1"`
 	AddressL2   string `xml:"AdresL2"`
 }
 
+// Seller defines the XML structure for KSeF seller
 type Seller struct {
 	NIP     string          `xml:"DaneIdentyfikacyjne>NIP"`
 	Name    string          `xml:"DaneIdentyfikacyjne>Nazwa"`
@@ -18,11 +20,13 @@ type Seller struct {
 	Contact *ContactDetails `xml:"DaneKontaktowe,omitempty"`
 }
 
+// ContactDetails defines the XML structure for KSeF contact
 type ContactDetails struct {
 	Phone string `xml:"Telefon,omitempty"`
 	Email string `xml:"Email,omitempty"`
 }
 
+// Buyer defines the XML structure for KSeF buyer
 type Buyer struct {
 	NIP string `xml:"DaneIdentyfikacyjne>NIP,omitempty"`
 	// or
@@ -30,15 +34,16 @@ type Buyer struct {
 	UEVatNumber string `xml:"DaneIdentyfikacyjne>NrVatUE,omitempty"`
 	// or
 	CountryCode string `xml:"DaneIdentyfikacyjne>KodKraju,omitempty"`
-	IdNumber    string `xml:"DaneIdentyfikacyjne>NrId,omitempty"`
+	IDNumber    string `xml:"DaneIdentyfikacyjne>NrId,omitempty"`
 	// or
-	NoId int `xml:"DaneIdentyfikacyjne>BrakID,omitempty"`
+	NoID int `xml:"DaneIdentyfikacyjne>BrakID,omitempty"`
 
 	Name    string          `xml:"DaneIdentyfikacyjne>Nazwa,omitempty"`
 	Address *Address        `xml:"Adres,omitempty"`
 	Contact *ContactDetails `xml:"DaneKontaktowe,omitempty"`
 }
 
+// NewAddress gets the address data from GOBL address
 func NewAddress(address *org.Address) *Address {
 	adres := &Address{
 		CountryCode: string(address.Country),
@@ -49,12 +54,14 @@ func NewAddress(address *org.Address) *Address {
 	return adres
 }
 
+// NameToString get the seller name out of the organization
 func NameToString(name org.Name) string {
 	return name.Prefix + nameMaybe(name.Given) +
 		nameMaybe(name.Middle) + nameMaybe(name.Surname) +
 		nameMaybe(name.Surname2) + nameMaybe(name.Suffix)
 }
 
+// NewSeller converts a GOBL Party into a KSeF seller
 func NewSeller(supplier *org.Party) *Seller {
 	var name string
 	if supplier.Name != "" {
@@ -82,6 +89,7 @@ func NewSeller(supplier *org.Party) *Seller {
 	return seller
 }
 
+// NewBuyer converts a GOBL Party into a KSeF buyer
 func NewBuyer(customer *org.Party) *Buyer {
 
 	buyer := &Buyer{
@@ -93,10 +101,10 @@ func NewBuyer(customer *org.Party) *Buyer {
 		buyer.NIP = string(customer.TaxID.Code)
 	} else {
 		if len(customer.TaxID.Code) > 0 {
-			buyer.IdNumber = string(customer.TaxID.Code)
+			buyer.IDNumber = string(customer.TaxID.Code)
 			buyer.CountryCode = string(customer.TaxID.Country)
 		} else {
-			buyer.NoId = 1
+			buyer.NoID = 1
 		}
 	}
 	// TODO NrVatUE and UECode if applicable
