@@ -21,7 +21,7 @@ type Header struct {
 	FormCode     *FormCode `xml:"KodFormularza"`
 	FormVariant  int       `xml:"WariantFormularza"`
 	CreationDate string    `xml:"DataWytworzeniaFa"`
-	SystemInfo   string    `xml:"SystemInfo"`
+	SystemInfo   string    `xml:"SystemInfo,omitempty"`
 }
 
 // FormCode defines the XML structure for KSeF schema versioning

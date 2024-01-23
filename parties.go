@@ -9,7 +9,7 @@ import (
 type Address struct {
 	CountryCode string `xml:"KodKraju"`
 	AddressL1   string `xml:"AdresL1"`
-	AddressL2   string `xml:"AdresL2"`
+	AddressL2   string `xml:"AdresL2,omitempty"`
 }
 
 // Seller defines the XML structure for KSeF seller
@@ -43,8 +43,8 @@ type Buyer struct {
 	Contact *ContactDetails `xml:"DaneKontaktowe,omitempty"`
 }
 
-// NewAddress gets the address data from GOBL address
-func NewAddress(address *org.Address) *Address {
+// newAddress gets the address data from GOBL address
+func newAddress(address *org.Address) *Address {
 	adres := &Address{
 		CountryCode: string(address.Country),
 		AddressL1:   addressLine1(address),
@@ -54,8 +54,8 @@ func NewAddress(address *org.Address) *Address {
 	return adres
 }
 
-// NameToString get the seller name out of the organization
-func NameToString(name org.Name) string {
+// nameToString get the seller name out of the organization
+func nameToString(name org.Name) string {
 	return name.Prefix + nameMaybe(name.Given) +
 		nameMaybe(name.Middle) + nameMaybe(name.Surname) +
 		nameMaybe(name.Surname2) + nameMaybe(name.Suffix)
@@ -67,10 +67,10 @@ func NewSeller(supplier *org.Party) *Seller {
 	if supplier.Name != "" {
 		name = supplier.Name
 	} else {
-		name = NameToString(supplier.People[0].Name)
+		name = nameToString(supplier.People[0].Name)
 	}
 	seller := &Seller{
-		Address: NewAddress(supplier.Addresses[0]),
+		Address: newAddress(supplier.Addresses[0]),
 		NIP:     string(supplier.TaxID.Code),
 		Name:    name,
 	}
@@ -110,7 +110,7 @@ func NewBuyer(customer *org.Party) *Buyer {
 	// TODO NrVatUE and UECode if applicable
 
 	if len(customer.Addresses) > 0 {
-		buyer.Address = NewAddress(customer.Addresses[0])
+		buyer.Address = newAddress(customer.Addresses[0])
 	}
 
 	if len(customer.Telephones) > 0 {

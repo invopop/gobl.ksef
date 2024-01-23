@@ -5,13 +5,13 @@ import "github.com/invopop/gobl/bill"
 // Line defines the XML structure for KSeF item line
 type Line struct {
 	LineNumber              int    `xml:"NrWierszaFa"`
-	Name                    string `xml:"P_7"`
-	Measure                 string `xml:"P_8A"`
-	Quantity                string `xml:"P_8B"`
-	NetUnitPrice            string `xml:"P_9A"`
-	UnitDiscount            string `xml:"P_10"`
-	NetPriceTotal           string `xml:"P_11"`
-	TaxRate                 string `xml:"P_12"`
+	Name                    string `xml:"P_7,omitempty"`
+	Measure                 string `xml:"P_8A,omitempty"`
+	Quantity                string `xml:"P_8B,omitempty"`
+	NetUnitPrice            string `xml:"P_9A,omitempty"`
+	UnitDiscount            string `xml:"P_10,omitempty"`
+	NetPriceTotal           string `xml:"P_11,omitempty"`
+	TaxRate                 string `xml:"P_12,omitempty"`
 	ExciseDuty              string `xml:"KwotaAkcyzy,omitempty"`
 	SpecialGoodsCode        string `xml:"GTU,omitempty"` // values GTU_1 to GTU_13
 	OSSTaxRate              string `xml:"P_12_XII,omitempty"`
