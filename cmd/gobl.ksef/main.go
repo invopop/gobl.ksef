@@ -45,3 +45,24 @@ func inputFilename(args []string) string {
 	}
 	return ""
 }
+
+func inputNip(args []string) string {
+	if len(args) > 1 && args[1] != "-" {
+		return args[1]
+	}
+	return ""
+}
+
+func inputToken(args []string) string {
+	if len(args) > 2 && args[2] != "-" {
+		return args[2]
+	}
+	return ""
+}
+
+func inputKeyPath(args []string) string {
+	if len(args) > 3 && args[3] != "-" {
+		return args[3]
+	}
+	return ""
+}
