@@ -16,7 +16,7 @@
 		"currency": "PLN",
 		"supplier": {
 			"name": "Provide One S.L.",
-			"tax_id": { "country": "PL", "code": "9876543210" },
+			"tax_id": { "country": "PL", "code": "1234567788" },
 			"addresses": [
 				{
 					"num": "42",
