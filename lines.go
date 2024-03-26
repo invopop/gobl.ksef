@@ -27,22 +27,11 @@ func newLine(line *bill.Line) *Line {
 		Measure:       string(line.Item.Unit.UNECE()),
 		NetUnitPrice:  line.Item.Price.String(),
 		Quantity:      line.Quantity.String(),
-		UnitDiscount:  unitDiscount(line),
 		NetPriceTotal: line.Total.String(),
 		TaxRate:       line.Taxes[0].Percent.Rescale(2).StringWithoutSymbol(),
 	}
 
 	return Line
-}
-
-func unitDiscount(line *bill.Line) string {
-	if line.Total == line.Sum {
-		return ""
-	}
-
-	discount := line.Total.Subtract(line.Sum).Divide(line.Quantity) // not sure if there should be some rescale or matchPrecision
-
-	return discount.String()
 }
 
 // NewLines generates lines for the KSeF invoice

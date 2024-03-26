@@ -37,14 +37,14 @@ func TestNewDocument(t *testing.T) {
 		assert.Equal(t, output, data)
 	})
 
-	t.Run("should return bytes of the corrective invoice", func(t *testing.T) {
-		doc, err := test.NewDocumentFrom("corrective-invoice.json")
+	t.Run("should return bytes of the credit-note invoice", func(t *testing.T) {
+		doc, err := test.NewDocumentFrom("credit-note.json")
 		require.NoError(t, err)
 
 		data, err := doc.Bytes()
 		require.NoError(t, err)
 
-		output, err := test.LoadOutputFile("corrective-invoice.xml")
+		output, err := test.LoadOutputFile("credit-note.xml")
 		require.NoError(t, err)
 
 		assert.Equal(t, output, data)
@@ -72,7 +72,7 @@ func TestNewDocument(t *testing.T) {
 		assert.Nil(t, validation)
 	})
 
-	t.Run("should generate valid correction invoice", func(t *testing.T) {
+	t.Run("should generate valid credit-note", func(t *testing.T) {
 		err := xsdvalidate.Init()
 		require.NoError(t, err)
 		defer xsdvalidate.Cleanup()
@@ -84,7 +84,7 @@ func TestNewDocument(t *testing.T) {
 		require.NoError(t, err)
 		defer xsdhandler.Free()
 
-		doc, err := test.NewDocumentFrom("corrective-invoice.json")
+		doc, err := test.NewDocumentFrom("credit-note.json")
 		require.NoError(t, err)
 
 		data, err := doc.Bytes()

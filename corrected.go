@@ -5,7 +5,7 @@ import (
 	"github.com/invopop/gobl/head"
 )
 
-// CorrectedInv defines the XML structure for KSeF correction invoiceą
+// CorrectedInv defines the XML structure for KSeF correction invoice
 type CorrectedInv struct {
 	IssueDate           string `xml:"DataWystFaKorygowanej,omitempty"`
 	SequentialNumber    string `xml:"NrFaKorygowanej,omitempty"`
@@ -14,6 +14,7 @@ type CorrectedInv struct {
 	KsefNumber          string `xml:"NrKSeFFaKorygowanej,omitempty"`
 }
 
+// NewCorrectedInv gets credit note data from GOBL invoice
 func NewCorrectedInv(prc *bill.Preceding) *CorrectedInv {
 	inv := &CorrectedInv{
 		SequentialNumber: invoiceNumber(prc.Series, prc.Code),

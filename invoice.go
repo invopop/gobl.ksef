@@ -95,8 +95,8 @@ func NewInv(inv *bill.Invoice) *Inv {
 		for _, prc := range inv.Preceding {
 			Inv.CorrectedInv = NewCorrectedInv(prc)
 			Inv.CorrectionReason = prc.Reason
-			if prc.Ext.Has(pl.ExtKeyKSEFCorrection) {
-				Inv.CorrectionType = prc.Ext[pl.ExtKeyKSEFCorrection].Code().String()
+			if prc.Ext.Has(pl.ExtKeyKSeFEffectiveDate) {
+				Inv.CorrectionType = prc.Ext[pl.ExtKeyKSeFEffectiveDate].Code().String()
 			}
 		}
 	}
