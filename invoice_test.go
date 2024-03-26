@@ -70,7 +70,7 @@ func TestNewInv(t *testing.T) {
 			Preceding: []*bill.Preceding{
 				{
 					Ext: tax.Extensions{
-						pl.ExtKeyKSEFCorrection: "1",
+						pl.ExtKeyKSeFEffectiveDate: "1",
 					},
 				},
 			},

@@ -6,7 +6,6 @@ import (
 	"github.com/invopop/gobl/bill"
 	"github.com/invopop/gobl/cbc"
 	"github.com/invopop/gobl/regimes/pl"
-	"github.com/invopop/gobl/tax"
 )
 
 // AdvancePayment defines the XML structure for KSeF advance payments
@@ -126,7 +125,7 @@ func findPaymentMeansCode(key cbc.Key) (string, error) {
 	return code.String(), nil
 }
 
-func findPaymentKeyDefinition(key cbc.Key) *tax.KeyDefinition {
+func findPaymentKeyDefinition(key cbc.Key) *cbc.KeyDefinition {
 	for _, keyDef := range regime.PaymentMeansKeys {
 		if key == keyDef.Key {
 			return keyDef
