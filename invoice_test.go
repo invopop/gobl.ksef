@@ -5,6 +5,7 @@ import (
 
 	ksef "github.com/invopop/gobl.ksef"
 	"github.com/invopop/gobl/bill"
+	"github.com/invopop/gobl/currency"
 	"github.com/invopop/gobl/l10n"
 	"github.com/invopop/gobl/org"
 	"github.com/invopop/gobl/regimes/pl"
@@ -15,6 +16,7 @@ import (
 func TestNewInv(t *testing.T) {
 	t.Run("sets preceding invoice", func(t *testing.T) {
 		inv := &bill.Invoice{
+			Currency: currency.PLN,
 			Supplier: &org.Party{
 				TaxID: &tax.Identity{
 					Country: l10n.PL,
@@ -37,6 +39,7 @@ func TestNewInv(t *testing.T) {
 		reason := "example reason"
 
 		inv := &bill.Invoice{
+			Currency: currency.PLN,
 			Supplier: &org.Party{
 				TaxID: &tax.Identity{
 					Country: l10n.PL,
@@ -59,6 +62,7 @@ func TestNewInv(t *testing.T) {
 
 	t.Run("sets correction type", func(t *testing.T) {
 		inv := &bill.Invoice{
+			Currency: currency.PLN,
 			Supplier: &org.Party{
 				TaxID: &tax.Identity{
 					Country: l10n.PL,
