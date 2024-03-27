@@ -80,7 +80,7 @@ func newAnnotations() *Annotations {
 
 // NewInv gets invoice data from GOBL invoice
 func NewInv(inv *bill.Invoice) *Inv {
-	cu := inv.Currency.Def().Units
+	cu := inv.Currency.Def().Subunits
 	Inv := &Inv{
 		Annotations:           newAnnotations(),
 		CurrencyCode:          string(inv.Currency),
