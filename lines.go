@@ -1,6 +1,9 @@
 package ksef
 
-import "github.com/invopop/gobl/bill"
+import (
+	"github.com/invopop/gobl/bill"
+	"github.com/invopop/gobl/num"
+)
 
 // Line defines the XML structure for KSeF item line
 type Line struct {
@@ -27,11 +30,28 @@ func newLine(line *bill.Line) *Line {
 		Measure:       string(line.Item.Unit.UNECE()),
 		NetUnitPrice:  line.Item.Price.String(),
 		Quantity:      line.Quantity.String(),
+		UnitDiscount:  unitDiscount(line),
 		NetPriceTotal: line.Total.String(),
 		TaxRate:       line.Taxes[0].Percent.Rescale(2).StringWithoutSymbol(),
 	}
 
 	return Line
+}
+
+func unitDiscount(line *bill.Line) string {
+	if len(line.Discounts) == 0 {
+		return ""
+	}
+
+	amount := num.MakeAmount(0, 2)
+
+	for _, discount := range line.Discounts {
+		amount = amount.Add(discount.Amount)
+	}
+
+	discount := amount.Divide(line.Quantity)
+
+	return discount.String()
 }
 
 // NewLines generates lines for the KSeF invoice
