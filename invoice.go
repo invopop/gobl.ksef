@@ -9,40 +9,43 @@ import (
 
 // Inv defines the XML structure for KSeF invoice
 type Inv struct {
-	CurrencyCode                       string       `xml:"KodWaluty"`
-	IssueDate                          string       `xml:"P_1"`
-	IssuePlace                         string       `xml:"P_1M,omitempty"`
-	SequentialNumber                   string       `xml:"P_2"`
-	CompletionDate                     string       `xml:"P_6,omitempty"`
-	StartDate                          string       `xml:"P_6_Od,omitempty"`
-	EndDate                            string       `xml:"P_6_Do,omitempty"`
-	StandardRateNetSale                string       `xml:"P_13_1,omitempty"`
-	StandardRateTax                    string       `xml:"P_14_1,omitempty"`
-	StandardRateTaxConvertedToPln      string       `xml:"P_14_1W,omitempty"`
-	ReducedRateNetSale                 string       `xml:"P_13_2,omitempty"`
-	ReducedRateTax                     string       `xml:"P_14_2,omitempty"`
-	ReducedRateTaxConvertedToPln       string       `xml:"P_14_2W,omitempty"`
-	SuperReducedRateNetSale            string       `xml:"P_13_3,omitempty"`
-	SuperReducedRateTax                string       `xml:"P_14_3,omitempty"`
-	SuperReducedRateTaxConvertedToPln  string       `xml:"P_14_3W,omitempty"`
-	TaxiRateNetSale                    string       `xml:"P_13_4,omitempty"`
-	TaxiRateTax                        string       `xml:"P_14_4,omitempty"`
-	TaxiRateTaxConvertedToPln          string       `xml:"P_14_4W,omitempty"`
-	SpecialProcedureNetSale            string       `xml:"P_13_5,omitempty"`
-	SpecialProcedureTax                string       `xml:"P_14_5,omitempty"`
-	ZeroTaxExceptIntraCommunityNetSale string       `xml:"P_13_6_1,omitempty"`
-	IntraCommunityNetSale              string       `xml:"P_13_6_2,omitempty"`
-	ExportNetSale                      string       `xml:"P_13_6_3,omitempty"`
-	TaxExemptNetSale                   string       `xml:"P_13_7,omitempty"`
-	InternationalNetSale               string       `xml:"P_13_8,omitempty"`
-	OtherNetSale                       string       `xml:"P_13_9,omitempty"`
-	EUServiceNetSale                   string       `xml:"P_13_10,omitempty"`
-	MarginNetSale                      string       `xml:"P_13_11,omitempty"`
-	TotalAmountReceivable              string       `xml:"P_15"`
-	Annotations                        *Annotations `xml:"Adnotacje"`
-	InvoiceType                        string       `xml:"RodzajFaktury"`
-	Lines                              []*Line      `xml:"FaWiersz"`
-	Payment                            *Payment     `xml:"Platnosc"`
+	CurrencyCode                       string        `xml:"KodWaluty"`
+	IssueDate                          string        `xml:"P_1"`
+	IssuePlace                         string        `xml:"P_1M,omitempty"`
+	SequentialNumber                   string        `xml:"P_2"`
+	CompletionDate                     string        `xml:"P_6,omitempty"`
+	StartDate                          string        `xml:"P_6_Od,omitempty"`
+	EndDate                            string        `xml:"P_6_Do,omitempty"`
+	StandardRateNetSale                string        `xml:"P_13_1,omitempty"`
+	StandardRateTax                    string        `xml:"P_14_1,omitempty"`
+	StandardRateTaxConvertedToPln      string        `xml:"P_14_1W,omitempty"`
+	ReducedRateNetSale                 string        `xml:"P_13_2,omitempty"`
+	ReducedRateTax                     string        `xml:"P_14_2,omitempty"`
+	ReducedRateTaxConvertedToPln       string        `xml:"P_14_2W,omitempty"`
+	SuperReducedRateNetSale            string        `xml:"P_13_3,omitempty"`
+	SuperReducedRateTax                string        `xml:"P_14_3,omitempty"`
+	SuperReducedRateTaxConvertedToPln  string        `xml:"P_14_3W,omitempty"`
+	TaxiRateNetSale                    string        `xml:"P_13_4,omitempty"`
+	TaxiRateTax                        string        `xml:"P_14_4,omitempty"`
+	TaxiRateTaxConvertedToPln          string        `xml:"P_14_4W,omitempty"`
+	SpecialProcedureNetSale            string        `xml:"P_13_5,omitempty"`
+	SpecialProcedureTax                string        `xml:"P_14_5,omitempty"`
+	ZeroTaxExceptIntraCommunityNetSale string        `xml:"P_13_6_1,omitempty"`
+	IntraCommunityNetSale              string        `xml:"P_13_6_2,omitempty"`
+	ExportNetSale                      string        `xml:"P_13_6_3,omitempty"`
+	TaxExemptNetSale                   string        `xml:"P_13_7,omitempty"`
+	InternationalNetSale               string        `xml:"P_13_8,omitempty"`
+	OtherNetSale                       string        `xml:"P_13_9,omitempty"`
+	EUServiceNetSale                   string        `xml:"P_13_10,omitempty"`
+	MarginNetSale                      string        `xml:"P_13_11,omitempty"`
+	TotalAmountReceivable              string        `xml:"P_15"`
+	Annotations                        *Annotations  `xml:"Adnotacje"`
+	InvoiceType                        string        `xml:"RodzajFaktury"`
+	CorrectionReason                   string        `xml:"PrzyczynaKorekty,omitempty"`
+	CorrectionType                     string        `xml:"TypKorekty,omitempty"`
+	CorrectedInv                       *CorrectedInv `xml:"DaneFaKorygowanej,omitempty"`
+	Lines                              []*Line       `xml:"FaWiersz"`
+	Payment                            *Payment      `xml:"Platnosc"`
 }
 
 // Annotations defines the XML structure for KSeF annotations
@@ -77,15 +80,25 @@ func newAnnotations() *Annotations {
 
 // NewInv gets invoice data from GOBL invoice
 func NewInv(inv *bill.Invoice) *Inv {
-	cu := inv.Currency.Def().Units
+	cu := inv.Currency.Def().Subunits
 	Inv := &Inv{
 		Annotations:           newAnnotations(),
 		CurrencyCode:          string(inv.Currency),
 		IssueDate:             inv.IssueDate.String(),
-		SequentialNumber:      inv.Series + inv.Code,
+		SequentialNumber:      invoiceNumber(inv.Series, inv.Code),
 		TotalAmountReceivable: inv.Totals.Payable.Rescale(cu).String(),
 		Lines:                 NewLines(inv.Lines),
 		Payment:               NewPayment(inv.Payment, inv.Totals),
+	}
+
+	if len(inv.Preceding) > 0 {
+		for _, prc := range inv.Preceding {
+			Inv.CorrectedInv = NewCorrectedInv(prc)
+			Inv.CorrectionReason = prc.Reason
+			if prc.Ext.Has(pl.ExtKeyKSeFEffectiveDate) {
+				Inv.CorrectionType = prc.Ext[pl.ExtKeyKSeFEffectiveDate].Code().String()
+			}
+		}
 	}
 
 	ss := inv.ScenarioSummary()
@@ -115,4 +128,11 @@ func NewInv(inv *bill.Invoice) *Inv {
 	}
 
 	return Inv
+}
+
+func invoiceNumber(series string, code string) string {
+	if series == "" {
+		return code
+	}
+	return series + "-" + code
 }

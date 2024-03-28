@@ -37,6 +37,19 @@ func TestNewDocument(t *testing.T) {
 		assert.Equal(t, output, data)
 	})
 
+	t.Run("should return bytes of the credit-note invoice", func(t *testing.T) {
+		doc, err := test.NewDocumentFrom("credit-note.json")
+		require.NoError(t, err)
+
+		data, err := doc.Bytes()
+		require.NoError(t, err)
+
+		output, err := test.LoadOutputFile("credit-note.xml")
+		require.NoError(t, err)
+
+		assert.Equal(t, output, data)
+	})
+
 	t.Run("should generate valid KSeF document", func(t *testing.T) {
 		err := xsdvalidate.Init()
 		require.NoError(t, err)
@@ -50,6 +63,28 @@ func TestNewDocument(t *testing.T) {
 		defer xsdhandler.Free()
 
 		doc, err := test.NewDocumentFrom("invoice-pl-pl.json")
+		require.NoError(t, err)
+
+		data, err := doc.Bytes()
+		require.NoError(t, err)
+
+		validation := xsdhandler.ValidateMem(data, xsdvalidate.ParsErrDefault)
+		assert.Nil(t, validation)
+	})
+
+	t.Run("should generate valid credit-note", func(t *testing.T) {
+		err := xsdvalidate.Init()
+		require.NoError(t, err)
+		defer xsdvalidate.Cleanup()
+
+		xsdBuf, err := test.LoadSchemaFile("FA2.xsd")
+		require.NoError(t, err)
+
+		xsdhandler, err := xsdvalidate.NewXsdHandlerMem(xsdBuf, xsdvalidate.ParsErrVerbose)
+		require.NoError(t, err)
+		defer xsdhandler.Free()
+
+		doc, err := test.NewDocumentFrom("credit-note.json")
 		require.NoError(t, err)
 
 		data, err := doc.Bytes()
