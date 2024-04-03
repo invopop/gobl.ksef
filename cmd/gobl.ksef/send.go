@@ -3,12 +3,16 @@ package main
 import (
 	"context"
 	"encoding/base64"
+	"encoding/json"
 	"fmt"
 	"io"
 	"os"
 	"time"
 
+	"github.com/invopop/gobl"
+	ksef "github.com/invopop/gobl.ksef"
 	ksef_api "github.com/invopop/gobl.ksef/api"
+	"github.com/invopop/gobl/bill"
 	"github.com/spf13/cobra"
 )
 
@@ -58,55 +62,79 @@ func (c *sendOpts) runE(cmd *cobra.Command, args []string) error {
 		ksef_api.WithKeyPath(keyPath),
 	)
 
-	_, err = SendInvoice(client, data)
+	env, err := SendInvoice(client, data)
 	if err != nil {
 		return fmt.Errorf("sending invoices: %w", err)
 	}
+
+	data, err = json.MarshalIndent(env, "", "  ")
+	if err != nil {
+		return err
+	}
+
+	inv, ok := env.Extract().(*bill.Invoice)
+	if !ok {
+		return fmt.Errorf("invalid type %T", env.Document)
+	}
+
+	err = saveFile(filename(inv), data)
+	if err != nil {
+		return err
+	}
+
 	return nil
 }
 
 // SendInvoice sends invoices to KSeF
-func SendInvoice(c *ksef_api.Client, data []byte) (string, error) {
+func SendInvoice(c *ksef_api.Client, data []byte) (*gobl.Envelope, error) {
 	ctx := context.Background()
 
 	err := ksef_api.FetchSessionToken(ctx, c)
 	if err != nil {
-		return "", err
+		return nil, err
+	}
+
+	env := new(gobl.Envelope)
+	if err := json.Unmarshal(data, env); err != nil {
+		return nil, fmt.Errorf("parsing input as GOBL Envelope: %w", err)
+	}
+
+	doc, err := ksef.NewDocument(env)
+	if err != nil {
+		return nil, fmt.Errorf("building FA_VAT document: %w", err)
+	}
+
+	data, err = doc.Bytes()
+	if err != nil {
+		return nil, fmt.Errorf("generating FA_VAT xml: %w", err)
 	}
 
 	sendInvoiceResponse, err := ksef_api.SendInvoice(ctx, c, data)
 	if err != nil {
-		return "", err
+		return nil, err
 	}
 
 	_, err = waitUntilInvoiceIsProcessed(ctx, c, sendInvoiceResponse.ElementReferenceNumber)
 	if err != nil {
-		return "", err
+		return nil, err
 	}
 
 	res, err := waitUntilSessionIsTerminated(ctx, c)
 	if err != nil {
-		return "", err
+		return nil, err
 	}
 	upoBytes, err := base64.StdEncoding.DecodeString(res.Upo)
 	if err != nil {
-		return "", err
+		return nil, err
 	}
-	file, err := os.Create(res.ReferenceNumber + ".xml")
+	// saveFile(res.ReferenceNumber+".xml", upoBytes)
+
+	err = ksef_api.Sign(env, upoBytes, c)
 	if err != nil {
-		return "", err
-	}
-	defer func() {
-		if err := file.Close(); err != nil {
-			fmt.Println("Error when closing:", err)
-		}
-	}()
-	_, err = file.Write(upoBytes)
-	if err != nil {
-		return "", err
+		return nil, err
 	}
 
-	return string(upoBytes), nil
+	return env, nil
 }
 
 func waitUntilInvoiceIsProcessed(ctx context.Context, c *ksef_api.Client, referenceNumber string) (*ksef_api.InvoiceStatusResponse, error) {
@@ -145,4 +173,25 @@ func sleepContext(ctx context.Context, delay time.Duration) {
 	case <-ctx.Done():
 	case <-time.After(delay):
 	}
+}
+
+func saveFile(name string, data []byte) error {
+	file, err := os.Create(name)
+	if err != nil {
+		return err
+	}
+	defer func() {
+		if err := file.Close(); err != nil {
+			fmt.Println("Error when closing:", err)
+		}
+	}()
+	_, err = file.Write(data)
+	return err
+}
+
+func filename(inv *bill.Invoice) string {
+	if inv.Series != "" {
+		return inv.Series + "-" + inv.Code + ".xml"
+	}
+	return inv.Code + ".xml"
 }
