@@ -25,7 +25,7 @@ func Sign(env *gobl.Envelope, upoBytes []byte, c *Client) error {
 
 	env.Head.AddStamp(
 		&head.Stamp{
-			Provider: pl.StampProviderKSeF,
+			Provider: pl.StampProviderKSeFID,
 			Value:    upo.KSeFNumber,
 		},
 	)
