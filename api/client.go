@@ -51,6 +51,15 @@ func WithClient(client *resty.Client) ClientOptFunc {
 	}
 }
 
+// WithDebugClient uses a more verbose client
+func WithDebugClient() ClientOptFunc {
+	c := resty.New()
+	c.SetDebug(true)
+	return func(o *ClientOpts) {
+		o.Client = c
+	}
+}
+
 // WithID allows customizing the Polish tax id number (NIP)
 func WithID(id string) ClientOptFunc {
 	return func(o *ClientOpts) {
@@ -88,7 +97,6 @@ func NewClient(opts ...ClientOptFunc) *Client {
 	for _, fn := range opts {
 		fn(&o)
 	}
-	o.Client.SetDebug(true)
 	return &Client{
 		ClientOpts: o,
 	}
