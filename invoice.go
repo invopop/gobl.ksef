@@ -113,13 +113,13 @@ func NewInv(inv *bill.Invoice) *Inv {
 
 		for _, rate := range cat.Rates {
 			if rate.Percent != nil {
-				if rate.Percent.Amount.Float64() >= 0.15 {
+				if rate.Key == tax.RateStandard {
 					Inv.StandardRateNetSale = rate.Base.Rescale(cu).String()
 					Inv.StandardRateTax = rate.Amount.Rescale(cu).String()
-				} else if rate.Percent.Amount.Float64() >= 0.06 {
+				} else if rate.Key == tax.RateReduced {
 					Inv.ReducedRateNetSale = rate.Base.Rescale(cu).String()
 					Inv.ReducedRateTax = rate.Amount.Rescale(cu).String()
-				} else if rate.Percent.Amount.Float64() >= 0.04 {
+				} else if rate.Key == tax.RateSuperReduced {
 					Inv.SuperReducedRateNetSale = rate.Base.Rescale(cu).String()
 					Inv.SuperReducedRateTax = rate.Amount.Rescale(cu).String()
 				}
