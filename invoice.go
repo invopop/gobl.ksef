@@ -2,6 +2,8 @@ package ksef
 
 /**/
 import (
+	"slices"
+
 	"github.com/invopop/gobl/bill"
 	"github.com/invopop/gobl/regimes/pl"
 	"github.com/invopop/gobl/tax"
@@ -61,7 +63,7 @@ type Annotations struct {
 }
 
 // newAnnotations sets annotations data
-func newAnnotations() *Annotations {
+func newAnnotations(inv *bill.Invoice) *Annotations {
 	// default values for the most common case,
 	// For fields P_16 to P_18 and field P_23 2 means "no", 1 means "yes".
 	// for others 1 means "yes", no value means "no"
@@ -75,6 +77,11 @@ func newAnnotations() *Annotations {
 		SimplifiedProcedureBySecondTaxpayer: 2,
 		NoMarginProcedures:                  1,
 	}
+
+	if slices.Contains(inv.Tax.Tags, tax.TagReverseCharge) {
+		Annotations.ReverseCharge = 1
+	}
+
 	return Annotations
 }
 
@@ -82,7 +89,7 @@ func newAnnotations() *Annotations {
 func NewInv(inv *bill.Invoice) *Inv {
 	cu := inv.Currency.Def().Subunits
 	Inv := &Inv{
-		Annotations:           newAnnotations(),
+		Annotations:           newAnnotations(inv),
 		CurrencyCode:          string(inv.Currency),
 		IssueDate:             inv.IssueDate.String(),
 		SequentialNumber:      invoiceNumber(inv.Series, inv.Code),
