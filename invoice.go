@@ -11,43 +11,43 @@ import (
 
 // Inv defines the XML structure for KSeF invoice
 type Inv struct {
-	CurrencyCode                       string        `xml:"KodWaluty"`
-	IssueDate                          string        `xml:"P_1"`
-	IssuePlace                         string        `xml:"P_1M,omitempty"`
-	SequentialNumber                   string        `xml:"P_2"`
-	CompletionDate                     string        `xml:"P_6,omitempty"`
-	StartDate                          string        `xml:"P_6_Od,omitempty"`
-	EndDate                            string        `xml:"P_6_Do,omitempty"`
-	StandardRateNetSale                string        `xml:"P_13_1,omitempty"`
-	StandardRateTax                    string        `xml:"P_14_1,omitempty"`
-	StandardRateTaxConvertedToPln      string        `xml:"P_14_1W,omitempty"`
-	ReducedRateNetSale                 string        `xml:"P_13_2,omitempty"`
-	ReducedRateTax                     string        `xml:"P_14_2,omitempty"`
-	ReducedRateTaxConvertedToPln       string        `xml:"P_14_2W,omitempty"`
-	SuperReducedRateNetSale            string        `xml:"P_13_3,omitempty"`
-	SuperReducedRateTax                string        `xml:"P_14_3,omitempty"`
-	SuperReducedRateTaxConvertedToPln  string        `xml:"P_14_3W,omitempty"`
-	TaxiRateNetSale                    string        `xml:"P_13_4,omitempty"`
-	TaxiRateTax                        string        `xml:"P_14_4,omitempty"`
-	TaxiRateTaxConvertedToPln          string        `xml:"P_14_4W,omitempty"`
-	SpecialProcedureNetSale            string        `xml:"P_13_5,omitempty"`
-	SpecialProcedureTax                string        `xml:"P_14_5,omitempty"`
-	ZeroTaxExceptIntraCommunityNetSale string        `xml:"P_13_6_1,omitempty"`
-	IntraCommunityNetSale              string        `xml:"P_13_6_2,omitempty"`
-	ExportNetSale                      string        `xml:"P_13_6_3,omitempty"`
-	TaxExemptNetSale                   string        `xml:"P_13_7,omitempty"`
-	InternationalNetSale               string        `xml:"P_13_8,omitempty"`
-	OtherNetSale                       string        `xml:"P_13_9,omitempty"`
-	EUServiceNetSale                   string        `xml:"P_13_10,omitempty"`
-	MarginNetSale                      string        `xml:"P_13_11,omitempty"`
-	TotalAmountReceivable              string        `xml:"P_15"`
-	Annotations                        *Annotations  `xml:"Adnotacje"`
-	InvoiceType                        string        `xml:"RodzajFaktury"`
-	CorrectionReason                   string        `xml:"PrzyczynaKorekty,omitempty"`
-	CorrectionType                     string        `xml:"TypKorekty,omitempty"`
-	CorrectedInv                       *CorrectedInv `xml:"DaneFaKorygowanej,omitempty"`
-	Lines                              []*Line       `xml:"FaWiersz"`
-	Payment                            *Payment      `xml:"Platnosc"`
+	CurrencyCode                      string        `xml:"KodWaluty"`
+	IssueDate                         string        `xml:"P_1"`
+	IssuePlace                        string        `xml:"P_1M,omitempty"`
+	SequentialNumber                  string        `xml:"P_2"`
+	CompletionDate                    string        `xml:"P_6,omitempty"`
+	StartDate                         string        `xml:"P_6_Od,omitempty"`
+	EndDate                           string        `xml:"P_6_Do,omitempty"`
+	StandardRateNetSale               string        `xml:"P_13_1,omitempty"`
+	StandardRateTax                   string        `xml:"P_14_1,omitempty"`
+	StandardRateTaxConvertedToPln     string        `xml:"P_14_1W,omitempty"`
+	ReducedRateNetSale                string        `xml:"P_13_2,omitempty"`
+	ReducedRateTax                    string        `xml:"P_14_2,omitempty"`
+	ReducedRateTaxConvertedToPln      string        `xml:"P_14_2W,omitempty"`
+	SuperReducedRateNetSale           string        `xml:"P_13_3,omitempty"`
+	SuperReducedRateTax               string        `xml:"P_14_3,omitempty"`
+	SuperReducedRateTaxConvertedToPln string        `xml:"P_14_3W,omitempty"`
+	TaxiRateNetSale                   string        `xml:"P_13_4,omitempty"`
+	TaxiRateTax                       string        `xml:"P_14_4,omitempty"`
+	TaxiRateTaxConvertedToPln         string        `xml:"P_14_4W,omitempty"`
+	SpecialProcedureNetSale           string        `xml:"P_13_5,omitempty"`
+	SpecialProcedureTax               string        `xml:"P_14_5,omitempty"`
+	DomesticZeroTaxNetSale            string        `xml:"P_13_6_1,omitempty"`
+	EUZeroTaxNetSale                  string        `xml:"P_13_6_2,omitempty"`
+	ExportNetSale                     string        `xml:"P_13_6_3,omitempty"`
+	TaxExemptNetSale                  string        `xml:"P_13_7,omitempty"`
+	TaxNAInternationalNetSale         string        `xml:"P_13_8,omitempty"`
+	TaxNAEUNetSale                    string        `xml:"P_13_9,omitempty"`
+	EUServiceNetSale                  string        `xml:"P_13_10,omitempty"`
+	MarginNetSale                     string        `xml:"P_13_11,omitempty"`
+	TotalAmountReceivable             string        `xml:"P_15"`
+	Annotations                       *Annotations  `xml:"Adnotacje"`
+	InvoiceType                       string        `xml:"RodzajFaktury"`
+	CorrectionReason                  string        `xml:"PrzyczynaKorekty,omitempty"`
+	CorrectionType                    string        `xml:"TypKorekty,omitempty"`
+	CorrectedInv                      *CorrectedInv `xml:"DaneFaKorygowanej,omitempty"`
+	Lines                             []*Line       `xml:"FaWiersz"`
+	Payment                           *Payment      `xml:"Platnosc"`
 }
 
 // Annotations defines the XML structure for KSeF annotations
@@ -119,18 +119,7 @@ func NewInv(inv *bill.Invoice) *Inv {
 		}
 
 		for _, rate := range cat.Rates {
-			if rate.Percent != nil {
-				if rate.Key == tax.RateStandard {
-					Inv.StandardRateNetSale = rate.Base.Rescale(cu).String()
-					Inv.StandardRateTax = rate.Amount.Rescale(cu).String()
-				} else if rate.Key == tax.RateReduced {
-					Inv.ReducedRateNetSale = rate.Base.Rescale(cu).String()
-					Inv.ReducedRateTax = rate.Amount.Rescale(cu).String()
-				} else if rate.Key == tax.RateSuperReduced {
-					Inv.SuperReducedRateNetSale = rate.Base.Rescale(cu).String()
-					Inv.SuperReducedRateTax = rate.Amount.Rescale(cu).String()
-				}
-			}
+			setTaxRate(Inv, rate, cu)
 		}
 	}
 
@@ -142,4 +131,56 @@ func invoiceNumber(series string, code string) string {
 		return code
 	}
 	return series + "-" + code
+}
+
+func setTaxRate(inv *Inv, rate *tax.RateTotal, cu uint32) {
+	if rate.Percent == nil {
+		return
+	}
+
+	base := rate.Base.Rescale(cu).String()
+	taxAmount := rate.Amount.Rescale(cu).String()
+
+	switch rate.Key {
+	case tax.RateStandard:
+		inv.StandardRateNetSale = base
+		inv.StandardRateTax = taxAmount
+	case tax.RateReduced:
+		inv.ReducedRateNetSale = base
+		inv.ReducedRateTax = taxAmount
+	case tax.RateSuperReduced:
+		inv.SuperReducedRateNetSale = base
+		inv.SuperReducedRateTax = taxAmount
+	case tax.RateSpecial:
+		if rate.Ext.Has(pl.ExtKeyKSeFVATSpecial) && rate.Ext[pl.ExtKeyKSeFVATSpecial].String() == "taxi" {
+			inv.TaxiRateNetSale = base
+			inv.TaxiRateTax = taxAmount
+		}
+	case tax.RateZero:
+		if !rate.Ext.Has(pl.ExtKeyKSeFVATRegion) {
+			return
+		}
+
+		switch rate.Ext[pl.ExtKeyKSeFVATRegion].String() {
+		case "domestic":
+			inv.DomesticZeroTaxNetSale = base
+		case "EU":
+			inv.EUZeroTaxNetSale = base
+		case "non-EU":
+			inv.ExportNetSale = base
+		}
+	case tax.RateExempt:
+		inv.TaxExemptNetSale = base
+	case pl.TaxRateNotPursuant:
+		if !rate.Ext.Has(pl.ExtKeyKSeFVATRegion) {
+			return
+		}
+
+		switch rate.Ext[pl.ExtKeyKSeFVATRegion].String() {
+		case "EU":
+			inv.TaxNAEUNetSale = base
+		case "non-EU":
+			inv.TaxNAInternationalNetSale = base
+		}
+	}
 }
