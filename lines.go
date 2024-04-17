@@ -3,6 +3,8 @@ package ksef
 import (
 	"github.com/invopop/gobl/bill"
 	"github.com/invopop/gobl/num"
+	"github.com/invopop/gobl/regimes/pl"
+	"github.com/invopop/gobl/tax"
 )
 
 // Line defines the XML structure for KSeF item line
@@ -32,10 +34,25 @@ func newLine(line *bill.Line) *Line {
 		Quantity:      line.Quantity.String(),
 		UnitDiscount:  unitDiscount(line),
 		NetPriceTotal: line.Total.String(),
-		TaxRate:       line.Taxes[0].Percent.Rescale(2).StringWithoutSymbol(),
+		TaxRate:       newTaxRate(line.Taxes.Get(tax.CategoryVAT)),
 	}
 
 	return Line
+}
+
+// newTaxRate returns tax rate as string value with one of the values:
+// "23", "22", "8", "7", "5", "4", "3", "0", "np", "zw"
+func newTaxRate(t *tax.Combo) string {
+	switch t.Rate {
+	case tax.RateZero:
+		return "0"
+	case tax.RateExempt:
+		return "zw"
+	case pl.TaxRateNotPursuant:
+		return "np"
+	default:
+		return t.Percent.Rescale(2).StringWithoutSymbol()
+	}
 }
 
 func unitDiscount(line *bill.Line) string {
