@@ -30,11 +30,11 @@ type ContactDetails struct {
 type Buyer struct {
 	NIP string `xml:"DaneIdentyfikacyjne>NIP,omitempty"`
 	// or
-	UECode      string `xml:"DaneIdentyfikacyjne>KodUE,omitempty"` //TODO
+	UECode      string `xml:"DaneIdentyfikacyjne>KodUE,omitempty"`
 	UEVatNumber string `xml:"DaneIdentyfikacyjne>NrVatUE,omitempty"`
 	// or
 	CountryCode string `xml:"DaneIdentyfikacyjne>KodKraju,omitempty"`
-	IDNumber    string `xml:"DaneIdentyfikacyjne>NrId,omitempty"`
+	IDNumber    string `xml:"DaneIdentyfikacyjne>NrID,omitempty"`
 	// or
 	NoID int `xml:"DaneIdentyfikacyjne>BrakID,omitempty"`
 
@@ -94,20 +94,19 @@ func NewBuyer(customer *org.Party) *Buyer {
 
 	buyer := &Buyer{
 		Name: customer.Name,
-		NIP:  string(customer.TaxID.Code),
 	}
 
-	if customer.TaxID.Country == l10n.PL {
+	if len(customer.TaxID.Code) == 0 {
+		buyer.NoID = 1
+	} else if customer.TaxID.Country == l10n.PL {
 		buyer.NIP = string(customer.TaxID.Code)
+	} else if isEUCountry(customer.TaxID.Country) {
+		buyer.UEVatNumber = string(customer.TaxID.Code)
+		buyer.UECode = string(customer.TaxID.Country)
 	} else {
-		if len(customer.TaxID.Code) > 0 {
-			buyer.IDNumber = string(customer.TaxID.Code)
-			buyer.CountryCode = string(customer.TaxID.Country)
-		} else {
-			buyer.NoID = 1
-		}
+		buyer.IDNumber = string(customer.TaxID.Code)
+		buyer.CountryCode = string(customer.TaxID.Country)
 	}
-	// TODO NrVatUE and UECode if applicable
 
 	if len(customer.Addresses) > 0 {
 		buyer.Address = newAddress(customer.Addresses[0])
@@ -126,6 +125,50 @@ func NewBuyer(customer *org.Party) *Buyer {
 	}
 
 	return buyer
+}
+
+func EUCountries() []l10n.CountryCode {
+	return []l10n.CountryCode{
+		l10n.AT, // Austria,
+		l10n.BE, // Belgium,
+		l10n.BG, // Bulgaria,
+		l10n.HR, // Croatia,
+		l10n.CY, // Republic of Cyprus,
+		l10n.CZ, // Czech Republic,
+		l10n.DK, // Denmark,
+		l10n.EE, // Estonia,
+		l10n.FI, // Finland,
+		l10n.FR, // France,
+		l10n.DE, // Germany,
+		l10n.GR, // Greece,
+		l10n.HU, // Hungary,
+		l10n.IE, // Ireland,
+		l10n.IT, // Italy,
+		l10n.LV, // Latvia,
+		l10n.LT, // Lithuania,
+		l10n.LU, // Luxembourg,
+		l10n.MT, // Malta,
+		l10n.NL, // Netherlands,
+		l10n.PT, // Portugal,
+		l10n.RO, // Romania,
+		l10n.SK, // Slovakia,
+		l10n.SL, // Slovenia,
+		l10n.ES, // Spain,
+		l10n.SE, // Sweden
+	}
+}
+
+func isEUCountry(country l10n.CountryCode) bool {
+	return contains(EUCountries(), country)
+}
+
+func contains(slice []l10n.CountryCode, item l10n.CountryCode) bool {
+	for _, value := range slice {
+		if value == item {
+			return true
+		}
+	}
+	return false
 }
 
 func addressLine1(address *org.Address) string {
