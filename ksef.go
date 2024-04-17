@@ -37,6 +37,14 @@ func NewDocument(env *gobl.Envelope) (*Invoice, error) {
 		return nil, fmt.Errorf("invalid type %T", env.Document)
 	}
 
+	// Invert if we're dealing with a credit note
+	if inv.Type == bill.InvoiceTypeCreditNote {
+		inv.Invert()
+		if err := inv.Calculate(); err != nil {
+			return nil, fmt.Errorf("inverting invoice: %w", err)
+		}
+	}
+
 	invoice := &Invoice{
 		XMLName:      xml.Name{Local: RootElementName},
 		XSINamespace: XSINamespace,
