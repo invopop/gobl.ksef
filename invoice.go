@@ -78,7 +78,7 @@ func newAnnotations(inv *bill.Invoice) *Annotations {
 		NoMarginProcedures:                  1,
 	}
 
-	if slices.Contains(inv.Tax.Tags, tax.TagReverseCharge) {
+	if inv.Tax != nil && slices.Contains(inv.Tax.Tags, tax.TagReverseCharge) {
 		Annotations.ReverseCharge = 1
 	}
 
