@@ -3,7 +3,6 @@ package api
 import (
 	"context"
 	"encoding/xml"
-	"errors"
 )
 
 // SessionStatusByReferenceResponse defines the response of the session status
@@ -39,19 +38,16 @@ type TerminateSessionResponse struct {
 // TerminateSession ends the current session
 func TerminateSession(ctx context.Context, s *Client) (*TerminateSessionResponse, error) {
 	response := &TerminateSessionResponse{}
-	var errorResponse ErrorResponse
 	resp, err := s.Client.R().
 		SetResult(response).
-		SetError(&errorResponse).
 		SetContext(ctx).
 		SetHeader("SessionToken", s.SessionToken).
 		Get(s.URL + "/api/online/Session/Terminate")
-
 	if err != nil {
 		return nil, err
 	}
 	if resp.IsError() {
-		return nil, errors.New(errorResponse.Exception.ExceptionDetailList[0].ExceptionDescription)
+		return nil, newErrorResponse(resp)
 	}
 
 	return response, nil
@@ -60,19 +56,16 @@ func TerminateSession(ctx context.Context, s *Client) (*TerminateSessionResponse
 // GetSessionStatus gets the session status of the current session
 func GetSessionStatus(ctx context.Context, c *Client) (*SessionStatusResponse, error) {
 	response := &SessionStatusResponse{}
-	var errorResponse ErrorResponse
 	resp, err := c.Client.R().
 		SetResult(response).
-		SetError(&errorResponse).
 		SetContext(ctx).
 		SetHeader("SessionToken", c.SessionToken).
 		Get(c.URL + "/api/online/Session/Status")
-
 	if err != nil {
 		return nil, err
 	}
 	if resp.IsError() {
-		return nil, errors.New(errorResponse.Exception.ExceptionDetailList[0].ExceptionDescription)
+		return nil, newErrorResponse(resp)
 	}
 
 	return response, nil
@@ -81,18 +74,15 @@ func GetSessionStatus(ctx context.Context, c *Client) (*SessionStatusResponse, e
 // GetSessionStatusByReference gets the session status by reference number
 func GetSessionStatusByReference(ctx context.Context, c *Client) (*SessionStatusByReferenceResponse, error) {
 	response := &SessionStatusByReferenceResponse{}
-	var errorResponse ErrorResponse
 	resp, err := c.Client.R().
 		SetResult(response).
-		SetError(&errorResponse).
 		SetContext(ctx).
 		Get(c.URL + "/api/common/Status/" + c.SessionReference)
-
 	if err != nil {
 		return nil, err
 	}
 	if resp.IsError() {
-		return nil, errors.New(errorResponse.Exception.ExceptionDetailList[0].ExceptionDescription)
+		return nil, newErrorResponse(resp)
 	}
 
 	return response, nil

@@ -4,7 +4,6 @@ import (
 	"context"
 	"crypto/sha256"
 	"encoding/base64"
-	"errors"
 )
 
 // InvoiceStatusResponse defines the post invocie response structure
@@ -74,10 +73,8 @@ func SendInvoice(ctx context.Context, c *Client, data []byte) (*SendInvoiceRespo
 		},
 	}
 	response := &SendInvoiceResponse{}
-	var errorResponse ErrorResponse
 	resp, err := c.Client.R().
 		SetResult(&response).
-		SetError(&errorResponse).
 		SetBody(request).
 		SetContext(ctx).
 		SetHeader("Content-Type", "application/json").
@@ -87,18 +84,17 @@ func SendInvoice(ctx context.Context, c *Client, data []byte) (*SendInvoiceRespo
 		return nil, err
 	}
 	if resp.IsError() {
-		return nil, errors.New(errorResponse.Exception.ExceptionDetailList[0].ExceptionDescription)
+		return nil, newErrorResponse(resp)
 	}
+
 	return response, nil
 }
 
 // FetchInvoiceStatus gets the status of the invoice being processed
 func FetchInvoiceStatus(ctx context.Context, c *Client, referenceNumber string) (*InvoiceStatusResponse, error) {
 	response := &InvoiceStatusResponse{}
-	var errorResponse ErrorResponse
 	resp, err := c.Client.R().
 		SetResult(response).
-		SetError(&errorResponse).
 		SetHeader("SessionToken", c.SessionToken).
 		SetContext(ctx).
 		Get(c.URL + "/api/online/Invoice/Status/" + referenceNumber)
@@ -106,7 +102,7 @@ func FetchInvoiceStatus(ctx context.Context, c *Client, referenceNumber string) 
 		return nil, err
 	}
 	if resp.IsError() {
-		return nil, errors.New(errorResponse.Exception.ExceptionDetailList[0].ExceptionDescription)
+		return nil, newErrorResponse(resp)
 	}
 
 	return response, nil

@@ -4,7 +4,6 @@ import (
 	"context"
 	"encoding/base64"
 	"encoding/xml"
-	"errors"
 )
 
 // InitSessionTokenResponse defines the token session initialization response structure
@@ -90,7 +89,6 @@ const (
 
 func initTokenSession(ctx context.Context, c *Client, token []byte, challenge string) (*InitSessionTokenResponse, error) {
 	response := &InitSessionTokenResponse{}
-	var errorResponse ErrorResponse
 
 	request := &InitSessionTokenRequest{
 		XMLNamespace:  XMLNamespace,
@@ -120,17 +118,16 @@ func initTokenSession(ctx context.Context, c *Client, token []byte, challenge st
 
 	resp, err := c.Client.R().
 		SetResult(response).
-		SetError(&errorResponse).
 		SetBody(bytes).
 		SetContext(ctx).
 		SetHeader("Content-Type", "application/octet-stream; charset=utf-8").
 		Post(c.URL + "/api/online/Session/InitToken")
-
 	if err != nil {
 		return nil, err
 	}
 	if resp.IsError() {
-		return nil, errors.New(errorResponse.Exception.ExceptionDetailList[0].ExceptionDescription)
+		return nil, newErrorResponse(resp)
 	}
+
 	return response, nil
 }

@@ -2,7 +2,6 @@ package api
 
 import (
 	"context"
-	"errors"
 	"time"
 )
 
@@ -25,7 +24,6 @@ type ContextIdentifier struct {
 
 func fetchChallenge(ctx context.Context, c *Client) (*AuthorisationChallengeResponse, error) {
 	response := &AuthorisationChallengeResponse{}
-	var errorResponse ErrorResponse
 
 	request := &AuthorisationChallengeRequest{
 		ContextIdentifier: &ContextIdentifier{
@@ -43,7 +41,8 @@ func fetchChallenge(ctx context.Context, c *Client) (*AuthorisationChallengeResp
 		return nil, err
 	}
 	if resp.IsError() {
-		return nil, errors.New(errorResponse.Exception.ExceptionDetailList[0].ExceptionDescription)
+		return nil, newErrorResponse(resp)
 	}
+
 	return response, nil
 }
