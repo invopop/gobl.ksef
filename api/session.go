@@ -24,6 +24,12 @@ type SessionStatusResponse struct {
 	PageSize              int    `json:"pageSize"`
 	PageOffset            int    `json:"pageOffset"`
 	InvoiceStatusList     []struct {
+		AcquisitionTimestamp   string `json:"acquisitionTimestamp"`
+		ElementReferenceNumber string `json:"elementReferenceNumber"`
+		InvoiceNumber          string `json:"invoiceNumber"`
+		KSefReferenceNumber    string `json:"ksefReferenceNumber"`
+		ProcessingCode         int    `json:"processingCode"`
+		ProcessingDescription  string `json:"processingDescription"`
 	} `json:"invoiceStatusList"`
 }
 
