@@ -5,8 +5,15 @@ import (
 	"slices"
 
 	"github.com/invopop/gobl/bill"
+	"github.com/invopop/gobl/l10n"
 	"github.com/invopop/gobl/regimes/pl"
 	"github.com/invopop/gobl/tax"
+)
+
+const (
+	regionDomestic = "domestic"
+	regionEU       = "EU"
+	regionNonEU    = "non-EU"
 )
 
 // Inv defines the XML structure for KSeF invoice
@@ -113,13 +120,16 @@ func NewInv(inv *bill.Invoice) *Inv {
 	if inv.OperationDate != nil {
 		Inv.CompletionDate = inv.OperationDate.String()
 	}
+
+	reg := region(inv)
+
 	for _, cat := range inv.Totals.Taxes.Categories {
 		if cat.Code != tax.CategoryVAT {
 			continue
 		}
 
 		for _, rate := range cat.Rates {
-			setTaxRate(Inv, rate, cu)
+			setTaxRate(Inv, rate, cu, reg)
 		}
 	}
 
@@ -133,7 +143,7 @@ func invoiceNumber(series string, code string) string {
 	return series + "-" + code
 }
 
-func setTaxRate(inv *Inv, rate *tax.RateTotal, cu uint32) {
+func setTaxRate(inv *Inv, rate *tax.RateTotal, cu uint32, region string) {
 	if rate.Percent == nil {
 		return
 	}
@@ -157,30 +167,35 @@ func setTaxRate(inv *Inv, rate *tax.RateTotal, cu uint32) {
 			inv.TaxiRateTax = taxAmount
 		}
 	case tax.RateZero:
-		if !rate.Ext.Has(pl.ExtKeyKSeFVATRegion) {
-			return
-		}
-
-		switch rate.Ext[pl.ExtKeyKSeFVATRegion].String() {
-		case "domestic":
+		switch region {
+		case regionDomestic:
 			inv.DomesticZeroTaxNetSale = base
-		case "EU":
+		case regionEU:
 			inv.EUZeroTaxNetSale = base
-		case "non-EU":
+		case regionNonEU:
 			inv.ExportNetSale = base
 		}
 	case tax.RateExempt:
 		inv.TaxExemptNetSale = base
 	case pl.TaxRateNotPursuant:
-		if !rate.Ext.Has(pl.ExtKeyKSeFVATRegion) {
-			return
-		}
-
-		switch rate.Ext[pl.ExtKeyKSeFVATRegion].String() {
-		case "EU":
+		switch region {
+		case regionEU:
 			inv.TaxNAEUNetSale = base
-		case "non-EU":
+		case regionNonEU:
 			inv.TaxNAInternationalNetSale = base
 		}
 	}
+}
+
+func region(inv *bill.Invoice) string {
+	if inv.Supplier == nil || inv.Customer == nil || inv.Supplier.TaxID == nil || inv.Customer.TaxID == nil {
+		return regionDomestic
+	}
+	if isEUCountry(inv.Supplier.TaxID.Country) || isEUCountry(inv.Customer.TaxID.Country) {
+		return regionEU
+	}
+	if inv.Supplier.TaxID.Country != l10n.PL || inv.Customer.TaxID.Country != l10n.PL {
+		return regionNonEU
+	}
+	return regionDomestic
 }
