@@ -1,0 +1,102 @@
+{
+	"$schema": "https://gobl.org/draft-0/envelope",
+	"head": {
+		"uuid": "d9fbc8bc-89fe-11ee-80f4-92dde50d70fc",
+		"dig": {
+			"alg": "sha256",
+			"val": "a88d6b5523cbad826bf6aaacc31cc2a37ec02c403215c3c378d8e727d9abd463"
+		},
+		"draft": true
+	},
+	"doc": {
+		"$schema": "https://gobl.org/draft-0/bill/invoice",
+		"type": "standard",
+		"series": "SAMPLE",
+		"code": "001",
+		"issue_date": "2023-12-20",
+		"currency": "PLN",
+		"supplier": {
+			"name": "Provide One S.L.",
+			"tax_id": {
+				"country": "PL",
+				"code": "1234567788"
+			},
+			"addresses": [
+				{
+					"num": "42",
+					"street": "Calle Pradillo",
+					"locality": "Madrid",
+					"region": "Madrid",
+					"code": "00-015",
+					"country": "PL"
+				}
+			],
+			"emails": [
+				{
+					"addr": "billing@example.com"
+				}
+			]
+		},
+		"customer": {
+			"name": "Sample Consumer",
+			"tax_id": {
+				"country": "PL",
+				"code": "1234567788"
+			},
+			"addresses": [
+				{
+					"num": "43",
+					"street": "Calle Pradillo",
+					"locality": "Madrid",
+					"region": "Madrid",
+					"code": "00-015",
+					"country": "PL"
+				}
+			]
+		},
+		"lines": [
+			{
+				"i": 1,
+				"quantity": "1",
+				"item": {
+					"name": "Taxi service",
+					"price": "50.00",
+					"unit": "h"
+				},
+				"sum": "50.00",
+				"taxes": [
+					{
+						"cat": "VAT",
+						"rate": "special",
+						"percent": "4.0%"
+					}
+				],
+				"total": "50.00"
+			}
+		],
+		"totals": {
+			"sum": "50.00",
+			"total": "50.00",
+			"taxes": {
+				"categories": [
+					{
+						"code": "VAT",
+						"rates": [
+							{
+								"key": "special",
+								"base": "50.00",
+								"percent": "4.0%",
+								"amount": "2.00"
+							}
+						],
+						"amount": "2.00"
+					}
+				],
+				"sum": "2.00"
+			},
+			"tax": "2.00",
+			"total_with_tax": "52.00",
+			"payable": "52.00"
+		}
+	}
+}

@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Faktura xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns="http://crd.gov.pl/wzor/2023/06/29/12648/">
+  <Naglowek>
+    <KodFormularza kodSystemowy="FA (2)" wersjaSchemy="1-0E">FA</KodFormularza>
+    <WariantFormularza>2</WariantFormularza>
+    <DataWytworzeniaFa>2024-04-10T00:00:00Z</DataWytworzeniaFa>
+    <SystemInfo>GOBL.KSEF</SystemInfo>
+  </Naglowek>
+  <Podmiot1>
+    <DaneIdentyfikacyjne>
+      <NIP>5482686629</NIP>
+      <Nazwa>FRACTAL SOFT SP. Z O.O.</Nazwa>
+    </DaneIdentyfikacyjne>
+    <Adres>
+      <KodKraju>PL</KodKraju>
+      <AdresL1>ul. TRZECH BRACI, 3/1</AdresL1>
+      <AdresL2>43-400, CIESZYN</AdresL2>
+    </Adres>
+    <DaneKontaktowe>
+      <Email>ksef@fractalsoft.org</Email>
+    </DaneKontaktowe>
+  </Podmiot1>
+  <Podmiot2>
+    <DaneIdentyfikacyjne>
+      <KodUE>ES</KodUE>
+      <NrVatUE>B85905495</NrVatUE>
+      <Nazwa>Invopop S.L.</Nazwa>
+    </DaneIdentyfikacyjne>
+    <Adres>
+      <KodKraju>ES</KodKraju>
+      <AdresL1>C. de Pradillo, 42</AdresL1>
+      <AdresL2>28002, Madrid</AdresL2>
+    </Adres>
+  </Podmiot2>
+  <Fa>
+    <KodWaluty>PLN</KodWaluty>
+    <P_1>2024-04-10</P_1>
+    <P_2>2/04/2024</P_2>
+    <P_15>-1.00</P_15>
+    <Adnotacje>
+      <P_16>2</P_16>
+      <P_17>2</P_17>
+      <P_18>2</P_18>
+      <P_18A>2</P_18A>
+      <Zwolnienie>
+        <P_19N>1</P_19N>
+      </Zwolnienie>
+      <NoweSrodkiTransportu>
+        <P_22N>1</P_22N>
+      </NoweSrodkiTransportu>
+      <P_23>2</P_23>
+      <PMarzy>
+        <P_PMarzyN>1</P_PMarzyN>
+      </PMarzy>
+    </Adnotacje>
+    <RodzajFaktury>KOR</RodzajFaktury>
+    <PrzyczynaKorekty>Wycofanie faktury</PrzyczynaKorekty>
+    <TypKorekty>1</TypKorekty>
+    <DaneFaKorygowanej>
+      <DataWystFaKorygowanej>2024-04-10</DataWystFaKorygowanej>
+      <NrFaKorygowanej>1/04/2024</NrFaKorygowanej>
+      <NrKSeF>1</NrKSeF>
+      <NrKSeFFaKorygowanej>5482686629-20240415-85E2CCF5E3BC-E2</NrKSeFFaKorygowanej>
+    </DaneFaKorygowanej>
+    <FaWiersz>
+      <NrWierszaFa>1</NrWierszaFa>
+      <P_7>Rozwój oprogramowania / Software Development</P_7>
+      <P_8B>-1</P_8B>
+      <P_9A>1.00</P_9A>
+      <P_11>-1.00</P_11>
+      <P_12>np</P_12>
+    </FaWiersz>
+  </Fa>
+</Faktura>
