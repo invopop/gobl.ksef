@@ -43,6 +43,10 @@ func newLine(line *bill.Line) *Line {
 // newTaxRate returns tax rate as string value with one of the values:
 // "23", "22", "8", "7", "5", "4", "3", "0", "np", "zw"
 func newTaxRate(t *tax.Combo) string {
+	if t == nil {
+		return ""
+	}
+
 	switch t.Rate {
 	case tax.RateZero:
 		return "0"
