@@ -127,6 +127,7 @@ func NewBuyer(customer *org.Party) *Buyer {
 	return buyer
 }
 
+// EUCountries list of current EU coutries
 func EUCountries() []l10n.CountryCode {
 	return []l10n.CountryCode{
 		l10n.AT, // Austria,
