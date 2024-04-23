@@ -1,0 +1,110 @@
+{
+	"$schema": "https://gobl.org/draft-0/envelope",
+	"head": {
+		"uuid": "d9fbc8bc-89fe-11ee-80f4-92dde50d70fc",
+		"dig": {
+			"alg": "sha256",
+			"val": "a88d6b5523cbad826bf6aaacc31cc2a37ec02c403215c3c378d8e727d9abd463"
+		},
+		"draft": true
+	},
+	"doc": {
+		"$schema": "https://gobl.org/draft-0/bill/invoice",
+		"type": "standard",
+		"series": "SAMPLE",
+		"code": "001",
+		"issue_date": "2023-12-20",
+		"currency": "PLN",
+    "tax": {
+			"tags": [
+				"reverse-charge"
+			]
+		},
+		"supplier": {
+			"name": "Provide One S.L.",
+			"tax_id": {
+				"country": "ES",
+				"code": "B85905495"
+			},
+			"addresses": [
+				{
+					"num": "42",
+					"street": "Calle Pradillo",
+					"locality": "Madrid",
+					"region": "Madrid",
+					"code": "00-015",
+					"country": "ES"
+				}
+			],
+			"emails": [
+				{
+					"addr": "billing@example.com"
+				}
+			]
+		},
+		"customer": {
+			"name": "Sample Consumer",
+			"tax_id": {
+				"country": "PL",
+				"code": "1234567788"
+			},
+			"addresses": [
+				{
+					"num": "43",
+					"street": "Calle Pradillo",
+					"locality": "Madrid",
+					"region": "Madrid",
+					"code": "00-015",
+					"country": "PL"
+				}
+			]
+		},
+		"lines": [
+			{
+				"i": 1,
+				"quantity": "1",
+				"item": {
+					"name": "WDT",
+					"price": "50.00",
+					"unit": "trip"
+				},
+				"sum": "50.00",
+				"taxes": [
+					{
+						"cat": "VAT",
+						"rate": "np",
+						"percent": "0.0%",
+						"ext": {
+							"pl-ksef-vat-region": "EU"
+						}
+					}
+				],
+				"total": "50.00"
+			}
+		],
+		"totals": {
+			"sum": "50.00",
+			"total": "50.00",
+			"taxes": {
+				"categories": [
+					{
+						"code": "VAT",
+						"rates": [
+							{
+								"key": "np",
+								"base": "50.00",
+								"percent": "0.0%",
+								"amount": "0.00"
+							}
+						],
+						"amount": "0.00"
+					}
+				],
+				"sum": "0.00"
+			},
+			"tax": "0.00",
+			"total_with_tax": "50.00",
+			"payable": "50.00"
+		}
+	}
+}

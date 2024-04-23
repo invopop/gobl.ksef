@@ -3,12 +3,12 @@
   <Naglowek>
     <KodFormularza kodSystemowy="FA (2)" wersjaSchemy="1-0E">FA</KodFormularza>
     <WariantFormularza>2</WariantFormularza>
-    <DataWytworzeniaFa>2023-12-21T00:00:00Z</DataWytworzeniaFa>
+    <DataWytworzeniaFa>2023-12-20T00:00:00Z</DataWytworzeniaFa>
     <SystemInfo>GOBL.KSEF</SystemInfo>
   </Naglowek>
   <Podmiot1>
     <DaneIdentyfikacyjne>
-      <NIP>9876543210</NIP>
+      <NIP>1234567788</NIP>
       <Nazwa>Provide One S.L.</Nazwa>
     </DaneIdentyfikacyjne>
     <Adres>
@@ -33,11 +33,9 @@
   </Podmiot2>
   <Fa>
     <KodWaluty>PLN</KodWaluty>
-    <P_1>2023-12-21</P_1>
-    <P_2>CN-002</P_2>
-    <P_13_1>-200.00</P_13_1>
-    <P_14_1>-46.00</P_14_1>
-    <P_15>-246.00</P_15>
+    <P_1>2023-12-20</P_1>
+    <P_2>SAMPLE-001</P_2>
+    <P_15>50.00</P_15>
     <Adnotacje>
       <P_16>2</P_16>
       <P_17>2</P_17>
@@ -54,23 +52,15 @@
         <P_PMarzyN>1</P_PMarzyN>
       </PMarzy>
     </Adnotacje>
-    <RodzajFaktury>KOR</RodzajFaktury>
-    <PrzyczynaKorekty>Special Discount</PrzyczynaKorekty>
-    <TypKorekty>2</TypKorekty>
-    <DaneFaKorygowanej>
-      <DataWystFaKorygowanej>2023-12-20</DataWystFaKorygowanej>
-      <NrFaKorygowanej>SAMPLE-001</NrFaKorygowanej>
-      <NrKSeF>1</NrKSeF>
-      <NrKSeFFaKorygowanej>9876543210-20231220-107FDF72DB53-F7</NrKSeFFaKorygowanej>
-    </DaneFaKorygowanej>
+    <RodzajFaktury>VAT</RodzajFaktury>
     <FaWiersz>
       <NrWierszaFa>1</NrWierszaFa>
-      <P_7>Development services</P_7>
-      <P_8A>HUR</P_8A>
-      <P_8B>-20</P_8B>
-      <P_9A>10.00</P_9A>
-      <P_11>-200.00</P_11>
-      <P_12>23</P_12>
+      <P_7>specific caeses of export</P_7>
+      <P_8A>E54</P_8A>
+      <P_8B>1</P_8B>
+      <P_9A>50.00</P_9A>
+      <P_11>50.00</P_11>
+      <P_12>0</P_12>
     </FaWiersz>
   </Fa>
 </Faktura>

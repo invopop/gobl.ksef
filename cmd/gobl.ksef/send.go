@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"io"
 	"os"
+	"regexp"
 	"time"
 
 	"github.com/invopop/gobl"
@@ -60,6 +61,7 @@ func (c *sendOpts) runE(cmd *cobra.Command, args []string) error {
 		ksef_api.WithID(nip),
 		ksef_api.WithToken(token),
 		ksef_api.WithKeyPath(keyPath),
+		ksef_api.WithDebugClient(),
 	)
 
 	env, err := SendInvoice(client, data)
@@ -191,7 +193,14 @@ func saveFile(name string, data []byte) error {
 
 func filename(inv *bill.Invoice) string {
 	if inv.Series != "" {
-		return inv.Series + "-" + inv.Code + ".xml"
+		return sanitizeFilename(inv.Series + "_" + inv.Code + ".xml")
 	}
-	return inv.Code + ".xml"
+	return sanitizeFilename(inv.Code + ".xml")
+}
+
+func sanitizeFilename(filename string) string {
+	re := regexp.MustCompile(`[^\w\.-]`)
+	sanitized := re.ReplaceAllString(filename, "_")
+
+	return sanitized
 }
