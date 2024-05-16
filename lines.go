@@ -3,6 +3,7 @@ package ksef
 import (
 	"github.com/invopop/gobl/bill"
 	"github.com/invopop/gobl/num"
+	"github.com/invopop/gobl/tax"
 )
 
 // Line defines the XML structure for KSeF item line
@@ -14,7 +15,7 @@ type Line struct {
 	NetUnitPrice            string `xml:"P_9A,omitempty"`
 	UnitDiscount            string `xml:"P_10,omitempty"`
 	NetPriceTotal           string `xml:"P_11,omitempty"`
-	TaxRate                 string `xml:"P_12,omitempty"`
+	VATRate                 string `xml:"P_12,omitempty"`
 	ExciseDuty              string `xml:"KwotaAkcyzy,omitempty"`
 	SpecialGoodsCode        string `xml:"GTU,omitempty"` // values GTU_1 to GTU_13
 	OSSTaxRate              string `xml:"P_12_XII,omitempty"`
@@ -24,7 +25,7 @@ type Line struct {
 }
 
 func newLine(line *bill.Line) *Line {
-	Line := &Line{
+	l := &Line{
 		LineNumber:    line.Index,
 		Name:          line.Item.Name,
 		Measure:       string(line.Item.Unit.UNECE()),
@@ -32,10 +33,14 @@ func newLine(line *bill.Line) *Line {
 		Quantity:      line.Quantity.String(),
 		UnitDiscount:  unitDiscount(line),
 		NetPriceTotal: line.Total.String(),
-		TaxRate:       line.Taxes[0].Percent.Rescale(2).StringWithoutSymbol(),
+	}
+	if tc := line.Taxes.Get(tax.CategoryVAT); tc != nil {
+		if tc.Percent != nil {
+			l.VATRate = tc.Percent.Rescale(2).StringWithoutSymbol()
+		}
 	}
 
-	return Line
+	return l
 }
 
 func unitDiscount(line *bill.Line) string {
