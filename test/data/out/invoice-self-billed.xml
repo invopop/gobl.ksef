@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Faktura xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns="http://crd.gov.pl/wzor/2023/06/29/12648/">
+  <Naglowek>
+    <KodFormularza kodSystemowy="FA (2)" wersjaSchemy="1-0E">FA</KodFormularza>
+    <WariantFormularza>2</WariantFormularza>
+    <DataWytworzeniaFa>2023-12-20T00:00:00Z</DataWytworzeniaFa>
+    <SystemInfo>GOBL.KSEF</SystemInfo>
+  </Naglowek>
+  <Podmiot1>
+    <DaneIdentyfikacyjne>
+      <NIP>1234567788</NIP>
+      <Nazwa>Provide One S.L.</Nazwa>
+    </DaneIdentyfikacyjne>
+    <Adres>
+      <KodKraju>PL</KodKraju>
+      <AdresL1>Calle Pradillo, 42</AdresL1>
+      <AdresL2>00-015, Madrid</AdresL2>
+    </Adres>
+    <DaneKontaktowe>
+      <Email>billing@example.com</Email>
+    </DaneKontaktowe>
+  </Podmiot1>
+  <Podmiot2>
+    <DaneIdentyfikacyjne>
+      <NIP>1234567788</NIP>
+      <Nazwa>Sample Consumer</Nazwa>
+    </DaneIdentyfikacyjne>
+    <Adres>
+      <KodKraju>PL</KodKraju>
+      <AdresL1>Calle Pradillo, 43</AdresL1>
+      <AdresL2>00-015, Madrid</AdresL2>
+    </Adres>
+  </Podmiot2>
+  <Fa>
+    <KodWaluty>PLN</KodWaluty>
+    <P_1>2023-12-20</P_1>
+    <P_2>SAMPLE-001</P_2>
+    <P_13_1>1800.00</P_13_1>
+    <P_14_1>414.00</P_14_1>
+    <P_13_2>10.00</P_13_2>
+    <P_14_2>0.80</P_14_2>
+    <P_15>2224.80</P_15>
+    <Adnotacje>
+      <P_16>2</P_16>
+      <P_17>1</P_17>
+      <P_18>2</P_18>
+      <P_18A>2</P_18A>
+      <Zwolnienie>
+        <P_19N>1</P_19N>
+      </Zwolnienie>
+      <NoweSrodkiTransportu>
+        <P_22N>1</P_22N>
+      </NoweSrodkiTransportu>
+      <P_23>2</P_23>
+      <PMarzy>
+        <P_PMarzyN>1</P_PMarzyN>
+      </PMarzy>
+    </Adnotacje>
+    <RodzajFaktury>VAT</RodzajFaktury>
+    <FaWiersz>
+      <NrWierszaFa>1</NrWierszaFa>
+      <P_7>Development services</P_7>
+      <P_8A>HUR</P_8A>
+      <P_8B>20</P_8B>
+      <P_9A>90.00</P_9A>
+      <P_11>1800.00</P_11>
+      <P_12>23</P_12>
+    </FaWiersz>
+    <FaWiersz>
+      <NrWierszaFa>2</NrWierszaFa>
+      <P_7>Financial service</P_7>
+      <P_8A>E48</P_8A>
+      <P_8B>1</P_8B>
+      <P_9A>10.00</P_9A>
+      <P_11>10.00</P_11>
+      <P_12>8</P_12>
+    </FaWiersz>
+  </Fa>
+</Faktura>

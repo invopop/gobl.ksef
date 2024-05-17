@@ -5,6 +5,7 @@ import (
 
 	ksef "github.com/invopop/gobl.ksef"
 	"github.com/invopop/gobl/bill"
+	"github.com/invopop/gobl/cbc"
 	"github.com/invopop/gobl/currency"
 	"github.com/invopop/gobl/l10n"
 	"github.com/invopop/gobl/org"
@@ -83,5 +84,43 @@ func TestNewInv(t *testing.T) {
 		invoice := ksef.NewInv(inv)
 
 		assert.Equal(t, "1", invoice.CorrectionType)
+	})
+
+	t.Run("sets the self-billing annotation to false in non-self-billed invoices", func(t *testing.T) {
+		inv := &bill.Invoice{
+			Currency: currency.PLN,
+			Supplier: &org.Party{
+				TaxID: &tax.Identity{
+					Country: l10n.PL,
+				},
+			},
+			Totals: &bill.Totals{
+				Taxes: &tax.Total{},
+			},
+		}
+
+		invoice := ksef.NewInv(inv)
+
+		assert.Equal(t, 2, invoice.Annotations.SelfBilling)
+	})
+	t.Run("sets the self-billing annotation to true in self-billed invoices", func(t *testing.T) {
+		inv := &bill.Invoice{
+			Currency: currency.PLN,
+			Supplier: &org.Party{
+				TaxID: &tax.Identity{
+					Country: l10n.PL,
+				},
+			},
+			Tax: &bill.Tax{
+				Tags: []cbc.Key{tax.TagSelfBilled},
+			},
+			Totals: &bill.Totals{
+				Taxes: &tax.Total{},
+			},
+		}
+
+		invoice := ksef.NewInv(inv)
+
+		assert.Equal(t, 1, invoice.Annotations.SelfBilling)
 	})
 }
