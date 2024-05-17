@@ -91,6 +91,10 @@ func NewInv(inv *bill.Invoice) *Inv {
 		Payment:               NewPayment(inv.Payment, inv.Totals),
 	}
 
+	if inv.Tax != nil && tax.TagSelfBilled.In(inv.Tax.Tags...) {
+		Inv.Annotations.SelfBilling = 1
+	}
+
 	if len(inv.Preceding) > 0 {
 		for _, prc := range inv.Preceding {
 			Inv.CorrectedInv = NewCorrectedInv(prc)

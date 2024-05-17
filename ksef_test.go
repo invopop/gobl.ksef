@@ -34,7 +34,7 @@ func TestNewDocument(t *testing.T) {
 		output, err := test.LoadOutputFile("invoice-pl-pl.xml")
 		require.NoError(t, err)
 
-		assert.Equal(t, output, data)
+		assert.Equal(t, string(output), string(data))
 	})
 
 	t.Run("should return bytes of the credit-note invoice", func(t *testing.T) {
@@ -47,7 +47,7 @@ func TestNewDocument(t *testing.T) {
 		output, err := test.LoadOutputFile("credit-note.xml")
 		require.NoError(t, err)
 
-		assert.Equal(t, output, data)
+		assert.Equal(t, string(output), string(data))
 	})
 
 	t.Run("should generate valid KSeF document", func(t *testing.T) {
@@ -92,5 +92,32 @@ func TestNewDocument(t *testing.T) {
 
 		validation := xsdhandler.ValidateMem(data, xsdvalidate.ParsErrDefault)
 		assert.Nil(t, validation)
+	})
+
+	t.Run("should generate valid self-billed invoice", func(t *testing.T) {
+		err := xsdvalidate.Init()
+		require.NoError(t, err)
+		defer xsdvalidate.Cleanup()
+
+		xsdBuf, err := test.LoadSchemaFile("FA2.xsd")
+		require.NoError(t, err)
+
+		xsdhandler, err := xsdvalidate.NewXsdHandlerMem(xsdBuf, xsdvalidate.ParsErrVerbose)
+		require.NoError(t, err)
+		defer xsdhandler.Free()
+
+		doc, err := test.NewDocumentFrom("invoice-self-billed.json")
+		require.NoError(t, err)
+
+		data, err := doc.Bytes()
+		require.NoError(t, err)
+
+		validation := xsdhandler.ValidateMem(data, xsdvalidate.ParsErrDefault)
+		assert.Nil(t, validation)
+
+		output, err := test.LoadOutputFile("invoice-self-billed.xml")
+		require.NoError(t, err)
+
+		assert.Equal(t, string(output), string(data))
 	})
 }
