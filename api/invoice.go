@@ -6,7 +6,7 @@ import (
 	"encoding/base64"
 )
 
-// InvoiceStatusResponse defines the post invocie response structure
+// InvoiceStatusResponse defines the post invoice response structure
 type InvoiceStatusResponse struct {
 	Timestamp              string `json:"timestamp"`
 	ReferenceNumber        string `json:"referenceNumber"`
@@ -20,7 +20,7 @@ type InvoiceStatusResponse struct {
 	} `json:"invoiceStatus"`
 }
 
-// SendInvoiceResponse defines the post invocie response structure
+// SendInvoiceResponse defines the post invoice response structure
 type SendInvoiceResponse struct {
 	Timestamp              string `json:"timestamp"`
 	ReferenceNumber        string `json:"referenceNumber"`
@@ -29,25 +29,25 @@ type SendInvoiceResponse struct {
 	ElementReferenceNumber string `json:"elementReferenceNumber"`
 }
 
-// SendInvoiceRequest defines the post invocie request structure
+// SendInvoiceRequest defines the post invoice request structure
 type SendInvoiceRequest struct {
 	InvoiceHash    *InvoiceHash    `json:"invoiceHash"`
 	InvoicePayload *InvoicePayload `json:"invoicePayload"`
 }
 
-// InvoicePayload defines the InvoicePayload part of the post invocie request
+// InvoicePayload defines the InvoicePayload part of the post invoice request
 type InvoicePayload struct {
 	Type        string `json:"type"`
 	InvoiceBody string `json:"invoiceBody"`
 }
 
-// InvoiceHash defines the InvoiceHash part of the post invocie request
+// InvoiceHash defines the InvoiceHash part of the post invoice request
 type InvoiceHash struct {
 	HashSHA  *HashSHA `json:"hashSHA"`
 	FileSize int      `json:"fileSize"`
 }
 
-// HashSHA defines the HashSHA part of the post invocie request
+// HashSHA defines the HashSHA part of the post invoice request
 type HashSHA struct {
 	Algorithm string `json:"algorithm"`
 	Encoding  string `json:"encoding"`
