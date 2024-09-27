@@ -4,12 +4,13 @@
 		"uuid": "8a51fd30-2a27-11ee-be56-0242ac120002",
 		"dig": {
 			"alg": "sha256",
-			"val": "2dfc5c1c3b11a69e10ba47256e5a1655f5c6dfca99ad6b0390a987588020bbb2"
-		},
-		"draft": true
+			"val": "4885e945e29c762df54bee9988f731bd1ed72b8db6c0d814266b5188f4a62198"
+		}
 	},
 	"doc": {
 		"$schema": "https://gobl.org/draft-0/bill/invoice",
+		"$regime": "PL",
+		"uuid": "01923214-4b3b-783d-9980-127fb989ec8f",
 		"type": "credit-note",
 		"series": "CN",
 		"code": "002",
@@ -18,9 +19,9 @@
 		"preceding": [
 			{
 				"type": "standard",
+				"issue_date": "2023-12-20",
 				"series": "SAMPLE",
 				"code": "001",
-				"issue_date": "2023-12-20",
 				"reason": "Special Discount",
 				"stamps": [
 					{

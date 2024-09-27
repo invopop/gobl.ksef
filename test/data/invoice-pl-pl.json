@@ -4,12 +4,13 @@
 		"uuid": "d9fbc8bc-89fe-11ee-80f4-92dde50d70fc",
 		"dig": {
 			"alg": "sha256",
-			"val": "a88d6b5523cbad826bf6aaacc31cc2a37ec02c403215c3c378d8e727d9abd463"
-		},
-		"draft": true
+			"val": "b8f2184d4d05ad9003f7fa027894c971ad86621e5795dbc115221bbc6a297ce8"
+		}
 	},
 	"doc": {
 		"$schema": "https://gobl.org/draft-0/bill/invoice",
+		"$regime": "PL",
+		"uuid": "01923214-4b64-71f2-9eaf-ed110b53797a",
 		"type": "standard",
 		"series": "SAMPLE",
 		"code": "001",
@@ -17,7 +18,10 @@
 		"currency": "PLN",
 		"supplier": {
 			"name": "Provide One S.L.",
-			"tax_id": { "country": "PL", "code": "1234567788" },
+			"tax_id": {
+				"country": "PL",
+				"code": "1234567788"
+			},
 			"addresses": [
 				{
 					"num": "42",
@@ -28,11 +32,18 @@
 					"country": "PL"
 				}
 			],
-			"emails": [{ "addr": "billing@example.com" }]
+			"emails": [
+				{
+					"addr": "billing@example.com"
+				}
+			]
 		},
 		"customer": {
 			"name": "Sample Consumer",
-			"tax_id": { "country": "PL", "code": "1234567788" },
+			"tax_id": {
+				"country": "PL",
+				"code": "1234567788"
+			},
 			"addresses": [
 				{
 					"num": "43",
@@ -55,7 +66,11 @@
 				},
 				"sum": "1800.00",
 				"taxes": [
-					{ "cat": "VAT", "rate": "standard", "percent": "23.0%" }
+					{
+						"cat": "VAT",
+						"rate": "standard",
+						"percent": "23.0%"
+					}
 				],
 				"total": "1800.00"
 			},
@@ -69,7 +84,11 @@
 				},
 				"sum": "10.00",
 				"taxes": [
-					{ "cat": "VAT", "rate": "reduced", "percent": "8.0%" }
+					{
+						"cat": "VAT",
+						"rate": "reduced",
+						"percent": "8.0%"
+					}
 				],
 				"total": "10.00"
 			}

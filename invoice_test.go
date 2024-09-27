@@ -5,7 +5,6 @@ import (
 
 	ksef "github.com/invopop/gobl.ksef"
 	"github.com/invopop/gobl/bill"
-	"github.com/invopop/gobl/cbc"
 	"github.com/invopop/gobl/currency"
 	"github.com/invopop/gobl/l10n"
 	"github.com/invopop/gobl/org"
@@ -20,13 +19,13 @@ func TestNewInv(t *testing.T) {
 			Currency: currency.PLN,
 			Supplier: &org.Party{
 				TaxID: &tax.Identity{
-					Country: l10n.PL,
+					Country: l10n.PL.Tax(),
 				},
 			},
 			Totals: &bill.Totals{
 				Taxes: &tax.Total{},
 			},
-			Preceding: []*bill.Preceding{
+			Preceding: []*org.DocumentRef{
 				{},
 			},
 		}
@@ -43,13 +42,13 @@ func TestNewInv(t *testing.T) {
 			Currency: currency.PLN,
 			Supplier: &org.Party{
 				TaxID: &tax.Identity{
-					Country: l10n.PL,
+					Country: l10n.PL.Tax(),
 				},
 			},
 			Totals: &bill.Totals{
 				Taxes: &tax.Total{},
 			},
-			Preceding: []*bill.Preceding{
+			Preceding: []*org.DocumentRef{
 				{
 					Reason: reason,
 				},
@@ -66,13 +65,13 @@ func TestNewInv(t *testing.T) {
 			Currency: currency.PLN,
 			Supplier: &org.Party{
 				TaxID: &tax.Identity{
-					Country: l10n.PL,
+					Country: l10n.PL.Tax(),
 				},
 			},
 			Totals: &bill.Totals{
 				Taxes: &tax.Total{},
 			},
-			Preceding: []*bill.Preceding{
+			Preceding: []*org.DocumentRef{
 				{
 					Ext: tax.Extensions{
 						pl.ExtKeyKSeFEffectiveDate: "1",
@@ -91,7 +90,7 @@ func TestNewInv(t *testing.T) {
 			Currency: currency.PLN,
 			Supplier: &org.Party{
 				TaxID: &tax.Identity{
-					Country: l10n.PL,
+					Country: l10n.PL.Tax(),
 				},
 			},
 			Totals: &bill.Totals{
@@ -108,12 +107,10 @@ func TestNewInv(t *testing.T) {
 			Currency: currency.PLN,
 			Supplier: &org.Party{
 				TaxID: &tax.Identity{
-					Country: l10n.PL,
+					Country: l10n.PL.Tax(),
 				},
 			},
-			Tax: &bill.Tax{
-				Tags: []cbc.Key{tax.TagSelfBilled},
-			},
+			Tags: tax.WithTags(tax.TagSelfBilled),
 			Totals: &bill.Totals{
 				Taxes: &tax.Total{},
 			},

@@ -4,22 +4,22 @@
 		"uuid": "d9fbc8bc-89fe-11ee-80f4-92dde50d70fc",
 		"dig": {
 			"alg": "sha256",
-			"val": "a7710f732125b4649b85657f7c196fc60ceef9ef14466f4999624df060e20695"
-		},
-		"draft": true
+			"val": "f68623b0f2d28566e9d58ea96db71eb1dca07810d5db54ecfb24c2c79954ba9c"
+		}
 	},
 	"doc": {
 		"$schema": "https://gobl.org/draft-0/bill/invoice",
+		"$regime": "PL",
+		"$tags": [
+			"self-billed"
+		],
+		"uuid": "01923214-4b8f-7640-900e-db47610224df",
 		"type": "standard",
 		"series": "SAMPLE",
 		"code": "001",
 		"issue_date": "2023-12-20",
 		"currency": "PLN",
-		"tax": {
-			"tags": [
-				"self-billed"
-			]
-		},
+		"tax": {},
 		"supplier": {
 			"name": "Provide One S.L.",
 			"tax_id": {

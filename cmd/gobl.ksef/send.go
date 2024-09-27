@@ -191,7 +191,7 @@ func saveFile(name string, data []byte) error {
 
 func filename(inv *bill.Invoice) string {
 	if inv.Series != "" {
-		return inv.Series + "-" + inv.Code + ".xml"
+		return fmt.Sprintf("%s-%s.xml", inv.Series, inv.Code)
 	}
-	return inv.Code + ".xml"
+	return fmt.Sprintf("%s.xml", inv.Code)
 }

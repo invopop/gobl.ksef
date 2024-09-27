@@ -5,4 +5,4 @@ import (
 	"github.com/invopop/gobl/tax"
 )
 
-var regime = tax.RegimeFor(l10n.PL)
+var regime = tax.RegimeDefFor(l10n.PL)
