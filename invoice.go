@@ -2,7 +2,10 @@ package ksef
 
 /**/
 import (
+	"fmt"
+
 	"github.com/invopop/gobl/bill"
+	"github.com/invopop/gobl/cbc"
 	"github.com/invopop/gobl/regimes/pl"
 	"github.com/invopop/gobl/tax"
 )
@@ -91,7 +94,7 @@ func NewInv(inv *bill.Invoice) *Inv {
 		Payment:               NewPayment(inv.Payment, inv.Totals),
 	}
 
-	if inv.Tax != nil && tax.TagSelfBilled.In(inv.Tax.Tags...) {
+	if inv.HasTags(tax.TagSelfBilled) {
 		Inv.Annotations.SelfBilling = 1
 	}
 
@@ -105,7 +108,7 @@ func NewInv(inv *bill.Invoice) *Inv {
 		}
 	}
 
-	ss := inv.ScenarioSummary()
+	ss := inv.ScenarioSummary() //nolint:staticcheck
 	Inv.InvoiceType = ss.Codes[pl.KeyFAVATInvoiceType].String()
 	if inv.OperationDate != nil {
 		Inv.CompletionDate = inv.OperationDate.String()
@@ -134,9 +137,9 @@ func NewInv(inv *bill.Invoice) *Inv {
 	return Inv
 }
 
-func invoiceNumber(series string, code string) string {
+func invoiceNumber(series cbc.Code, code cbc.Code) string {
 	if series == "" {
-		return code
+		return code.String()
 	}
-	return series + "-" + code
+	return fmt.Sprintf("%s-%s", series, code)
 }

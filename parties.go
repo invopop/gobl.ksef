@@ -55,7 +55,7 @@ func newAddress(address *org.Address) *Address {
 }
 
 // nameToString get the seller name out of the organization
-func nameToString(name org.Name) string {
+func nameToString(name *org.Name) string {
 	return name.Prefix + nameMaybe(name.Given) +
 		nameMaybe(name.Middle) + nameMaybe(name.Surname) +
 		nameMaybe(name.Surname2) + nameMaybe(name.Suffix)
@@ -97,7 +97,7 @@ func NewBuyer(customer *org.Party) *Buyer {
 		NIP:  string(customer.TaxID.Code),
 	}
 
-	if customer.TaxID.Country == l10n.PL {
+	if customer.TaxID.Country == l10n.PL.Tax() {
 		buyer.NIP = string(customer.TaxID.Code)
 	} else {
 		if len(customer.TaxID.Code) > 0 {

@@ -1,8 +1,8 @@
 package ksef
 
 import (
-	"github.com/invopop/gobl/bill"
 	"github.com/invopop/gobl/head"
+	"github.com/invopop/gobl/org"
 )
 
 // CorrectedInv defines the XML structure for KSeF correction invoice
@@ -15,7 +15,7 @@ type CorrectedInv struct {
 }
 
 // NewCorrectedInv gets credit note data from GOBL invoice
-func NewCorrectedInv(prc *bill.Preceding) *CorrectedInv {
+func NewCorrectedInv(prc *org.DocumentRef) *CorrectedInv {
 	inv := &CorrectedInv{
 		SequentialNumber: invoiceNumber(prc.Series, prc.Code),
 	}
