@@ -51,7 +51,7 @@ type Payment struct {
 }
 
 // NewPayment gets payment data from GOBL invoice
-func NewPayment(pay *bill.Payment, totals *bill.Totals) *Payment {
+func NewPayment(pay *bill.PaymentDetails, totals *bill.Totals) *Payment {
 	if pay == nil {
 		return nil
 	}
@@ -125,7 +125,7 @@ func findPaymentMeansCode(key cbc.Key) (string, error) {
 	return code.String(), nil
 }
 
-func findPaymentKeyDefinition(key cbc.Key) *cbc.KeyDefinition {
+func findPaymentKeyDefinition(key cbc.Key) *cbc.Definition {
 	for _, keyDef := range regime.PaymentMeansKeys {
 		if key == keyDef.Key {
 			return keyDef

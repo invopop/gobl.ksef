@@ -141,7 +141,7 @@ func addressLine1(address *org.Address) string {
 }
 
 func addressLine2(address *org.Address) string {
-	return address.Code + ", " + address.Locality
+	return address.Code.String() + ", " + address.Locality
 }
 
 func addressMaybe(element string) string {

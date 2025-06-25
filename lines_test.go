@@ -15,7 +15,9 @@ func TestNewLines(t *testing.T) {
 	t.Run("calculates unitDiscount", func(t *testing.T) {
 		lines := []*bill.Line{
 			{
-				Item: &org.Item{},
+				Item: &org.Item{
+					Price: num.NewAmount(20000, 2),
+				},
 				Taxes: tax.Set{
 					{
 						Percent: &num.Percentage{},
@@ -27,6 +29,7 @@ func TestNewLines(t *testing.T) {
 						Amount: num.MakeAmount(10000, 2),
 					},
 				},
+				Total: num.NewAmount(10000, 2),
 			},
 		}
 
@@ -38,7 +41,9 @@ func TestNewLines(t *testing.T) {
 	t.Run("calculates unitDiscount per unit", func(t *testing.T) {
 		lines := []*bill.Line{
 			{
-				Item: &org.Item{},
+				Item: &org.Item{
+					Price: num.NewAmount(20000, 2),
+				},
 				Taxes: tax.Set{
 					{
 						Percent: &num.Percentage{},
@@ -50,6 +55,7 @@ func TestNewLines(t *testing.T) {
 						Amount: num.MakeAmount(10000, 2),
 					},
 				},
+				Total: num.NewAmount(10000, 2), // Total is still 100.00 PLN
 			},
 		}
 
@@ -61,7 +67,9 @@ func TestNewLines(t *testing.T) {
 	t.Run("returns empty string for unitDiscount if no discount present", func(t *testing.T) {
 		lines := []*bill.Line{
 			{
-				Item: &org.Item{},
+				Item: &org.Item{
+					Price: num.NewAmount(20000, 2), // 200.00 PLN
+				},
 				Taxes: tax.Set{
 					{
 						Percent: &num.Percentage{},
@@ -69,6 +77,7 @@ func TestNewLines(t *testing.T) {
 				},
 				Quantity:  num.MakeAmount(1, 0),
 				Discounts: []*bill.LineDiscount{},
+				Total:     num.NewAmount(20000, 2), // Total is still 200.00 PLN
 			},
 		}
 
@@ -80,7 +89,9 @@ func TestNewLines(t *testing.T) {
 	t.Run("unitDiscount adds up multiple discounts", func(t *testing.T) {
 		lines := []*bill.Line{
 			{
-				Item: &org.Item{},
+				Item: &org.Item{
+					Price: num.NewAmount(30000, 2), // 300.00 PLN
+				},
 				Taxes: tax.Set{
 					{
 						Percent: &num.Percentage{},
@@ -95,6 +106,7 @@ func TestNewLines(t *testing.T) {
 						Amount: num.MakeAmount(10000, 2),
 					},
 				},
+				Total: num.NewAmount(10000, 2),
 			},
 		}
 
