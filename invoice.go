@@ -103,7 +103,7 @@ func NewInv(inv *bill.Invoice) *Inv {
 			Inv.CorrectedInv = NewCorrectedInv(prc)
 			Inv.CorrectionReason = prc.Reason
 			if prc.Ext.Has(pl.ExtKeyKSeFEffectiveDate) {
-				Inv.CorrectionType = prc.Ext[pl.ExtKeyKSeFEffectiveDate].Code().String()
+				Inv.CorrectionType = prc.Ext[pl.ExtKeyKSeFEffectiveDate].String()
 			}
 		}
 	}
@@ -120,13 +120,14 @@ func NewInv(inv *bill.Invoice) *Inv {
 
 		for _, rate := range cat.Rates {
 			if rate.Percent != nil {
-				if rate.Key == tax.RateStandard {
+				switch rate.Key {
+				case tax.RateStandard:
 					Inv.StandardRateNetSale = rate.Base.Rescale(cu).String()
 					Inv.StandardRateTax = rate.Amount.Rescale(cu).String()
-				} else if rate.Key == tax.RateReduced {
+				case tax.RateReduced:
 					Inv.ReducedRateNetSale = rate.Base.Rescale(cu).String()
 					Inv.ReducedRateTax = rate.Amount.Rescale(cu).String()
-				} else if rate.Key == tax.RateSuperReduced {
+				case tax.RateSuperReduced:
 					Inv.SuperReducedRateNetSale = rate.Base.Rescale(cu).String()
 					Inv.SuperReducedRateTax = rate.Amount.Rescale(cu).String()
 				}

@@ -20,7 +20,7 @@ func TestNewPayment(t *testing.T) {
 	})
 
 	t.Run("should return payment if there are payment instructions", func(t *testing.T) {
-		payment := &bill.Payment{
+		payment := &bill.PaymentDetails{
 			Instructions: &pay.Instructions{},
 		}
 		totals := &bill.Totals{}
@@ -44,7 +44,7 @@ func TestNewPayment(t *testing.T) {
 	})
 
 	t.Run("should return set payment method from payment instructions", func(t *testing.T) {
-		payment := &bill.Payment{
+		payment := &bill.PaymentDetails{
 			Instructions: &pay.Instructions{
 				Key: "credit-transfer",
 			},
@@ -74,7 +74,7 @@ func TestNewPayment(t *testing.T) {
 		num, err := num.AmountFromString("245.890")
 		require.NoError(t, err)
 
-		payment := &bill.Payment{
+		payment := &bill.PaymentDetails{
 			Terms: &pay.Terms{
 				DueDates: []*pay.DueDate{{Date: &d, Amount: num}},
 			},
@@ -106,7 +106,7 @@ func TestNewPayment(t *testing.T) {
 		zero, err := num.AmountFromString("0")
 		require.NoError(t, err)
 
-		payment := &bill.Payment{
+		payment := &bill.PaymentDetails{
 			Advances: []*pay.Advance{{Date: &d, Amount: firstNum}},
 		}
 		totals := &bill.Totals{
@@ -139,7 +139,7 @@ func TestNewPayment(t *testing.T) {
 		secondNum, err := num.AmountFromString("45.990")
 		require.NoError(t, err)
 
-		payment := &bill.Payment{
+		payment := &bill.PaymentDetails{
 			Advances: []*pay.Advance{{Date: &d, Amount: firstNum}, {Date: &d, Amount: secondNum}},
 		}
 		totals := &bill.Totals{
