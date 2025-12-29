@@ -41,7 +41,7 @@ type Payment struct {
 	PartiallyPaidMarker    string            `xml:"ZnacznikZaplatyCzesciowej,omitempty"`
 	AdvancePayments        []*AdvancePayment `xml:"ZaplataCzesciowa,omitempty"`
 	DueDates               []*DueDate        `xml:"TerminPlatnosci,omitempty"`
-	PaymentMean            string            `xml:"FormaPlatnosci,omitempty"`
+	PaymentMean            string            `xml:"FormaPlatnosci,omitempty"` // enum: 1 = cash, 2 = card etc. (see KSeF documentation)
 	OtherPaymentMeanMarker string            `xml:"PlatnoscInna,omitempty"`
 	OtherPaymentMean       string            `xml:"OpisPlatnosci,omitempty"`
 	BankAccounts           []*BankAccount    `xml:"RachunekBankowy,omitempty"`
@@ -95,6 +95,8 @@ func NewPayment(pay *bill.PaymentDetails, totals *bill.Totals) *Payment {
 			payment.PaidMarker = "1"
 			payment.PaymentDate = advances[len(advances)-1].Date.String()
 		} else if !totals.Advances.IsZero() {
+			// 1 = paid partially
+			// 2 = paid in full after partial payments, and the last payment is the final one
 			payment.PartiallyPaidMarker = "1"
 			for _, advance := range advances {
 				payment.AdvancePayments = append(payment.AdvancePayments, &AdvancePayment{

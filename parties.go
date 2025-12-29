@@ -98,8 +98,8 @@ func NewBuyer(customer *org.Party) *Buyer {
 	buyer := &Buyer{
 		Name: customer.Name,
 		NIP:  string(customer.TaxID.Code),
-		JST:  2, // "No"
-		GV:   2, // "No"
+		JST:  2, // hardcoded as "No"
+		GV:   2, // hardcoded as "No"
 	}
 
 	if customer.TaxID.Country == l10n.PL.Tax() {
