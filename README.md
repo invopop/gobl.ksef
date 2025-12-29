@@ -14,8 +14,8 @@ The following list the steps to follow through on in order to accomplish the goa
    - Support for "simplified" invoices.
    - Requirements for credit-notes or "rectified" invoices and the correction options definition for the tax regime.
    - Any additional fields that need to be validated, like payment terms.
-2. Convert GOBL into FA_VAT format in library. A couple of good examples: [gobl.cfdi for Mexico](https://github.com/invopop/gobl.cfdi) and [gobl.facturae for Spain](https://github.com/invopop/gobl.facturae). Library would just be able to run tests in the first version.
-3. Build a CLI (copy from gobl.cfdi and gobl.facture projects) to convert GOBL JSON documents into FA_VAT XML.
+2. Convert GOBL into FA_VAT format in library. A couple of good examples: [gobl.cfdi for Mexico](https://github.com/invopop/gobl.cfdi) and [gobl.verifactu for Spain](https://github.com/invopop/gobl.verifactu). Library would just be able to run tests in the first version.
+3. Build a CLI (copy from gobl.cfdi and gobl.verifactu projects) to convert GOBL JSON documents into FA_VAT XML.
 4. Build a second part of this project that allows documents to be sent directly to the KSeF. A partial example of this can be found in the [gobl.ticketbai project](https://github.com/invopop/gobl.ticketbai/tree/refactor/internal/gateways). It'd probably be useful to be able to upload via the CLI too.
 
 ## FA_VAT documentation
@@ -32,8 +32,8 @@ KSeF is the Polish system for submitting electronic invoices to the Polish autho
 
 Useful links:
 
-- [National e-Invoice System](https://www.podatki.gov.pl/ksef/) - for details on system in general.
-- [KSeF Test Zone](https://www.podatki.gov.pl/ksef/strefa-testowa-ksef/)
+- [National e-Invoice System](https://ksef.mf.gov.pl/) - for details on system in general (English translation available - language picker is in the top right corner)
+- [KSeF Test Zone](https://ksef-test.mf.gov.pl/) - as above, but for testing
 - [API documentation](https://ksef-test.mf.gov.pl/docs/v2/index.html) for the test environment (in Polish)
 
 KSeF provide three environments:
