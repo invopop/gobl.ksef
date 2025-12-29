@@ -16,8 +16,7 @@ type AdvancePayment struct {
 
 // DueDate defines the XML structure for KSeF due date
 type DueDate struct {
-	Date        string `xml:"Termin,omitempty"`
-	Description string `xml:"TerminOpis,omitempty"`
+	Date string `xml:"Termin,omitempty"`
 }
 
 // BankAccount defines the XML structure for KSeF bank accounts
@@ -86,8 +85,7 @@ func NewPayment(pay *bill.PaymentDetails, totals *bill.Totals) *Payment {
 	if terms := pay.Terms; terms != nil {
 		for _, dueDate := range pay.Terms.DueDates {
 			payment.DueDates = append(payment.DueDates, &DueDate{
-				Date:        dueDate.Date.String(),
-				Description: dueDate.Amount.String(),
+				Date: dueDate.Date.String(),
 			})
 		}
 	}

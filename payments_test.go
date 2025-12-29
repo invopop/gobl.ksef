@@ -86,7 +86,7 @@ func TestNewPayment(t *testing.T) {
 			PaymentDate:            "",
 			PartiallyPaidMarker:    "",
 			AdvancePayments:        []*ksef.AdvancePayment{},
-			DueDates:               []*ksef.DueDate{{Date: d.String(), Description: num.String()}},
+			DueDates:               []*ksef.DueDate{{Date: d.String()}},
 			PaymentMean:            "",
 			OtherPaymentMeanMarker: "",
 			OtherPaymentMean:       "",
