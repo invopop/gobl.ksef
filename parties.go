@@ -22,8 +22,8 @@ type Seller struct {
 
 // ContactDetails defines the XML structure for KSeF contact
 type ContactDetails struct {
-	Phone string `xml:"Telefon,omitempty"`
 	Email string `xml:"Email,omitempty"`
+	Phone string `xml:"Telefon,omitempty"`
 }
 
 // Buyer defines the XML structure for KSeF buyer
@@ -41,6 +41,9 @@ type Buyer struct {
 	Name    string          `xml:"DaneIdentyfikacyjne>Nazwa,omitempty"`
 	Address *Address        `xml:"Adres,omitempty"`
 	Contact *ContactDetails `xml:"DaneKontaktowe,omitempty"`
+
+	JST int `xml:"JST"` // JST (Jednostka Samorządu Terytorialnego = local government unit) 1 = Yes, 2 = No
+	GV  int `xml:"GV"`  // GV (Group VAT) 1 = Yes, 2 = No
 }
 
 // newAddress gets the address data from GOBL address
@@ -95,6 +98,8 @@ func NewBuyer(customer *org.Party) *Buyer {
 	buyer := &Buyer{
 		Name: customer.Name,
 		NIP:  string(customer.TaxID.Code),
+		JST:  2, // "No"
+		GV:   2, // "No"
 	}
 
 	if customer.TaxID.Country == l10n.PL.Tax() {

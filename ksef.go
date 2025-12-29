@@ -13,7 +13,7 @@ import (
 const (
 	XSINamespace    = "http://www.w3.org/2001/XMLSchema-instance"
 	XSDNamespace    = "http://www.w3.org/2001/XMLSchema"
-	XMLNamespace    = "http://crd.gov.pl/wzor/2023/06/29/12648/"
+	XMLNamespace    = "http://crd.gov.pl/wzor/2025/06/25/13775/"
 	RootElementName = "Faktura"
 )
 

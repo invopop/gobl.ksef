@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Faktura xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns="http://crd.gov.pl/wzor/2023/06/29/12648/">
+<Faktura xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns="http://crd.gov.pl/wzor/2025/06/25/13775/">
   <Naglowek>
-    <KodFormularza kodSystemowy="FA (2)" wersjaSchemy="1-0E">FA</KodFormularza>
-    <WariantFormularza>2</WariantFormularza>
-    <DataWytworzeniaFa>2023-12-20T00:00:00Z</DataWytworzeniaFa>
+    <KodFormularza kodSystemowy="FA (3)" wersjaSchemy="1-0E">FA</KodFormularza>
+    <WariantFormularza>3</WariantFormularza>
+    <DataWytworzeniaFa>2025-12-20T00:00:00Z</DataWytworzeniaFa>
     <SystemInfo>GOBL.KSEF</SystemInfo>
   </Naglowek>
   <Podmiot1>
@@ -30,10 +30,12 @@
       <AdresL1>Calle Pradillo, 43</AdresL1>
       <AdresL2>00-015, Madrid</AdresL2>
     </Adres>
+    <JST>2</JST>
+    <GV>2</GV>
   </Podmiot2>
   <Fa>
     <KodWaluty>PLN</KodWaluty>
-    <P_1>2023-12-20</P_1>
+    <P_1>2025-12-20</P_1>
     <P_2>SAMPLE-001</P_2>
     <P_13_1>1800.00</P_13_1>
     <P_14_1>414.00</P_14_1>
