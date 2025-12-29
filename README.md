@@ -14,17 +14,21 @@ The following list the steps to follow through on in order to accomplish the goa
    - Support for "simplified" invoices.
    - Requirements for credit-notes or "rectified" invoices and the correction options definition for the tax regime.
    - Any additional fields that need to be validated, like payment terms.
-2. Convert GOBL into FA_VAT format in library. A couple of good examples: [gobl.cfdi for mexico](https://github.com/invopop/gobl.cfdi) and [gobl.facturae for Spain](https://github.com/invopop/gobl.facturae). Library would just be able to run tests in the first version.
+2. Convert GOBL into FA_VAT format in library. A couple of good examples: [gobl.cfdi for Mexico](https://github.com/invopop/gobl.cfdi) and [gobl.facturae for Spain](https://github.com/invopop/gobl.facturae). Library would just be able to run tests in the first version.
 3. Build a CLI (copy from gobl.cfdi and gobl.facture projects) to convert GOBL JSON documents into FA_VAT XML.
 4. Build a second part of this project that allows documents to be sent directly to the KSeF. A partial example of this can be found in the [gobl.ticketbai project](https://github.com/invopop/gobl.ticketbai/tree/refactor/internal/gateways). It'd probably be useful to be able to upload via the CLI too.
 
 ## FA_VAT documentation
+
+FA_VAT is the Polish electronic invoice format. The format uses XML.
 
 - [XML schema](https://github.com/CIRFMF/ksef-docs/blob/main/faktury/schemy/FA/schemat_FA(3)_v1-0E.xsd) for V3 (description of fields is in Polish)
 - [Types definition](https://raw.githubusercontent.com/CIRFMF/ksef-docs/refs/heads/main/faktury/schemy/FA/bazowe/ElementarneTypyDanych_v10-0E.xsd) (description of fields is in Polish) - we have to open it as raw, as [the original link](https://github.com/CIRFMF/ksef-docs/blob/main/faktury/schemy/FA/bazowe/StrukturyDanych_v10-0E.xsd) does not add newlines
 - [Complex types definition](https://raw.githubusercontent.com/CIRFMF/ksef-docs/refs/heads/main/faktury/schemy/FA/bazowe/StrukturyDanych_v10-0E.xsd) (description of fields is in Polish) - we have to open it as raw, as [the original link](https://github.com/CIRFMF/ksef-docs/blob/main/faktury/schemy/FA/bazowe/StrukturyDanych_v10-0E.xsd) does not add newlines
 
 ## KSeF API
+
+KSeF is the Polish system for submitting electronic invoices to the Polish authorities.
 
 Useful links:
 
@@ -50,7 +54,7 @@ OpenAPI documentation is available for three specific interfaces:
 
 - [Authentication in KSEF](https://github.com/CIRFMF/ksef-docs/blob/main/uwierzytelnianie.md) (in Polish)
 - [XAdEs digital signature](https://github.com/CIRFMF/ksef-docs/blob/main/auth/podpis-xades.md) (in Polish)
-- [How to use official .NET client to generate a test certificate](https://github.com/CIRFMF/ksef-docs/blob/main/auth/testowe-certyfikaty-i-podpisy-xades.md) (in Polish)
+- [How to use the official .NET client to generate a test XAdEs certificate](https://github.com/CIRFMF/ksef-docs/blob/main/auth/testowe-certyfikaty-i-podpisy-xades.md) (in Polish)
 
 ### How to obtain a certificate
 
@@ -65,18 +69,18 @@ Once inside the test environment, you can create an Authorization token to use t
 
 ### Authentication to the KSeF API
 
-This is translated from [Authentication in KSerF](https://github.com/CIRFMF/ksef-docs/blob/main/uwierzytelnianie.md) document:
+This is translated from [Authentication in KSeF](https://github.com/CIRFMF/ksef-docs/blob/main/uwierzytelnianie.md) document:
 
 To login, XAdES digital signature or a KSeF token is needed.
 
-Base URL for test environment: https://api-test.ksef.mf.gov.pl/v2
+Base URL for the test environment: https://api-test.ksef.mf.gov.pl/v2
 
 1. Submit `POST /auth/challenge` with no body, no headers, response has fields `challenge` (opaque string), `timestamp`, `timestampMs`.
-2. Depending on login method (XAdES / KSeF token) submit `POST /auth/xades-signature` (body is in XML and should contain challenge, context, signature) or `POST /auth/ksef-token` (body contains challenge, context, KSeF token + timestamp encrypted with public key). In both cases we receive JSON response with `referenceNumber` and `authenticationToken`.
+2. Depending on the login method (XAdES / KSeF token) submit `POST /auth/xades-signature` (body is in XML and should contain challenge, context, signature) or `POST /auth/ksef-token` (body contains challenge, context, KSeF token + timestamp encrypted with public key). In both cases we receive JSON response with `referenceNumber` and `authenticationToken`.
 3. Keep polling `GET /auth/[referenceNumber]` with header `Bearer [authenticationToken]` - field `status` will indicate: 100 - in progress, 200 - successful, 4xx/5xx - error.
-4. When the endpoint above returns status 200, send `POST /auth/token/redeem` with header `Bearer [authenticationToken]` and no body. Response contains `accessToken` and `refreshToken` + expiration times. Redeeming can be done once - more attempts will result in 40x errors.
+4. When the endpoint above returns status 200, send `POST /auth/token/redeem` with header `Bearer [authenticationToken]` and no body. Response contains `accessToken` and `refreshToken` + their expiration times. Redeeming can be done once - more attempts will result in 40x errors.
 `accessToken` can be used for most actions in the API.
-5. To get a new `accessToken` send `POST /auth/token/refresh` with header `Bearer [refreshToken]` and no body. Response contains a new `accessToken` + expiration time.
+5. To get a new `accessToken`, send `POST /auth/token/refresh` with header `Bearer [refreshToken]` and no body. Response contains a new `accessToken` + expiration time.
 6. List of current login sessions is at `GET /auth/sessions`.
 7. To logout, send `DELETE /auth/sessions/current` or `DELETE /auth/sessions/[referenceNumber]`.
 
@@ -88,6 +92,8 @@ Note that the API documentation uses the name `referenceNumber` in other endpoin
 - Context = business entity the operations are about
 
 E.g. context = company X, subject = accountant of company X, employee of an accounting company having contract with company X, etc. This way, a single accountant or accounting company can work with multiple companies.
+
+Using an API endpoint, a subject having appropriate permissions to a given context can provide another subject with permissions to the same context. It's possible to revoke permissions for a subject. It's also possible to mark the permissions as transferable - this is useful when company X gives permissions to accounting company Y, and company Y gives permissions to one of its employees.
 
 ### What is the KSeF token?
 
@@ -102,5 +108,5 @@ To obtain the public key certificate, use `GET /security/public-key-certificates
 [Documentation here](https://ksef-test.mf.gov.pl/docs/v2/index.html#tag/Certyfikaty-klucza-publicznego)
 
 Public key is needed to:
-1. Login with KSeF token `POST /auth/ksef-token`
-2. Encrypt a symmetric AES key when uploading invoices (in both online and batch formats) and exporting (batch) invoices.
+1. Login with KSeF token using the `POST /auth/ksef-token` endpoint.
+2. Encrypt a symmetric AES key when uploading invoices (in both online and batch formats) and exporting (batch) incoming invoices.
