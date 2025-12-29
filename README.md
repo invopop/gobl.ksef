@@ -84,6 +84,8 @@ Base URL for the test environment: https://api-test.ksef.mf.gov.pl/v2
 6. List of current login sessions is at `GET /auth/sessions`.
 7. To logout, send `DELETE /auth/sessions/current` or `DELETE /auth/sessions/[referenceNumber]`.
 
+A single subject can have multiple login sessions. One login session is associated with a single context.
+
 Note that the API documentation uses the name `referenceNumber` in other endpoints for asynchronous operations (submit and poll for status), not only for identifying login sessions.
 
 ### What is subject and context?
@@ -109,4 +111,4 @@ To obtain the public key certificate, use `GET /security/public-key-certificates
 
 Public key is needed to:
 1. Login with KSeF token using the `POST /auth/ksef-token` endpoint.
-2. Encrypt a symmetric AES key when uploading invoices (in both online and batch formats) and exporting (batch) incoming invoices.
+2. Encrypt a symmetric AES key when uploading invoices (in both online and batch formats) and exporting (batch) incoming invoices. File upload and export endpoints don't require `accessToken`, but they accept or return chunks of the data respectively encrypted with the provided symmetric AES key. Online upload endpoint is a regular HTTP endpoint using `accessToken` for authentication, but also requires providing a key, and the invoice must be encrypted with that key.
