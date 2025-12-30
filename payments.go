@@ -126,6 +126,9 @@ func findPaymentMeansCode(key cbc.Key) (string, error) {
 }
 
 func findPaymentKeyDefinition(key cbc.Key) *cbc.Definition {
+	// TODO in the newest gobl library version it's moved from regime to addon
+	// The addon will be at github.com/invopop/gobl/addons/pl/favat
+
 	for _, keyDef := range regime.PaymentMeansKeys {
 		if key == keyDef.Key {
 			return keyDef
