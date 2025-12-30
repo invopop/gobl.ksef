@@ -90,14 +90,27 @@ func NewPayment(pay *bill.PaymentDetails, totals *bill.Totals) *Payment {
 		}
 	}
 
+	// According to FA_VAT v3 schema:
+	// If an invoice is paid in full in one payment, PaidMarker should be "1"
+	// Otherwise, set PartiallyPaidMarker with the following values:
+	// 1 = invoice paid partially
+	// 2 = paid in full after partial payments, and the last payment is the final one
+	// If the invoice is not paid at all, do not add PaidMarker or PartiallyPaidMarker.
+
 	if advances := pay.Advances; advances != nil {
-		if totals.Due.IsZero() {
+		if len(advances) == 1 {
+			// Invoice already paid in full in one payment
 			payment.PaidMarker = "1"
 			payment.PaymentDate = advances[len(advances)-1].Date.String()
-		} else if !totals.Advances.IsZero() {
-			// 1 = paid partially
-			// 2 = paid in full after partial payments, and the last payment is the final one
-			payment.PartiallyPaidMarker = "1"
+		} else {
+			if totals.Due.IsZero() {
+				// Invoice already paid in full in multiple payments
+				payment.PartiallyPaidMarker = "2"
+			} else {
+				// Invoice paid partially
+				payment.PartiallyPaidMarker = "1"
+			}
+
 			for _, advance := range advances {
 				payment.AdvancePayments = append(payment.AdvancePayments, &AdvancePayment{
 					PaymentAmount: advance.Amount.String(),
