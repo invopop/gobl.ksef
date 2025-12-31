@@ -98,7 +98,7 @@ func NewPayment(pay *bill.PaymentDetails, totals *bill.Totals) *Payment {
 	// If the invoice is not paid at all, do not add PaidMarker or PartiallyPaidMarker.
 
 	if advances := pay.Advances; advances != nil {
-		if len(advances) == 1 {
+		if len(advances) == 1 && totals.Due.IsZero() {
 			// Invoice already paid in full in one payment
 			payment.PaidMarker = "1"
 			payment.PaymentDate = advances[len(advances)-1].Date.String()
@@ -106,10 +106,12 @@ func NewPayment(pay *bill.PaymentDetails, totals *bill.Totals) *Payment {
 			if totals.Due.IsZero() {
 				// Invoice already paid in full in multiple payments
 				payment.PartiallyPaidMarker = "2"
-			} else {
+			}
+			if !totals.Due.IsZero() && len(advances) > 0 {
 				// Invoice paid partially
 				payment.PartiallyPaidMarker = "1"
 			}
+			// Otherwise, not paid at all - no markers needed
 
 			for _, advance := range advances {
 				payment.AdvancePayments = append(payment.AdvancePayments, &AdvancePayment{
