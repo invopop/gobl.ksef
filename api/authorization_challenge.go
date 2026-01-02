@@ -19,9 +19,9 @@ type AuthorizationChallengeResponse struct {
 // Second step involves submitting the XAdES-signed XML with the challenge and context
 type AuthorizationRequest struct {
 	XMLName               xml.Name           `xml:"http://ksef.mf.gov.pl/auth/token/2.0 AuthTokenRequest"`
-	Xmlns                 string             `xml:"xmlns,attr"`
 	XmlnsXsi              string             `xml:"xmlns:xsi,attr"`
 	XmlnsXsd              string             `xml:"xmlns:xsd,attr"`
+	Xmlns                 string             `xml:"xmlns,attr"` // note that it must be after the previous attributes
 	Challenge             string             `xml:"Challenge"`
 	ContextIdentifier     *ContextIdentifier `xml:"ContextIdentifier"`
 	SubjectIdentifierType string             `xml:"SubjectIdentifierType"` // certificateSubject or certificateFingerprint
@@ -72,7 +72,7 @@ func fetchChallenge(ctx context.Context, c *Client) (*AuthorizationChallengeResp
 	resp, err := c.Client.R().
 		SetResult(response).
 		SetContext(ctx).
-		Post(c.URL + "/v2/auth/challenge")
+		Post(c.URL + "/auth/challenge")
 
 	if err != nil {
 		return nil, err
@@ -97,6 +97,9 @@ func authorizeWithCertificate(ctx context.Context, c *Client, challenge *Authori
 	}
 
 	requestBody := &AuthorizationRequest{
+		// Xmlns:                 "http://ksef.mf.gov.pl/auth/token/2.0",
+		XmlnsXsi:              "http://www.w3.org/2001/XMLSchema-instance",
+		XmlnsXsd:              "http://www.w3.org/2001/XMLSchema",
 		Challenge:             challenge.Challenge,
 		ContextIdentifier:     contextIdentifier,
 		SubjectIdentifierType: subjectIdentifierType,
@@ -119,13 +122,15 @@ func authorizeWithCertificate(ctx context.Context, c *Client, challenge *Authori
 		return nil, err
 	}
 
+	fmt.Println(string(signedRequestStr))
+
 	response := &AuthorizationResponse{}
 	resp, err := c.Client.R().
 		SetHeader("Content-Type", "application/xml").
 		SetBody(signedRequestStr).
 		SetResult(response).
 		SetContext(ctx).
-		Post(c.URL + "/v2/auth/xades-signature")
+		Post(c.URL + "/auth/xades-signature")
 
 	if err != nil {
 		return nil, err
@@ -150,7 +155,7 @@ func pollAuthorizationStatus(ctx context.Context, c *Client, referenceNumber str
 			SetHeader("Authorization", "Bearer "+authorizationToken).
 			SetResult(response).
 			SetContext(ctx).
-			Get(c.URL + "/v2/auth/" + referenceNumber)
+			Get(c.URL + "/auth/" + referenceNumber)
 		if err != nil {
 			return err
 		}
@@ -176,7 +181,7 @@ func exchangeToken(ctx context.Context, c *Client, authorizationToken string) (*
 		SetHeader("Authorization", "Bearer "+authorizationToken).
 		SetResult(response).
 		SetContext(ctx).
-		Post(c.URL + "/v2/auth/token/redeem")
+		Post(c.URL + "/auth/token/redeem")
 
 	if err != nil {
 		return nil, err

@@ -51,7 +51,7 @@ func (c *Client) refreshAccessToken(ctx context.Context) error {
 		SetHeader("Authorization", "Bearer "+c.RefreshToken.Token).
 		SetResult(response).
 		SetContext(ctx).
-		Post(c.URL + "/v2/auth/token/refresh")
+		Post(c.URL + "/auth/token/refresh")
 	if err != nil {
 		return err
 	}

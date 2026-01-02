@@ -24,7 +24,7 @@ type ClientOpts struct {
 func defaultClientOpts(contextIdentifier *ContextIdentifier, certificatePath string) ClientOpts {
 	return ClientOpts{
 		Client:              resty.New(),
-		URL:                 "https://ksef-test.mf.gov.pl",
+		URL:                 "https://ksef-test.mf.gov.pl/api/v2",
 		ContextIdentifier:   contextIdentifier,
 		CertificatePath:     certificatePath,
 		CertificatePassword: "",
@@ -61,12 +61,12 @@ func WithCertificatePassword(password string) ClientOptFunc {
 
 // WithProductionURL sets the client url to KSeF production
 func WithProductionURL(o *ClientOpts) {
-	o.URL = "https://ksef.mf.gov.pl"
+	o.URL = "https://ksef.mf.gov.pl/api/v2"
 }
 
 // WithDemoURL sets the client url to KSeF demo
 func WithDemoURL(o *ClientOpts) {
-	o.URL = "https://ksef-demo.mf.gov.pl"
+	o.URL = "https://ksef-demo.mf.gov.pl/api/v2"
 }
 
 // NewClient returns a KSeF API client
@@ -81,13 +81,13 @@ func NewClient(contextIdentifier *ContextIdentifier, certificatePath string, opt
 }
 
 // Performs the complete authentication flow
-func (c *Client) Authenticate(ctx context.Context, contextIdentifier *ContextIdentifier) error {
+func (c *Client) Authenticate(ctx context.Context) error {
 	challenge, err := fetchChallenge(ctx, c)
 	if err != nil {
 		return err
 	}
 
-	authResp, err := authorizeWithCertificate(ctx, c, challenge, contextIdentifier)
+	authResp, err := authorizeWithCertificate(ctx, c, challenge, c.ContextIdentifier)
 	if err != nil {
 		return err
 	}

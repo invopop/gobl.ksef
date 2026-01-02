@@ -99,7 +99,7 @@ func initTokenSession(ctx context.Context, c *Client, token []byte, challenge st
 			Identifier: &InitSessionTokenIdentifier{
 				Namespace:  XSINamespace,
 				Type:       XSIType,
-				Identifier: c.ID,
+				Identifier: c.ContextIdentifier.Nip,
 			},
 			Challenge: challenge,
 			DocumentType: &InitSessionTokenDocumentType{

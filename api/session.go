@@ -43,11 +43,16 @@ type TerminateSessionResponse struct {
 
 // TerminateSession ends the current session
 func TerminateSession(ctx context.Context, s *Client) (*TerminateSessionResponse, error) {
+	token, err := s.AccessTokenValue(ctx)
+	if err != nil {
+		return nil, err
+	}
+
 	response := &TerminateSessionResponse{}
 	resp, err := s.Client.R().
 		SetResult(response).
 		SetContext(ctx).
-		SetHeader("SessionToken", s.SessionToken).
+		SetAuthToken(token).
 		Get(s.URL + "/api/online/Session/Terminate")
 	if err != nil {
 		return nil, err
@@ -61,11 +66,16 @@ func TerminateSession(ctx context.Context, s *Client) (*TerminateSessionResponse
 
 // GetSessionStatus gets the session status of the current session
 func GetSessionStatus(ctx context.Context, c *Client) (*SessionStatusResponse, error) {
+	token, err := c.AccessTokenValue(ctx)
+	if err != nil {
+		return nil, err
+	}
+
 	response := &SessionStatusResponse{}
 	resp, err := c.Client.R().
 		SetResult(response).
 		SetContext(ctx).
-		SetHeader("SessionToken", c.SessionToken).
+		SetAuthToken(token).
 		Get(c.URL + "/api/online/Session/Status")
 	if err != nil {
 		return nil, err
@@ -79,11 +89,17 @@ func GetSessionStatus(ctx context.Context, c *Client) (*SessionStatusResponse, e
 
 // GetSessionStatusByReference gets the session status by reference number
 func GetSessionStatusByReference(ctx context.Context, c *Client) (*SessionStatusByReferenceResponse, error) {
+	token, err := c.AccessTokenValue(ctx)
+	if err != nil {
+		return nil, err
+	}
+
 	response := &SessionStatusByReferenceResponse{}
 	resp, err := c.Client.R().
 		SetResult(response).
 		SetContext(ctx).
-		Get(c.URL + "/api/common/Status/" + c.SessionReference)
+		SetAuthToken(token).
+		Get(c.URL + "/api/common/Status/") // TODO this needs to be fixed
 	if err != nil {
 		return nil, err
 	}

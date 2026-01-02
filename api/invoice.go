@@ -72,13 +72,19 @@ func SendInvoice(ctx context.Context, c *Client, data []byte) (*SendInvoiceRespo
 			InvoiceBody: contentBase64,
 		},
 	}
+
+	token, err := c.AccessTokenValue(ctx)
+	if err != nil {
+		return nil, err
+	}
+
 	response := &SendInvoiceResponse{}
 	resp, err := c.Client.R().
 		SetResult(&response).
 		SetBody(request).
 		SetContext(ctx).
 		SetHeader("Content-Type", "application/json").
-		SetHeader("SessionToken", c.SessionToken).
+		SetAuthToken(token).
 		Put(c.URL + "/api/online/Invoice/Send")
 	if err != nil {
 		return nil, err
@@ -92,10 +98,15 @@ func SendInvoice(ctx context.Context, c *Client, data []byte) (*SendInvoiceRespo
 
 // FetchInvoiceStatus gets the status of the invoice being processed
 func FetchInvoiceStatus(ctx context.Context, c *Client, referenceNumber string) (*InvoiceStatusResponse, error) {
+	token, err := c.AccessTokenValue(ctx)
+	if err != nil {
+		return nil, err
+	}
+
 	response := &InvoiceStatusResponse{}
 	resp, err := c.Client.R().
 		SetResult(response).
-		SetHeader("SessionToken", c.SessionToken).
+		SetAuthToken(token).
 		SetContext(ctx).
 		Get(c.URL + "/api/online/Invoice/Status/" + referenceNumber)
 	if err != nil {

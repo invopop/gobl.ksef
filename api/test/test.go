@@ -1,4 +1,6 @@
 // Package api_test provides tools for testing the api
+// TODO: this file will be temporarily unused, for now the tests will be querying the real API
+
 package api_test
 
 import (
@@ -35,7 +37,7 @@ func Client() (*ksef_api.Client, error) {
 	)
 
 	ctx := context.Background()
-	err = ksef_api.FetchSessionToken(ctx, client)
+	err = client.Authenticate(ctx)
 	if err != nil {
 		return nil, err
 	}
