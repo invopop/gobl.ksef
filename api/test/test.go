@@ -29,10 +29,9 @@ func Client() (*ksef_api.Client, error) {
 		httpmock.NewJsonResponderOrPanic(200, &ksef_api.InitSessionTokenResponse{ReferenceNumber: "ExampleReferenceNumber", SessionToken: &ksef_api.SessionToken{Token: sessionToken}}))
 
 	client := ksef_api.NewClient(
+		&ksef_api.ContextIdentifier{Nip: "8126178616"},
+		"api/test/cert-20260102-131809.pfx",
 		ksef_api.WithClient(mockClient),
-		ksef_api.WithID("1234567788"),
-		ksef_api.WithToken("624A48824F01935DADE66C83D4874C0EF7AF0529CB5F0F412E6932F189D3864A"),
-		ksef_api.WithCertificatePath("./keys/test.pem"),
 	)
 
 	ctx := context.Background()

@@ -19,12 +19,12 @@ type ClientOpts struct {
 	CertificatePassword string             // Password to certificate above
 }
 
-func defaultClientOpts() ClientOpts {
+func defaultClientOpts(contextIdentifier *ContextIdentifier, certificatePath string) ClientOpts {
 	return ClientOpts{
 		Client:              resty.New(),
 		URL:                 "https://ksef-test.mf.gov.pl",
-		ContextIdentifier:   &ContextIdentifier{},
-		CertificatePath:     "",
+		ContextIdentifier:   contextIdentifier,
+		CertificatePath:     certificatePath,
 		CertificatePassword: "",
 	}
 }
@@ -50,22 +50,6 @@ func WithDebugClient() ClientOptFunc {
 	}
 }
 
-// TODO: move obligatory options to constructor, leave optional settings as functions
-
-// WithContextIdentifier sets the context identifier for the requests
-func WithContextIdentifier(contextIdentifier *ContextIdentifier) ClientOptFunc {
-	return func(o *ClientOpts) {
-		o.ContextIdentifier = contextIdentifier
-	}
-}
-
-// WithCertificatePath sets the path to the .p12 / .pfx file for KSeF API authorization
-func WithCertificatePath(keyPath string) ClientOptFunc {
-	return func(o *ClientOpts) {
-		o.CertificatePath = keyPath
-	}
-}
-
 // WithCertificatePassword allows passing the password to the certificate above
 func WithCertificatePassword(password string) ClientOptFunc {
 	return func(o *ClientOpts) {
@@ -84,8 +68,8 @@ func WithDemoURL(o *ClientOpts) {
 }
 
 // NewClient returns a KSeF API client
-func NewClient(opts ...ClientOptFunc) *Client {
-	o := defaultClientOpts()
+func NewClient(contextIdentifier *ContextIdentifier, certificatePath string, opts ...ClientOptFunc) *Client {
+	o := defaultClientOpts(contextIdentifier, certificatePath)
 	for _, fn := range opts {
 		fn(&o)
 	}

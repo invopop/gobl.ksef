@@ -39,6 +39,7 @@ func (c *sendOpts) runE(cmd *cobra.Command, args []string) error {
 	nip := inputNip(args)
 	token := inputToken(args)
 	keyPath := inputKeyPath(args)
+	_ = token
 
 	input, err := openInput(cmd, args)
 	if err != nil {
@@ -57,9 +58,8 @@ func (c *sendOpts) runE(cmd *cobra.Command, args []string) error {
 	}
 
 	client := ksef_api.NewClient(
-		ksef_api.WithID(nip),
-		ksef_api.WithToken(token),
-		ksef_api.WithCertificatePath(keyPath),
+		&ksef_api.ContextIdentifier{Nip: nip},
+		keyPath,
 	)
 
 	env, err := SendInvoice(client, data)
