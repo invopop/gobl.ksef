@@ -22,7 +22,7 @@ func Client() (*ksef_api.Client, error) {
 	}
 
 	httpmock.RegisterResponder("POST", "https://ksef-test.mf.gov.pl/api/online/Session/AuthorisationChallenge",
-		httpmock.NewJsonResponderOrPanic(200, &ksef_api.AuthorisationChallengeResponse{Timestamp: reqT, Challenge: "20240126-CR-077CAFEC31-83ACAC25E4-64"}))
+		httpmock.NewJsonResponderOrPanic(200, &ksef_api.AuthorizationChallengeResponse{Timestamp: reqT, Challenge: "20240126-CR-077CAFEC31-83ACAC25E4-64"}))
 
 	sessionToken := "exampleSessionToken"
 	httpmock.RegisterResponder("POST", "https://ksef-test.mf.gov.pl/api/online/Session/InitToken",
@@ -32,7 +32,7 @@ func Client() (*ksef_api.Client, error) {
 		ksef_api.WithClient(mockClient),
 		ksef_api.WithID("1234567788"),
 		ksef_api.WithToken("624A48824F01935DADE66C83D4874C0EF7AF0529CB5F0F412E6932F189D3864A"),
-		ksef_api.WithKeyPath("./keys/test.pem"),
+		ksef_api.WithCertificatePath("./keys/test.pem"),
 	)
 
 	ctx := context.Background()

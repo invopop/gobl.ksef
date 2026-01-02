@@ -59,7 +59,7 @@ func (c *sendOpts) runE(cmd *cobra.Command, args []string) error {
 	client := ksef_api.NewClient(
 		ksef_api.WithID(nip),
 		ksef_api.WithToken(token),
-		ksef_api.WithKeyPath(keyPath),
+		ksef_api.WithCertificatePath(keyPath),
 	)
 
 	env, err := SendInvoice(client, data)
