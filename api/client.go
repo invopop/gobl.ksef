@@ -17,6 +17,8 @@ type ClientOpts struct {
 	ContextIdentifier   *ContextIdentifier // Identifies the business entity the requests are made for
 	CertificatePath     string             // Path to the .p12 / .pfx certificate for KSeF API authorization
 	CertificatePassword string             // Password to certificate above
+	AccessToken         *ApiToken          // Access token used for making most of the requests
+	RefreshToken        *ApiToken          // Refresh token used for refreshing the access token
 }
 
 func defaultClientOpts(contextIdentifier *ContextIdentifier, certificatePath string) ClientOpts {
@@ -79,27 +81,29 @@ func NewClient(contextIdentifier *ContextIdentifier, certificatePath string, opt
 }
 
 // Performs the complete authentication flow
-func (c *Client) Authenticate(ctx context.Context, contextIdentifier *ContextIdentifier) (*ExchangeResponse, error) {
+func (c *Client) Authenticate(ctx context.Context, contextIdentifier *ContextIdentifier) error {
 	challenge, err := fetchChallenge(ctx, c)
 	if err != nil {
-		return nil, err
+		return err
 	}
 
 	authResp, err := authorizeWithCertificate(ctx, c, challenge, contextIdentifier)
 	if err != nil {
-		return nil, err
+		return err
 	}
 
 	err = pollAuthorizationStatus(ctx, c, authResp.ReferenceNumber, authResp.AuthenticationToken)
 	if err != nil {
-		return nil, err
+		return err
 	}
 
 	exchResp, err := exchangeToken(ctx, c, authResp.AuthenticationToken)
 	if err != nil {
-		return nil, err
+		return err
 	}
 
-	// TODO: save tokens to the client
-	return exchResp, nil
+	c.AccessToken = exchResp.AccessToken
+	c.RefreshToken = exchResp.RefreshToken
+
+	return nil
 }
