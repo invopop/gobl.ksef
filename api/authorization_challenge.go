@@ -85,48 +85,17 @@ func fetchChallenge(ctx context.Context, c *Client) (*AuthorizationChallengeResp
 }
 
 func authorizeWithCertificate(ctx context.Context, c *Client, challenge *AuthorizationChallengeResponse, contextIdentifier *ContextIdentifier) (*AuthorizationResponse, error) {
-	xades := &xmldsig.XAdESConfig{} // for XAdES-BES, leave empty - config is needed for other types
-	cert, err := xmldsig.LoadCertificate(c.CertificatePath, c.CertificatePassword)
-	if err != nil {
-		return nil, fmt.Errorf("failed to load certificate: %w", err)
-	}
-
-	subjectIdentifierType := "certificateSubject"
-	if contextIdentifier.NipVatUe != "" {
-		subjectIdentifierType = "certificateFingerprint"
-	}
-
-	requestBody := &AuthorizationRequest{
-		// Xmlns:                 "http://ksef.mf.gov.pl/auth/token/2.0",
-		XmlnsXsi:              "http://www.w3.org/2001/XMLSchema-instance",
-		XmlnsXsd:              "http://www.w3.org/2001/XMLSchema",
-		Challenge:             challenge.Challenge,
-		ContextIdentifier:     contextIdentifier,
-		SubjectIdentifierType: subjectIdentifierType,
-	}
-
-	requestStr, err := xml.Marshal(requestBody)
-	if err != nil {
-		return nil, err
-	}
-	requestBody.Signature, err = xmldsig.Sign(requestStr,
-		xmldsig.WithCertificate(cert),
-		xmldsig.WithXAdES(xades),
-	)
+	signedRequestStr, err := buildSignedAuthorizationRequest(c, challenge, contextIdentifier)
 	if err != nil {
 		return nil, err
 	}
 
-	signedRequestStr, err := xml.Marshal(requestBody)
-	if err != nil {
-		return nil, err
-	}
-
-	fmt.Println(string(signedRequestStr))
+	// fmt.Println(string(signedRequestStr))
 
 	response := &AuthorizationResponse{}
 	resp, err := c.Client.R().
 		SetHeader("Content-Type", "application/xml").
+		SetHeader("Accept", "application/json"). // request body is in XML, but response is in JSON
 		SetBody(signedRequestStr).
 		SetResult(response).
 		SetContext(ctx).
