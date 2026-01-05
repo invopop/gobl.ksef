@@ -5,55 +5,57 @@ import (
 	"encoding/xml"
 )
 
-// SessionStatusByReferenceResponse defines the response of the session status
-type SessionStatusByReferenceResponse struct {
-	ProcessingCode        int    `json:"processingCode"`
-	ProcessingDescription string `json:"processingDescription"`
-	ReferenceNumber       string `json:"referenceNumber"`
-	Timestamp             string `json:"timestamp"`
-	Upo                   string `json:"upo"`
+type CreateSessionFormCode struct {
+	SystemCode    string `json:"systemCode"`
+	SchemaVersion string `json:"schemaVersion"`
+	Value         string `json:"value"`
 }
 
-// SessionStatusResponse defines the response of the session status
-type SessionStatusResponse struct {
-	Timestamp             string `json:"timestamp"`
-	ReferenceNumber       string `json:"referenceNumber"`
-	ProcessingCode        int    `json:"processingCode"`
-	ProcessingDescription string `json:"processingDescription"`
-	NumberOfElements      int    `json:"numberOfElements"`
-	PageSize              int    `json:"pageSize"`
-	PageOffset            int    `json:"pageOffset"`
-	InvoiceStatusList     []struct {
-		AcquisitionTimestamp   string `json:"acquisitionTimestamp"`
-		ElementReferenceNumber string `json:"elementReferenceNumber"`
-		InvoiceNumber          string `json:"invoiceNumber"`
-		KSefReferenceNumber    string `json:"ksefReferenceNumber"`
-		ProcessingCode         int    `json:"processingCode"`
-		ProcessingDescription  string `json:"processingDescription"`
-	} `json:"invoiceStatusList"`
+type CreateSessionEncryption struct {
+	EncryptedSymmetricKey string `json:"encryptedSymmetricKey"`
+	InitializationVector  string `json:"initializationVector"`
 }
 
-// TerminateSessionResponse defines the response of the session termination
-type TerminateSessionResponse struct {
-	Timestamp             string `json:"timestamp"`
-	ReferenceNumber       string `json:"referenceNumber"`
-	ProcessingCode        int    `json:"processingCode"`
-	ProcessingDescription string `json:"processingDescription"`
+type CreateSessionRequest struct {
+	FormCode   CreateSessionFormCode   `json:"formCode"`
+	Encryption CreateSessionEncryption `json:"encryption"`
 }
 
-// TerminateSession ends the current session
-func TerminateSession(ctx context.Context, s *Client) (*TerminateSessionResponse, error) {
+type CreateSessionResponse struct {
+	ReferenceNumber string `json:"referenceNumber"`
+	ValidUntil      string `json:"validUntil"`
+}
+
+// CreateSession opens a new upload session in online (interactive) mode, allowing to upload invoices one by one
+// (There exists also a batch mode, where a ZIP file can be uploaded)
+func CreateSession(ctx context.Context, s *Client) (*CreateSessionResponse, error) {
 	token, err := s.AccessTokenValue(ctx)
 	if err != nil {
 		return nil, err
 	}
 
-	response := &TerminateSessionResponse{}
+	request := &CreateSessionRequest{
+		FormCode: CreateSessionFormCode{
+			SystemCode:    "FA (3)",
+			SchemaVersion: "1-0E",
+			Value:         "FA",
+		},
+		Encryption: CreateSessionEncryption{
+			// Per-session AES-256-CBC symmetric key, encrypted with RSA public key obtained from KSeF API
+			EncryptedSymmetricKey: "KEY",
+			// Per-session AES-256-CBC initialization vector
+			InitializationVector: "IV",
+		},
+	}
+	response := &CreateSessionResponse{}
+
 	resp, err := s.Client.R().
+		SetBody(request).
 		SetResult(response).
 		SetContext(ctx).
 		SetAuthToken(token).
-		Get(s.URL + "/api/online/Session/Terminate")
+		Post(s.URL + "/sessions/online")
+
 	if err != nil {
 		return nil, err
 	}
@@ -64,50 +66,31 @@ func TerminateSession(ctx context.Context, s *Client) (*TerminateSessionResponse
 	return response, nil
 }
 
-// GetSessionStatus gets the session status of the current session
-func GetSessionStatus(ctx context.Context, c *Client) (*SessionStatusResponse, error) {
-	token, err := c.AccessTokenValue(ctx)
-	if err != nil {
-		return nil, err
-	}
-
-	response := &SessionStatusResponse{}
-	resp, err := c.Client.R().
-		SetResult(response).
-		SetContext(ctx).
-		SetAuthToken(token).
-		Get(c.URL + "/api/online/Session/Status")
-	if err != nil {
-		return nil, err
-	}
-	if resp.IsError() {
-		return nil, newErrorResponse(resp)
-	}
-
-	return response, nil
+// UploadInvoice uploads a new invoice.
+func UploadInvoice(ctx context.Context, s *Client) {
+	// TODO complete
 }
 
-// GetSessionStatusByReference gets the session status by reference number
-func GetSessionStatusByReference(ctx context.Context, c *Client) (*SessionStatusByReferenceResponse, error) {
-	token, err := c.AccessTokenValue(ctx)
+// TerminateSession ends the current session. When the session is terminated, all uploaded invoices start
+// to be processed by the KSeF system.
+func TerminateSession(referenceNumber string, ctx context.Context, s *Client) error {
+	token, err := s.AccessTokenValue(ctx)
 	if err != nil {
-		return nil, err
+		return err
 	}
 
-	response := &SessionStatusByReferenceResponse{}
-	resp, err := c.Client.R().
-		SetResult(response).
+	resp, err := s.Client.R().
 		SetContext(ctx).
 		SetAuthToken(token).
-		Get(c.URL + "/api/common/Status/") // TODO this needs to be fixed
+		Post(s.URL + "/sessions/online/" + referenceNumber + "/close")
 	if err != nil {
-		return nil, err
+		return err
 	}
 	if resp.IsError() {
-		return nil, newErrorResponse(resp)
+		return newErrorResponse(resp)
 	}
 
-	return response, nil
+	return nil
 }
 
 func bytes(d InitSessionTokenRequest) ([]byte, error) {
