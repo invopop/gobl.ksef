@@ -115,31 +115,35 @@ func buildSignedAuthorizationRequest(c *Client, challenge *AuthorizationChalleng
 	// Reformat X509IssuerName to format that KSeF API expects
 	// Actual: SERIALNUMBER=TINPL-8126178616,CN=A R,C=PL,2.5.4.42=#130141,2.5.4.4=#130152
 	// Expected: G=A, SN=R, SERIALNUMBER=TINPL-8126178616, CN=A R, C=PL
-	issuerNameElem := root.FindElement(".//X509IssuerName")
 
-	issuerGivenName := ""
-	issuerSurname := ""
-	issuerFullName := ""
-	issuerCountry := ""
-	issuerSerialNumber := ""
-	for _, name := range cert.Subject.Names {
-		if name.Type.String() == "2.5.4.6" {
-			issuerCountry = name.Value.(string)
-		}
-		if name.Type.String() == "2.5.4.3" {
-			issuerFullName = name.Value.(string)
-		}
-		if name.Type.String() == "2.5.4.5" {
-			issuerSerialNumber = name.Value.(string)
-		}
-		if name.Type.String() == "2.5.4.4" {
-			issuerSurname = name.Value.(string)
-		}
-		if name.Type.String() == "2.5.4.42" {
-			issuerGivenName = name.Value.(string)
-		}
-	}
-	issuerNameElem.SetText(fmt.Sprintf("G=%s, SN=%s, SERIALNUMBER=%s, CN=%s, C=%s", issuerGivenName, issuerSurname, issuerSerialNumber, issuerFullName, issuerCountry))
+	// WRONG - THIS ELEMENT IS ALREADY SIGNED and we must not modify it after signing
+	// TODO move the reformatting to the signing library, as we must use this exact code to generate X509IssuerName
+
+	// issuerNameElem := root.FindElement(".//X509IssuerName")
+
+	// issuerGivenName := ""
+	// issuerSurname := ""
+	// issuerFullName := ""
+	// issuerCountry := ""
+	// issuerSerialNumber := ""
+	// for _, name := range cert.Subject.Names {
+	// 	if name.Type.String() == "2.5.4.6" {
+	// 		issuerCountry = name.Value.(string)
+	// 	}
+	// 	if name.Type.String() == "2.5.4.3" {
+	// 		issuerFullName = name.Value.(string)
+	// 	}
+	// 	if name.Type.String() == "2.5.4.5" {
+	// 		issuerSerialNumber = name.Value.(string)
+	// 	}
+	// 	if name.Type.String() == "2.5.4.4" {
+	// 		issuerSurname = name.Value.(string)
+	// 	}
+	// 	if name.Type.String() == "2.5.4.42" {
+	// 		issuerGivenName = name.Value.(string)
+	// 	}
+	// }
+	// issuerNameElem.SetText(fmt.Sprintf("G=%s, SN=%s, SERIALNUMBER=%s, CN=%s, C=%s", issuerGivenName, issuerSurname, issuerSerialNumber, issuerFullName, issuerCountry))
 
 	// Serialize!
 
