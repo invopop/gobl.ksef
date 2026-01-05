@@ -96,10 +96,20 @@ func buildSignedAuthorizationRequest(c *Client, challenge *AuthorizationChalleng
 	}
 	root.AddChild(signature)
 
-	// Add missing namespaces
+	// Reattach existing attributes in different order and add missing namespaces
+	// In the reference it is Target, xmlns:xades, xmlns
+	// Order is important, as it is used to calculate the hash of the signed properties
 
-	// TODO: order of fields is different from reference, in the reference it is Target, xmlns:xades, xmlns
 	qualPropsElem := root.FindElement(".//QualifyingProperties")
+	target := qualPropsElem.SelectAttr("Target").Value
+	// fmt.Println(target)
+	xadesNS := qualPropsElem.SelectAttr("xmlns:xades").Value
+	// fmt.Println(xadesNS)
+	qualPropsElem.RemoveAttr("Target")
+	qualPropsElem.RemoveAttr("xmlns:xades")
+
+	qualPropsElem.CreateAttr("Target", target)
+	qualPropsElem.CreateAttr("xmlns:xades", xadesNS)
 	qualPropsElem.CreateAttr("xmlns", "http://www.w3.org/2000/09/xmldsig#")
 
 	// Reformat X509IssuerName to format that KSeF API expects

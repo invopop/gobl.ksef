@@ -90,7 +90,13 @@ func authorizeWithCertificate(ctx context.Context, c *Client, challenge *Authori
 		return nil, err
 	}
 
+	// Uncomment for debugging:
+
 	// fmt.Println(string(signedRequestStr))
+	// err = os.WriteFile("output.xml", signedRequestStr, 0644)
+	// if err != nil {
+	// 	return nil, fmt.Errorf("failed to write output.xml: %w", err)
+	// }
 
 	response := &AuthorizationResponse{}
 	resp, err := c.Client.R().
