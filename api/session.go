@@ -2,6 +2,8 @@ package api
 
 import (
 	"context"
+	"fmt"
+	"time"
 )
 
 type CreateSessionFormCode struct {
@@ -30,6 +32,16 @@ type UploadSession struct {
 	ValidUntil           string
 	SymmetricKey         []byte
 	InitializationVector []byte
+}
+
+// Note that there are more fields, but we only need these for now
+type SessionStatus struct {
+	Code        int    `json:"code"`
+	Description string `json:"description"`
+}
+
+type SessionStatusResponse struct {
+	Status *SessionStatus `json:"status"`
 }
 
 // CreateSession opens a new upload session in online (interactive) mode, allowing to upload invoices one by one
@@ -101,4 +113,51 @@ func TerminateSession(session *UploadSession, ctx context.Context, s *Client) er
 	}
 
 	return nil
+}
+
+// PollSessionStatus checks the status of a session after upload is completed.
+func PollSessionStatus(ctx context.Context, session *UploadSession, s *Client) (*SessionStatusResponse, error) {
+	if session == nil {
+		return nil, fmt.Errorf("upload session is nil")
+	}
+
+	token, err := s.AccessTokenValue(ctx)
+	if err != nil {
+		return nil, err
+	}
+
+	attempt := 0
+	for {
+		attempt++
+		if attempt > 30 {
+			return nil, fmt.Errorf("session polling count exceeded")
+		}
+
+		response := &SessionStatusResponse{}
+		resp, err := s.Client.R().
+			SetContext(ctx).
+			SetAuthToken(token).
+			SetResult(response).
+			Get(s.URL + "/sessions/" + session.ReferenceNumber)
+		if err != nil {
+			return nil, err
+		}
+		if resp.IsError() {
+			return nil, newErrorResponse(resp)
+		}
+
+		if response.Status == nil {
+			return nil, fmt.Errorf("session status missing in response")
+		}
+
+		switch response.Status.Code {
+		case 100, 150, 170: // still processing
+			time.Sleep(2 * time.Second)
+			continue
+		case 200:
+			return response, nil
+		default:
+			return nil, fmt.Errorf("session failed: %s", response.Status.Description)
+		}
+	}
 }

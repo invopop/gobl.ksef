@@ -35,5 +35,8 @@ func TestUploadInvoice(t *testing.T) {
 
 		err = ksef_api.TerminateSession(uploadSession, ctx, client)
 		assert.NoError(t, err)
+
+		_, err = ksef_api.PollSessionStatus(ctx, uploadSession, client)
+		assert.NoError(t, err)
 	})
 }
