@@ -40,12 +40,10 @@ func TestUploadInvoice(t *testing.T) {
 		_, err = ksef_api.PollSessionStatus(ctx, uploadSession, client)
 		assert.NoError(t, err)
 
-		if err != nil {
-			failedUploads, err := ksef_api.GetFailedUploadData(ctx, uploadSession, client)
-			assert.NoError(t, err)
-			for _, inv := range failedUploads.Invoices {
-				fmt.Printf("Failed invoice %s (ordinal %d): %+v\n", inv.ReferenceNumber, inv.OrdinalNumber, inv.Status)
-			}
+		failedUploads, err := ksef_api.GetFailedUploadData(ctx, uploadSession, client)
+		assert.NoError(t, err)
+		for _, inv := range failedUploads {
+			fmt.Printf("Failed invoice %s (ordinal %d): %+v\n", inv.ReferenceNumber, inv.OrdinalNumber, inv.Status)
 		}
 	})
 }

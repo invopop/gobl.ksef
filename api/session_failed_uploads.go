@@ -23,8 +23,8 @@ type FailedUploadInvoicesResponse struct {
 	Invoices          []FailedUploadInvoice `json:"invoices"`
 }
 
-// GetFailedUploadData lists invoices that failed during upload for the session.
-func GetFailedUploadData(ctx context.Context, session *UploadSession, s *Client) (*FailedUploadInvoicesResponse, error) {
+// GetFailedUploadData lists invoices that failed during upload for the session, following continuation tokens if needed.
+func GetFailedUploadData(ctx context.Context, session *UploadSession, s *Client) ([]FailedUploadInvoice, error) {
 	if session == nil {
 		return nil, fmt.Errorf("upload session is nil")
 	}
@@ -34,18 +34,37 @@ func GetFailedUploadData(ctx context.Context, session *UploadSession, s *Client)
 		return nil, err
 	}
 
-	response := &FailedUploadInvoicesResponse{}
-	resp, err := s.Client.R().
-		SetContext(ctx).
-		SetAuthToken(token).
-		SetResult(response).
-		Get(s.URL + "/sessions/" + session.ReferenceNumber + "/invoices/failed")
-	if err != nil {
-		return nil, err
-	}
-	if resp.IsError() {
-		return nil, newErrorResponse(resp)
+	var (
+		allInvoices       []FailedUploadInvoice
+		continuationToken string
+	)
+
+	for {
+		response := &FailedUploadInvoicesResponse{}
+
+		req := s.Client.R().
+			SetContext(ctx).
+			SetAuthToken(token).
+			SetResult(response)
+		if continuationToken != "" {
+			req.SetHeader("x-continuation-token", continuationToken)
+		}
+
+		resp, err := req.Get(s.URL + "/sessions/" + session.ReferenceNumber + "/invoices/failed")
+		if err != nil {
+			return nil, err
+		}
+		if resp.IsError() {
+			return nil, newErrorResponse(resp)
+		}
+
+		allInvoices = append(allInvoices, response.Invoices...)
+
+		if response.ContinuationToken == "" {
+			break
+		}
+		continuationToken = response.ContinuationToken
 	}
 
-	return response, nil
+	return allInvoices, nil
 }
