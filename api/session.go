@@ -26,9 +26,16 @@ type CreateSessionResponse struct {
 	ValidUntil      string `json:"validUntil"`
 }
 
+type UploadSession struct {
+	ReferenceNumber      string
+	ValidUntil           string
+	SymmetricKey         []byte
+	InitializationVector []byte
+}
+
 // CreateSession opens a new upload session in online (interactive) mode, allowing to upload invoices one by one
 // (There exists also a batch mode, where a ZIP file can be uploaded)
-func CreateSession(ctx context.Context, s *Client) (*CreateSessionResponse, error) {
+func CreateSession(ctx context.Context, s *Client) (*UploadSession, error) {
 	token, err := s.AccessTokenValue(ctx)
 	if err != nil {
 		return nil, err
@@ -38,7 +45,7 @@ func CreateSession(ctx context.Context, s *Client) (*CreateSessionResponse, erro
 		return nil, err
 	}
 
-	encryption, err := buildSessionEncryption(publicKeyCertificate.Certificate)
+	encryption, symmetricKey, initializationVector, err := buildSessionEncryption(publicKeyCertificate.Certificate)
 	if err != nil {
 		return nil, err
 	}
@@ -67,7 +74,12 @@ func CreateSession(ctx context.Context, s *Client) (*CreateSessionResponse, erro
 		return nil, newErrorResponse(resp)
 	}
 
-	return response, nil
+	return &UploadSession{
+		ReferenceNumber:      response.ReferenceNumber,
+		ValidUntil:           response.ValidUntil,
+		SymmetricKey:         symmetricKey,
+		InitializationVector: initializationVector,
+	}, nil
 }
 
 // UploadInvoice uploads a new invoice.

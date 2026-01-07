@@ -10,32 +10,32 @@ import (
 )
 
 // buildSessionEncryption generates AES key/IV pair and encrypts the key using the RSA certificate.
-// This is necessary when uploading and downloading invoices to/from the KSeF API.
-func buildSessionEncryption(certificate string) (*CreateSessionEncryption, error) {
+// It returns both the payload required by the API and the raw values so they can encrypt invoice data later.
+func buildSessionEncryption(certificate string) (*CreateSessionEncryption, []byte, []byte, error) {
 	publicKey, err := certificateToPublicKey(certificate)
 	if err != nil {
-		return nil, err
+		return nil, nil, nil, err
 	}
 
 	symmetricKey, err := randomBytes(32)
 	if err != nil {
-		return nil, err
+		return nil, nil, nil, err
 	}
 
 	initializationVector, err := randomBytes(16)
 	if err != nil {
-		return nil, err
+		return nil, nil, nil, err
 	}
 
 	encryptedSymmetricKey, err := rsa.EncryptOAEP(sha256.New(), rand.Reader, publicKey, symmetricKey, nil)
 	if err != nil {
-		return nil, fmt.Errorf("encrypt symmetric key: %w", err)
+		return nil, nil, nil, fmt.Errorf("encrypt symmetric key: %w", err)
 	}
 
 	return &CreateSessionEncryption{
 		EncryptedSymmetricKey: base64.StdEncoding.EncodeToString(encryptedSymmetricKey),
 		InitializationVector:  base64.StdEncoding.EncodeToString(initializationVector),
-	}, nil
+	}, symmetricKey, initializationVector, nil
 }
 
 func certificateToPublicKey(encoded string) (*rsa.PublicKey, error) {

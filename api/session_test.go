@@ -25,5 +25,7 @@ func TestCreateSession(t *testing.T) {
 		require.NoError(t, err)
 		assert.NotEmpty(t, resp.ReferenceNumber)
 		assert.NotEmpty(t, resp.ValidUntil)
+		assert.Len(t, resp.SymmetricKey, 32)
+		assert.Len(t, resp.InitializationVector, 16)
 	})
 }
