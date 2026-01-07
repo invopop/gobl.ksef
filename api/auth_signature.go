@@ -18,12 +18,17 @@ func buildSignedAuthorizationRequest(c *Client, challenge *AuthorizationChalleng
 	// 1. Assembly the XML request - the signing library requires XML as an etree object
 
 	doc := etree.NewDocument()
-	doc.CreateProcInst("xml", `version="1.0" encoding="UTF-8"`)
+	doc.CreateProcInst("xml", `version="1.0" encoding="utf-8"`)
 
 	root := doc.CreateElement("AuthTokenRequest")
 	root.CreateAttr("xmlns:xsi", "http://www.w3.org/2001/XMLSchema-instance")
 	root.CreateAttr("xmlns:xsd", "http://www.w3.org/2001/XMLSchema")
 	root.CreateAttr("xmlns", "http://ksef.mf.gov.pl/auth/token/2.0")
+
+	fmt.Println("Before setting challenge")
+	fmt.Println(doc.WriteToString())
+	fmt.Println("")
+	fmt.Println("")
 
 	root.CreateElement("Challenge").SetText(challenge.Challenge)
 
@@ -71,13 +76,15 @@ func buildSignedAuthorizationRequest(c *Client, challenge *AuthorizationChalleng
 	}
 
 	// 3. Sign the XML request
-	canonicalizerSignedInfo := dsig.MakeC14N10RecCanonicalizer()                        // http://www.w3.org/TR/2001/REC-xml-c14n-20010315
+	canonicalizerSignedInfo := dsig.MakeC14N10ExclusiveCanonicalizerWithPrefixList("") // http://www.w3.org/TR/2001/REC-xml-c14n-20010315
+	// Using exclusive canonicalizer resulted in xsi and xsd attributes disappearing from AuthTokenRequest
+	canonicalizerData := dsig.MakeC14N10RecCanonicalizer()                              // http://www.w3.org/TR/2001/REC-xml-c14n-20010315
 	canonicalizerSignedProps := dsig.MakeC14N10ExclusiveCanonicalizerWithPrefixList("") // http://www.w3.org/2001/10/xml-exc-c14n#
 
 	// Taken from example in library docs
 	signContext := xades.SigningContext{
 		DataContext: xades.SignedDataContext{
-			Canonicalizer: canonicalizerSignedProps,
+			Canonicalizer: canonicalizerData,
 			Hash:          crypto.SHA256,
 			ReferenceURI:  "",
 			IsEnveloped:   true,
@@ -86,66 +93,17 @@ func buildSignedAuthorizationRequest(c *Client, challenge *AuthorizationChalleng
 			Canonicalizer: canonicalizerSignedProps,
 			Hash:          crypto.SHA256,
 		},
-		Canonicalizer: canonicalizerSignedInfo,
-		Hash:          crypto.SHA256,
-		KeyStore:      store,
+		Canonicalizer:     canonicalizerSignedInfo,
+		Hash:              crypto.SHA256,
+		KeyStore:          store,
+		IssuerSerializer:  xades.IssuerSerializerKSeF,
+		SigningTimeFormat: xades.SigningTimeFormatKSeF,
 	}
 	signature, err := xades.CreateSignature(root, &signContext)
 	if err != nil {
 		return nil, err
 	}
 	root.AddChild(signature)
-
-	// Reattach existing attributes in different order and add missing namespaces
-	// In the reference it is Target, xmlns:xades, xmlns
-	// Order is important, as it is used to calculate the hash of the signed properties
-
-	qualPropsElem := root.FindElement(".//QualifyingProperties")
-	target := qualPropsElem.SelectAttr("Target").Value
-	// fmt.Println(target)
-	xadesNS := qualPropsElem.SelectAttr("xmlns:xades").Value
-	// fmt.Println(xadesNS)
-	qualPropsElem.RemoveAttr("Target")
-	qualPropsElem.RemoveAttr("xmlns:xades")
-
-	qualPropsElem.CreateAttr("Target", target)
-	qualPropsElem.CreateAttr("xmlns:xades", xadesNS)
-	qualPropsElem.CreateAttr("xmlns", "http://www.w3.org/2000/09/xmldsig#")
-
-	// Reformat X509IssuerName to format that KSeF API expects
-	// Actual: SERIALNUMBER=TINPL-8126178616,CN=A R,C=PL,2.5.4.42=#130141,2.5.4.4=#130152
-	// Expected: G=A, SN=R, SERIALNUMBER=TINPL-8126178616, CN=A R, C=PL
-
-	// WRONG - THIS ELEMENT IS ALREADY SIGNED and we must not modify it after signing
-	// TODO move the reformatting to the signing library, as we must use this exact code to generate X509IssuerName
-
-	// issuerNameElem := root.FindElement(".//X509IssuerName")
-
-	// issuerGivenName := ""
-	// issuerSurname := ""
-	// issuerFullName := ""
-	// issuerCountry := ""
-	// issuerSerialNumber := ""
-	// for _, name := range cert.Subject.Names {
-	// 	if name.Type.String() == "2.5.4.6" {
-	// 		issuerCountry = name.Value.(string)
-	// 	}
-	// 	if name.Type.String() == "2.5.4.3" {
-	// 		issuerFullName = name.Value.(string)
-	// 	}
-	// 	if name.Type.String() == "2.5.4.5" {
-	// 		issuerSerialNumber = name.Value.(string)
-	// 	}
-	// 	if name.Type.String() == "2.5.4.4" {
-	// 		issuerSurname = name.Value.(string)
-	// 	}
-	// 	if name.Type.String() == "2.5.4.42" {
-	// 		issuerGivenName = name.Value.(string)
-	// 	}
-	// }
-	// issuerNameElem.SetText(fmt.Sprintf("G=%s, SN=%s, SERIALNUMBER=%s, CN=%s, C=%s", issuerGivenName, issuerSurname, issuerSerialNumber, issuerFullName, issuerCountry))
-
-	// Serialize!
 
 	signedXML, err := doc.WriteToString()
 	if err != nil {

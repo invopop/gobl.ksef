@@ -3,6 +3,7 @@ package api
 
 import (
 	"context"
+	"fmt"
 
 	"github.com/go-resty/resty/v2"
 )
@@ -91,13 +92,16 @@ func (c *Client) Authenticate(ctx context.Context) error {
 	if err != nil {
 		return err
 	}
+	if authResp.AuthenticationToken == nil {
+		return fmt.Errorf("authorization response missing authentication token")
+	}
 
-	err = pollAuthorizationStatus(ctx, c, authResp.ReferenceNumber, authResp.AuthenticationToken)
+	err = pollAuthorizationStatus(ctx, c, authResp.ReferenceNumber, authResp.AuthenticationToken.Token)
 	if err != nil {
 		return err
 	}
 
-	exchResp, err := exchangeToken(ctx, c, authResp.AuthenticationToken)
+	exchResp, err := exchangeToken(ctx, c, authResp.AuthenticationToken.Token)
 	if err != nil {
 		return err
 	}

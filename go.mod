@@ -46,4 +46,6 @@ require (
 	github.com/stretchr/testify v1.10.0
 )
 
+replace github.com/artemkunich/goxades => github.com/MieszkoGulinski/goxades v1.0.5-ksef
+
 // replace github.com/invopop/gobl => ../gobl

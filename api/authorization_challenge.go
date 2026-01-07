@@ -39,8 +39,8 @@ type ContextIdentifier struct {
 // AuthorizationResponse defines the authorization response - second step of the session initialization
 // While the request is in XML, the response is in JSON
 type AuthorizationResponse struct {
-	ReferenceNumber     string `json:"referenceNumber"`
-	AuthenticationToken string `json:"authenticationToken"`
+	ReferenceNumber     string    `json:"referenceNumber"`
+	AuthenticationToken *ApiToken `json:"authenticationToken"`
 }
 
 // AuthorizationPollResponse defines response when polling the status of authorization initialized above
