@@ -5,12 +5,11 @@ go 1.24
 toolchain go1.24.3
 
 require (
-	github.com/artemkunich/goxades v0.2.1
+	github.com/MieszkoGulinski/goxades v1.0.6-ksef
 	github.com/beevik/etree v1.5.1
 	github.com/go-resty/resty/v2 v2.16.5
 	github.com/invopop/gobl v0.218.0
 	github.com/invopop/xmldsig v0.11.0
-	github.com/jarcoal/httpmock v1.4.0
 	github.com/joho/godotenv v1.5.1
 	github.com/russellhaering/goxmldsig v1.5.0
 	github.com/spf13/cobra v1.9.1
@@ -45,7 +44,5 @@ require (
 	github.com/invopop/validation v0.8.0 // indirect
 	github.com/stretchr/testify v1.10.0
 )
-
-replace github.com/artemkunich/goxades => github.com/MieszkoGulinski/goxades v1.0.5-ksef
 
 // replace github.com/invopop/gobl => ../gobl

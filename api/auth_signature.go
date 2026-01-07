@@ -6,7 +6,7 @@ import (
 	"fmt"
 	"os"
 
-	xades "github.com/artemkunich/goxades"
+	xades "github.com/MieszkoGulinski/goxades"
 	"github.com/beevik/etree"
 	dsig "github.com/russellhaering/goxmldsig"
 	"software.sslmate.com/src/go-pkcs12"
