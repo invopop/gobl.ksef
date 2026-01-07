@@ -20,9 +20,9 @@ func (t *ApiToken) isExpired(now time.Time) bool {
 	return !now.Before(expiry)
 }
 
-// AccessTokenValue returns a valid access token, refreshing it when needed
+// getAccessToken returns a valid access token, refreshing it when needed
 // This token needs to be inserted in Authorization: Bearer <token> header
-func (c *Client) AccessTokenValue(ctx context.Context) (string, error) {
+func (c *Client) getAccessToken(ctx context.Context) (string, error) {
 	if c.accessToken != nil && !c.accessToken.isExpired(time.Now()) {
 		return c.accessToken.Token, nil
 	}

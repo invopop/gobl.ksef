@@ -73,7 +73,7 @@ type SessionStatusResponse struct {
 // CreateSession opens a new upload session in online (interactive) mode, allowing to upload invoices one by one
 // (There exists also a batch mode, where a ZIP file can be uploaded)
 func (c *Client) CreateSession(ctx context.Context) (*UploadSession, error) {
-	token, err := c.AccessTokenValue(ctx)
+	token, err := c.getAccessToken(ctx)
 	if err != nil {
 		return nil, err
 	}
@@ -128,7 +128,7 @@ func (s *UploadSession) FinishUpload(ctx context.Context) error {
 		return err
 	}
 
-	token, err := c.AccessTokenValue(ctx)
+	token, err := c.getAccessToken(ctx)
 	if err != nil {
 		return err
 	}
@@ -154,7 +154,7 @@ func (s *UploadSession) PollSessionStatus(ctx context.Context) (*SessionStatusRe
 		return nil, err
 	}
 
-	token, err := c.AccessTokenValue(ctx)
+	token, err := c.getAccessToken(ctx)
 	if err != nil {
 		return nil, err
 	}

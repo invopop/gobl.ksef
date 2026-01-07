@@ -19,7 +19,7 @@ func (s *UploadSession) UploadInvoice(ctx context.Context, invoice []byte) error
 		return err
 	}
 
-	token, err := c.AccessTokenValue(ctx)
+	token, err := c.getAccessToken(ctx)
 	if err != nil {
 		return err
 	}

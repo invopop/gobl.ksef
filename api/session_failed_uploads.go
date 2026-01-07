@@ -29,7 +29,7 @@ func (s *UploadSession) GetFailedUploadData(ctx context.Context) ([]FailedUpload
 		return nil, err
 	}
 
-	token, err := c.AccessTokenValue(ctx)
+	token, err := c.getAccessToken(ctx)
 	if err != nil {
 		return nil, err
 	}
