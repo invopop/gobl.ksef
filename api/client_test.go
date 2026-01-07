@@ -15,11 +15,9 @@ func TestFetchSessionToken(t *testing.T) {
 			"./test/cert-20260102-131809.pfx",
 			ksef_api.WithDebugClient(),
 		)
-		// defer httpmock.DeactivateAndReset()
 		ctx := context.Background()
 		err := client.Authenticate(ctx)
 		assert.NoError(t, err)
 
-		// assert.Equal(t, client.SessionToken, "exampleSessionToken")
 	})
 }

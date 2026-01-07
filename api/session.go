@@ -33,6 +33,15 @@ func CreateSession(ctx context.Context, s *Client) (*CreateSessionResponse, erro
 	if err != nil {
 		return nil, err
 	}
+	publicKeyCertificate, err := GetRSAPublicKey(ctx, s)
+	if err != nil {
+		return nil, err
+	}
+
+	encryption, err := buildSessionEncryption(publicKeyCertificate.Certificate)
+	if err != nil {
+		return nil, err
+	}
 
 	request := &CreateSessionRequest{
 		FormCode: CreateSessionFormCode{
@@ -40,12 +49,7 @@ func CreateSession(ctx context.Context, s *Client) (*CreateSessionResponse, erro
 			SchemaVersion: "1-0E",
 			Value:         "FA",
 		},
-		Encryption: CreateSessionEncryption{
-			// Per-session AES-256-CBC symmetric key, encrypted with RSA public key obtained from KSeF API
-			EncryptedSymmetricKey: "KEY",
-			// Per-session AES-256-CBC initialization vector
-			InitializationVector: "IV",
-		},
+		Encryption: *encryption,
 	}
 	response := &CreateSessionResponse{}
 

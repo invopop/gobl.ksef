@@ -5,18 +5,25 @@ import (
 	"testing"
 
 	ksef_api "github.com/invopop/gobl.ksef/api"
-	api_test "github.com/invopop/gobl.ksef/api/test"
 	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 )
 
-func TestTerminateSession(t *testing.T) {
-	t.Run("terminates the session", func(t *testing.T) {
-		client, err := api_test.Client()
-		// defer httpmock.DeactivateAndReset()
-		assert.NoError(t, err)
+func TestCreateSession(t *testing.T) {
+	t.Run("creates session", func(t *testing.T) {
+		client := ksef_api.NewClient(
+			&ksef_api.ContextIdentifier{Nip: "8126178616"},
+			"./test/cert-20260102-131809.pfx",
+			ksef_api.WithDebugClient(),
+		)
 
 		ctx := context.Background()
-		err = ksef_api.TerminateSession("12345", ctx, client)
-		assert.NoError(t, err)
+		err := client.Authenticate(ctx)
+		require.NoError(t, err)
+
+		resp, err := ksef_api.CreateSession(ctx, client)
+		require.NoError(t, err)
+		assert.NotEmpty(t, resp.ReferenceNumber)
+		assert.NotEmpty(t, resp.ValidUntil)
 	})
 }
