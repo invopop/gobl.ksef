@@ -31,16 +31,16 @@ func TestUploadInvoice(t *testing.T) {
 		invoiceBytes, err := doc.Bytes()
 		require.NoError(t, err)
 
-		err = client.UploadInvoice(ctx, uploadSession, invoiceBytes)
+		err = uploadSession.UploadInvoice(ctx, invoiceBytes)
 		require.NoError(t, err)
 
-		err = client.FinishUpload(ctx, uploadSession)
+		err = uploadSession.FinishUpload(ctx)
 		assert.NoError(t, err)
 
-		_, err = client.PollSessionStatus(ctx, uploadSession)
+		_, err = uploadSession.PollSessionStatus(ctx)
 		assert.NoError(t, err)
 
-		failedUploads, err := client.GetFailedUploadData(ctx, uploadSession)
+		failedUploads, err := uploadSession.GetFailedUploadData(ctx)
 		assert.NoError(t, err)
 		for _, inv := range failedUploads {
 			fmt.Printf("Failed invoice %s (ordinal %d): %+v\n", inv.ReferenceNumber, inv.OrdinalNumber, inv.Status)

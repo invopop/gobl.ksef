@@ -28,7 +28,7 @@ func TestCreateSession(t *testing.T) {
 		assert.Len(t, uploadSession.SymmetricKey, 32)
 		assert.Len(t, uploadSession.InitializationVector, 16)
 
-		err = client.FinishUpload(ctx, uploadSession)
+		err = uploadSession.FinishUpload(ctx)
 		assert.NoError(t, err)
 	})
 }

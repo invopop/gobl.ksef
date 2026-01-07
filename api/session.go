@@ -32,6 +32,17 @@ type UploadSession struct {
 	ValidUntil           string
 	SymmetricKey         []byte
 	InitializationVector []byte
+	client               *Client
+}
+
+func (s *UploadSession) clientForRequests() (*Client, error) {
+	if s == nil {
+		return nil, fmt.Errorf("upload session is nil")
+	}
+	if s.client == nil {
+		return nil, fmt.Errorf("upload session missing client")
+	}
+	return s.client, nil
 }
 
 // Note that there are more fields, but we only need these for now
@@ -105,14 +116,16 @@ func (c *Client) CreateSession(ctx context.Context) (*UploadSession, error) {
 		ValidUntil:           response.ValidUntil,
 		SymmetricKey:         symmetricKey,
 		InitializationVector: initializationVector,
+		client:               c,
 	}, nil
 }
 
 // FinishUpload ends the current session. When the session is terminated, all uploaded invoices start
 // to be processed by the KSeF system.
-func (c *Client) FinishUpload(ctx context.Context, session *UploadSession) error {
-	if session == nil {
-		return fmt.Errorf("upload session is nil")
+func (s *UploadSession) FinishUpload(ctx context.Context) error {
+	c, err := s.clientForRequests()
+	if err != nil {
+		return err
 	}
 
 	token, err := c.AccessTokenValue(ctx)
@@ -123,7 +136,7 @@ func (c *Client) FinishUpload(ctx context.Context, session *UploadSession) error
 	resp, err := c.Client.R().
 		SetContext(ctx).
 		SetAuthToken(token).
-		Post(c.URL + "/sessions/online/" + session.ReferenceNumber + "/close")
+		Post(c.URL + "/sessions/online/" + s.ReferenceNumber + "/close")
 	if err != nil {
 		return err
 	}
@@ -135,9 +148,10 @@ func (c *Client) FinishUpload(ctx context.Context, session *UploadSession) error
 }
 
 // PollSessionStatus checks the status of an upload session, after upload is completed.
-func (c *Client) PollSessionStatus(ctx context.Context, session *UploadSession) (*SessionStatusResponse, error) {
-	if session == nil {
-		return nil, fmt.Errorf("upload session is nil")
+func (s *UploadSession) PollSessionStatus(ctx context.Context) (*SessionStatusResponse, error) {
+	c, err := s.clientForRequests()
+	if err != nil {
+		return nil, err
 	}
 
 	token, err := c.AccessTokenValue(ctx)
@@ -157,7 +171,7 @@ func (c *Client) PollSessionStatus(ctx context.Context, session *UploadSession) 
 			SetContext(ctx).
 			SetAuthToken(token).
 			SetResult(response).
-			Get(c.URL + "/sessions/" + session.ReferenceNumber)
+			Get(c.URL + "/sessions/" + s.ReferenceNumber)
 		if err != nil {
 			return nil, err
 		}

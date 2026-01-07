@@ -6,12 +6,17 @@ import (
 )
 
 // UploadInvoice uploads a serialized invoice using the provided upload session data.
-func (c *Client) UploadInvoice(ctx context.Context, session *UploadSession, invoice []byte) error {
-	if session == nil {
+func (s *UploadSession) UploadInvoice(ctx context.Context, invoice []byte) error {
+	if s == nil {
 		return fmt.Errorf("upload session is nil")
 	}
-	if session.ReferenceNumber == "" {
+	if s.ReferenceNumber == "" {
 		return fmt.Errorf("upload session missing reference number")
+	}
+
+	c, err := s.clientForRequests()
+	if err != nil {
+		return err
 	}
 
 	token, err := c.AccessTokenValue(ctx)
@@ -19,7 +24,7 @@ func (c *Client) UploadInvoice(ctx context.Context, session *UploadSession, invo
 		return err
 	}
 
-	request, err := buildUploadInvoiceRequest(session, invoice)
+	request, err := buildUploadInvoiceRequest(s, invoice)
 	if err != nil {
 		return err
 	}
@@ -28,7 +33,7 @@ func (c *Client) UploadInvoice(ctx context.Context, session *UploadSession, invo
 		SetBody(request).
 		SetContext(ctx).
 		SetAuthToken(token).
-		Post(c.URL + "/sessions/online/" + session.ReferenceNumber + "/invoices")
+		Post(c.URL + "/sessions/online/" + s.ReferenceNumber + "/invoices")
 	if err != nil {
 		return err
 	}

@@ -2,7 +2,6 @@ package api
 
 import (
 	"context"
-	"fmt"
 )
 
 type FailedUploadInvoiceStatus struct {
@@ -24,9 +23,10 @@ type FailedUploadInvoicesResponse struct {
 }
 
 // GetFailedUploadData lists invoices that failed during upload for the session, following continuation tokens if needed.
-func (c *Client) GetFailedUploadData(ctx context.Context, session *UploadSession) ([]FailedUploadInvoice, error) {
-	if session == nil {
-		return nil, fmt.Errorf("upload session is nil")
+func (s *UploadSession) GetFailedUploadData(ctx context.Context) ([]FailedUploadInvoice, error) {
+	c, err := s.clientForRequests()
+	if err != nil {
+		return nil, err
 	}
 
 	token, err := c.AccessTokenValue(ctx)
@@ -50,7 +50,7 @@ func (c *Client) GetFailedUploadData(ctx context.Context, session *UploadSession
 			req.SetHeader("x-continuation-token", continuationToken)
 		}
 
-		resp, err := req.Get(c.URL + "/sessions/" + session.ReferenceNumber + "/invoices/failed")
+		resp, err := req.Get(c.URL + "/sessions/" + s.ReferenceNumber + "/invoices/failed")
 		if err != nil {
 			return nil, err
 		}
