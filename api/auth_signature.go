@@ -25,11 +25,6 @@ func buildSignedAuthorizationRequest(c *Client, challenge *AuthorizationChalleng
 	root.CreateAttr("xmlns:xsd", "http://www.w3.org/2001/XMLSchema")
 	root.CreateAttr("xmlns", "http://ksef.mf.gov.pl/auth/token/2.0")
 
-	fmt.Println("Before setting challenge")
-	fmt.Println(doc.WriteToString())
-	fmt.Println("")
-	fmt.Println("")
-
 	root.CreateElement("Challenge").SetText(challenge.Challenge)
 
 	ctx := root.CreateElement("ContextIdentifier")
