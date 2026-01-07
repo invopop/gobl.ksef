@@ -40,8 +40,23 @@ type SessionStatus struct {
 	Description string `json:"description"`
 }
 
+// UPO = urzędowe potwierdzenie odbioru = confirmation that the invoice has been successfully received by the system
+type SessionStatusUpoPage struct {
+	ReferenceNumber           string `json:"referenceNumber"`
+	DownloadURL               string `json:"downloadUrl"`
+	DownloadURLExpirationDate string `json:"downloadUrlExpirationDate"`
+}
+
+type SessionStatusUpo struct {
+	Pages []SessionStatusUpoPage `json:"pages"`
+}
+
 type SessionStatusResponse struct {
-	Status *SessionStatus `json:"status"`
+	Status                 *SessionStatus    `json:"status"`
+	InvoiceCount           int               `json:"invoiceCount"`
+	SuccessfulInvoiceCount int               `json:"successfulInvoiceCount"`
+	FailedInvoiceCount     int               `json:"failedInvoiceCount"`
+	Upo                    *SessionStatusUpo `json:"upo"`
 }
 
 // CreateSession opens a new upload session in online (interactive) mode, allowing to upload invoices one by one
