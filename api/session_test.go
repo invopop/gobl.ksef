@@ -21,11 +21,14 @@ func TestCreateSession(t *testing.T) {
 		err := client.Authenticate(ctx)
 		require.NoError(t, err)
 
-		resp, err := ksef_api.CreateSession(ctx, client)
+		uploadSession, err := ksef_api.CreateSession(ctx, client)
 		require.NoError(t, err)
-		assert.NotEmpty(t, resp.ReferenceNumber)
-		assert.NotEmpty(t, resp.ValidUntil)
-		assert.Len(t, resp.SymmetricKey, 32)
-		assert.Len(t, resp.InitializationVector, 16)
+		assert.NotEmpty(t, uploadSession.ReferenceNumber)
+		assert.NotEmpty(t, uploadSession.ValidUntil)
+		assert.Len(t, uploadSession.SymmetricKey, 32)
+		assert.Len(t, uploadSession.InitializationVector, 16)
+
+		err = ksef_api.TerminateSession(uploadSession, ctx, client)
+		assert.NoError(t, err)
 	})
 }

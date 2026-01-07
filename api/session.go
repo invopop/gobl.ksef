@@ -83,13 +83,13 @@ func CreateSession(ctx context.Context, s *Client) (*UploadSession, error) {
 }
 
 // UploadInvoice uploads a new invoice.
-func UploadInvoice(ctx context.Context, s *Client) {
+func UploadInvoice(session *UploadSession, ctx context.Context, s *Client) {
 	// TODO complete
 }
 
 // TerminateSession ends the current session. When the session is terminated, all uploaded invoices start
 // to be processed by the KSeF system.
-func TerminateSession(referenceNumber string, ctx context.Context, s *Client) error {
+func TerminateSession(session *UploadSession, ctx context.Context, s *Client) error {
 	token, err := s.AccessTokenValue(ctx)
 	if err != nil {
 		return err
@@ -98,7 +98,7 @@ func TerminateSession(referenceNumber string, ctx context.Context, s *Client) er
 	resp, err := s.Client.R().
 		SetContext(ctx).
 		SetAuthToken(token).
-		Post(s.URL + "/sessions/online/" + referenceNumber + "/close")
+		Post(s.URL + "/sessions/online/" + session.ReferenceNumber + "/close")
 	if err != nil {
 		return err
 	}
