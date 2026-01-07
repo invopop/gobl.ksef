@@ -2,7 +2,6 @@ package api
 
 import (
 	"context"
-	"encoding/xml"
 	"fmt"
 )
 
@@ -137,12 +136,4 @@ func TerminateSession(session *UploadSession, ctx context.Context, s *Client) er
 	}
 
 	return nil
-}
-
-func bytes(d InitSessionTokenRequest) ([]byte, error) {
-	bytes, err := xml.MarshalIndent(d, "", "  ")
-	if err != nil {
-		return nil, err
-	}
-	return append([]byte(`<?xml version="1.0" encoding="utf-8" standalone="yes"?>`+"\n"), bytes...), nil
 }
