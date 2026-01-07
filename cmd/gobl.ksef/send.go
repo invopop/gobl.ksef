@@ -2,12 +2,10 @@ package main
 
 import (
 	"context"
-	"encoding/base64"
 	"encoding/json"
 	"fmt"
 	"io"
 	"os"
-	"time"
 
 	"github.com/invopop/gobl"
 	ksef "github.com/invopop/gobl.ksef"
@@ -87,13 +85,6 @@ func (c *sendOpts) runE(cmd *cobra.Command, args []string) error {
 
 // SendInvoice sends invoices to KSeF
 func SendInvoice(c *ksef_api.Client, data []byte) (*gobl.Envelope, error) {
-	ctx := context.Background()
-
-	err := ksef_api.FetchSessionToken(ctx, c)
-	if err != nil {
-		return nil, err
-	}
-
 	env := new(gobl.Envelope)
 	if err := json.Unmarshal(data, env); err != nil {
 		return nil, fmt.Errorf("parsing input as GOBL Envelope: %w", err)
@@ -104,75 +95,38 @@ func SendInvoice(c *ksef_api.Client, data []byte) (*gobl.Envelope, error) {
 		return nil, fmt.Errorf("building FA_VAT document: %w", err)
 	}
 
-	data, err = doc.Bytes()
+	dataXml, err := doc.Bytes()
 	if err != nil {
 		return nil, fmt.Errorf("generating FA_VAT xml: %w", err)
 	}
 
-	sendInvoiceResponse, err := ksef_api.SendInvoice(ctx, c, data)
+	ctx := context.Background()
+	err = c.Authenticate(ctx)
 	if err != nil {
 		return nil, err
 	}
 
-	_, err = waitUntilInvoiceIsProcessed(ctx, c, sendInvoiceResponse.ElementReferenceNumber)
+	uploadSession, err := c.CreateSession(ctx)
 	if err != nil {
 		return nil, err
 	}
 
-	res, err := waitUntilSessionIsTerminated(ctx, c)
+	err = uploadSession.UploadInvoice(ctx, dataXml)
 	if err != nil {
 		return nil, err
 	}
-	upoBytes, err := base64.StdEncoding.DecodeString(res.Upo)
-	if err != nil {
-		return nil, err
-	}
-	// saveFile(res.ReferenceNumber+".xml", upoBytes)
 
-	err = ksef_api.Sign(env, upoBytes, c)
+	err = uploadSession.FinishUpload(ctx)
+	if err != nil {
+		return nil, err
+	}
+
+	_, err = uploadSession.PollSessionStatus(ctx)
 	if err != nil {
 		return nil, err
 	}
 
 	return env, nil
-}
-
-func waitUntilInvoiceIsProcessed(ctx context.Context, c *ksef_api.Client, referenceNumber string) (*ksef_api.InvoiceStatusResponse, error) {
-	for {
-		status, err := ksef_api.FetchInvoiceStatus(ctx, c, referenceNumber)
-		if err != nil {
-			return nil, err
-		}
-		if status.ProcessingCode == 200 || status.ProcessingCode >= 400 {
-			return status, nil
-		}
-		sleepContext(ctx, 5*time.Second)
-	}
-}
-
-func waitUntilSessionIsTerminated(ctx context.Context, c *ksef_api.Client) (*ksef_api.SessionStatusByReferenceResponse, error) {
-	_, err := ksef_api.FinishUpload(ctx, c)
-	if err != nil {
-		return nil, err
-	}
-	for {
-		status, err := ksef_api.GetSessionStatusByReference(ctx, c)
-
-		if err != nil {
-			return nil, err
-		}
-		if status.ProcessingCode == 200 || status.ProcessingCode >= 400 {
-			return status, nil
-		}
-		sleepContext(ctx, 5*time.Second)
-	}
-}
-
-func sleepContext(ctx context.Context, delay time.Duration) {
-	select {
-	case <-ctx.Done():
-	case <-time.After(delay):
-	}
 }
 
 func saveFile(name string, data []byte) error {
