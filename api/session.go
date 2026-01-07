@@ -97,12 +97,12 @@ func (c *Client) CreateSession(ctx context.Context) (*UploadSession, error) {
 	}
 	response := &CreateSessionResponse{}
 
-	resp, err := c.Client.R().
+	resp, err := c.client.R().
 		SetBody(request).
 		SetResult(response).
 		SetContext(ctx).
 		SetAuthToken(token).
-		Post(c.URL + "/sessions/online")
+		Post(c.url + "/sessions/online")
 
 	if err != nil {
 		return nil, err
@@ -133,10 +133,10 @@ func (s *UploadSession) FinishUpload(ctx context.Context) error {
 		return err
 	}
 
-	resp, err := c.Client.R().
+	resp, err := c.client.R().
 		SetContext(ctx).
 		SetAuthToken(token).
-		Post(c.URL + "/sessions/online/" + s.ReferenceNumber + "/close")
+		Post(c.url + "/sessions/online/" + s.ReferenceNumber + "/close")
 	if err != nil {
 		return err
 	}
@@ -167,11 +167,11 @@ func (s *UploadSession) PollSessionStatus(ctx context.Context) (*SessionStatusRe
 		}
 
 		response := &SessionStatusResponse{}
-		resp, err := c.Client.R().
+		resp, err := c.client.R().
 			SetContext(ctx).
 			SetAuthToken(token).
 			SetResult(response).
-			Get(c.URL + "/sessions/" + s.ReferenceNumber)
+			Get(c.url + "/sessions/" + s.ReferenceNumber)
 		if err != nil {
 			return nil, err
 		}

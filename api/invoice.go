@@ -29,11 +29,11 @@ func (s *UploadSession) UploadInvoice(ctx context.Context, invoice []byte) error
 		return err
 	}
 
-	resp, err := c.Client.R().
+	resp, err := c.client.R().
 		SetBody(request).
 		SetContext(ctx).
 		SetAuthToken(token).
-		Post(c.URL + "/sessions/online/" + s.ReferenceNumber + "/invoices")
+		Post(c.url + "/sessions/online/" + s.ReferenceNumber + "/invoices")
 	if err != nil {
 		return err
 	}

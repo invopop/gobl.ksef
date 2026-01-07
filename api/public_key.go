@@ -19,10 +19,10 @@ const symmetricKeyUsage = "SymmetricKeyEncryption"
 // GetRSAPublicKey returns the RSA public key used to encrypt the per-session symmetric key.
 func GetRSAPublicKey(ctx context.Context, s *Client) (*PublicKeyCertificate, error) {
 	var certificates []PublicKeyCertificate
-	resp, err := s.Client.R().
+	resp, err := s.client.R().
 		SetContext(ctx).
 		SetResult(&certificates).
-		Get(s.URL + "/security/public-key-certificates")
+		Get(s.url + "/security/public-key-certificates")
 	if err != nil {
 		return nil, err
 	}

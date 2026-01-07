@@ -48,13 +48,13 @@ func buildSignedAuthorizationRequest(c *Client, challenge *AuthorizationChalleng
 	root.CreateElement("SubjectIdentifierType").SetText(subjectIdentifierType)
 
 	// 2. Read the certificate from file (.p12 / .pfx) and extract private key and certificate
-	p12Bytes, err := os.ReadFile(c.CertificatePath)
+	p12Bytes, err := os.ReadFile(c.certificatePath)
 	if err != nil {
 		return nil, err
 	}
 
 	privateKey, cert, _, err :=
-		pkcs12.DecodeChain(p12Bytes, c.CertificatePassword)
+		pkcs12.DecodeChain(p12Bytes, c.certificatePassword)
 	if err != nil {
 		return nil, err
 	}

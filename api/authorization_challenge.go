@@ -69,10 +69,10 @@ type ApiToken struct {
 func fetchChallenge(ctx context.Context, c *Client) (*AuthorizationChallengeResponse, error) {
 	response := &AuthorizationChallengeResponse{}
 
-	resp, err := c.Client.R().
+	resp, err := c.client.R().
 		SetResult(response).
 		SetContext(ctx).
-		Post(c.URL + "/auth/challenge")
+		Post(c.url + "/auth/challenge")
 
 	if err != nil {
 		return nil, err
@@ -91,13 +91,13 @@ func authorizeWithCertificate(ctx context.Context, c *Client, challenge *Authori
 	}
 
 	response := &AuthorizationResponse{}
-	resp, err := c.Client.R().
+	resp, err := c.client.R().
 		SetHeader("Content-Type", "application/xml").
 		SetHeader("Accept", "application/json"). // request body is in XML, but response is in JSON
 		SetBody(signedRequestStr).
 		SetResult(response).
 		SetContext(ctx).
-		Post(c.URL + "/auth/xades-signature")
+		Post(c.url + "/auth/xades-signature")
 
 	if err != nil {
 		return nil, err
@@ -118,11 +118,11 @@ func pollAuthorizationStatus(ctx context.Context, c *Client, referenceNumber str
 		}
 
 		response := &AuthorizationPollResponse{}
-		resp, err := c.Client.R().
+		resp, err := c.client.R().
 			SetHeader("Authorization", "Bearer "+authorizationToken).
 			SetResult(response).
 			SetContext(ctx).
-			Get(c.URL + "/auth/" + referenceNumber)
+			Get(c.url + "/auth/" + referenceNumber)
 		if err != nil {
 			return err
 		}
@@ -144,11 +144,11 @@ func pollAuthorizationStatus(ctx context.Context, c *Client, referenceNumber str
 
 func exchangeToken(ctx context.Context, c *Client, authorizationToken string) (*ExchangeResponse, error) {
 	response := &ExchangeResponse{}
-	resp, err := c.Client.R().
+	resp, err := c.client.R().
 		SetHeader("Authorization", "Bearer "+authorizationToken).
 		SetResult(response).
 		SetContext(ctx).
-		Post(c.URL + "/auth/token/redeem")
+		Post(c.url + "/auth/token/redeem")
 
 	if err != nil {
 		return nil, err

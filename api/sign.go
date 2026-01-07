@@ -38,7 +38,7 @@ func Sign(env *gobl.Envelope, upoBytes []byte, c *Client) error {
 	env.Head.AddStamp(
 		&head.Stamp{
 			Provider: pl.StampProviderKSeFQR,
-			Value:    c.URL + "/web/verify/" + upo.KSeFNumber + "/" + url.QueryEscape(upo.KSeFHash),
+			Value:    c.url + "/web/verify/" + upo.KSeFNumber + "/" + url.QueryEscape(upo.KSeFHash),
 		},
 	)
 

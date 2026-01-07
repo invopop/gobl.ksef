@@ -23,36 +23,36 @@ func (t *ApiToken) isExpired(now time.Time) bool {
 // AccessTokenValue returns a valid access token, refreshing it when needed
 // This token needs to be inserted in Authorization: Bearer <token> header
 func (c *Client) AccessTokenValue(ctx context.Context) (string, error) {
-	if c.AccessToken != nil && !c.AccessToken.isExpired(time.Now()) {
-		return c.AccessToken.Token, nil
+	if c.accessToken != nil && !c.accessToken.isExpired(time.Now()) {
+		return c.accessToken.Token, nil
 	}
 
 	if err := c.refreshAccessToken(ctx); err != nil {
 		return "", err
 	}
 
-	if c.AccessToken == nil {
+	if c.accessToken == nil {
 		return "", fmt.Errorf("missing access token after refresh")
 	}
 
-	return c.AccessToken.Token, nil
+	return c.accessToken.Token, nil
 }
 
 func (c *Client) refreshAccessToken(ctx context.Context) error {
-	if c.RefreshToken == nil {
+	if c.refeshToken == nil {
 		return fmt.Errorf("refresh token not available")
 	}
-	if c.RefreshToken.isExpired(time.Now()) {
+	if c.refeshToken.isExpired(time.Now()) {
 		// LATER: Re-authenticate
 		return fmt.Errorf("refresh token expired")
 	}
 
 	response := &refreshAccessTokenResponse{}
-	resp, err := c.Client.R().
-		SetHeader("Authorization", "Bearer "+c.RefreshToken.Token).
+	resp, err := c.client.R().
+		SetHeader("Authorization", "Bearer "+c.refeshToken.Token).
 		SetResult(response).
 		SetContext(ctx).
-		Post(c.URL + "/auth/token/refresh")
+		Post(c.url + "/auth/token/refresh")
 	if err != nil {
 		return err
 	}
@@ -63,7 +63,7 @@ func (c *Client) refreshAccessToken(ctx context.Context) error {
 		return fmt.Errorf("refresh response missing access token")
 	}
 
-	c.AccessToken = response.AccessToken
+	c.accessToken = response.AccessToken
 
 	return nil
 }

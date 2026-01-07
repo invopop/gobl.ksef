@@ -42,7 +42,7 @@ func (s *UploadSession) GetFailedUploadData(ctx context.Context) ([]FailedUpload
 	for {
 		response := &FailedUploadInvoicesResponse{}
 
-		req := c.Client.R().
+		req := c.client.R().
 			SetContext(ctx).
 			SetAuthToken(token).
 			SetResult(response)
@@ -50,7 +50,7 @@ func (s *UploadSession) GetFailedUploadData(ctx context.Context) ([]FailedUpload
 			req.SetHeader("x-continuation-token", continuationToken)
 		}
 
-		resp, err := req.Get(c.URL + "/sessions/" + s.ReferenceNumber + "/invoices/failed")
+		resp, err := req.Get(c.url + "/sessions/" + s.ReferenceNumber + "/invoices/failed")
 		if err != nil {
 			return nil, err
 		}
