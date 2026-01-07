@@ -61,12 +61,12 @@ type SessionStatusResponse struct {
 
 // CreateSession opens a new upload session in online (interactive) mode, allowing to upload invoices one by one
 // (There exists also a batch mode, where a ZIP file can be uploaded)
-func CreateSession(ctx context.Context, s *Client) (*UploadSession, error) {
-	token, err := s.AccessTokenValue(ctx)
+func (c *Client) CreateSession(ctx context.Context) (*UploadSession, error) {
+	token, err := c.AccessTokenValue(ctx)
 	if err != nil {
 		return nil, err
 	}
-	publicKeyCertificate, err := GetRSAPublicKey(ctx, s)
+	publicKeyCertificate, err := GetRSAPublicKey(ctx, c)
 	if err != nil {
 		return nil, err
 	}
@@ -86,12 +86,12 @@ func CreateSession(ctx context.Context, s *Client) (*UploadSession, error) {
 	}
 	response := &CreateSessionResponse{}
 
-	resp, err := s.Client.R().
+	resp, err := c.Client.R().
 		SetBody(request).
 		SetResult(response).
 		SetContext(ctx).
 		SetAuthToken(token).
-		Post(s.URL + "/sessions/online")
+		Post(c.URL + "/sessions/online")
 
 	if err != nil {
 		return nil, err
@@ -110,16 +110,20 @@ func CreateSession(ctx context.Context, s *Client) (*UploadSession, error) {
 
 // FinishUpload ends the current session. When the session is terminated, all uploaded invoices start
 // to be processed by the KSeF system.
-func FinishUpload(session *UploadSession, ctx context.Context, s *Client) error {
-	token, err := s.AccessTokenValue(ctx)
+func (c *Client) FinishUpload(ctx context.Context, session *UploadSession) error {
+	if session == nil {
+		return fmt.Errorf("upload session is nil")
+	}
+
+	token, err := c.AccessTokenValue(ctx)
 	if err != nil {
 		return err
 	}
 
-	resp, err := s.Client.R().
+	resp, err := c.Client.R().
 		SetContext(ctx).
 		SetAuthToken(token).
-		Post(s.URL + "/sessions/online/" + session.ReferenceNumber + "/close")
+		Post(c.URL + "/sessions/online/" + session.ReferenceNumber + "/close")
 	if err != nil {
 		return err
 	}
@@ -131,12 +135,12 @@ func FinishUpload(session *UploadSession, ctx context.Context, s *Client) error 
 }
 
 // PollSessionStatus checks the status of an upload session, after upload is completed.
-func PollSessionStatus(ctx context.Context, session *UploadSession, s *Client) (*SessionStatusResponse, error) {
+func (c *Client) PollSessionStatus(ctx context.Context, session *UploadSession) (*SessionStatusResponse, error) {
 	if session == nil {
 		return nil, fmt.Errorf("upload session is nil")
 	}
 
-	token, err := s.AccessTokenValue(ctx)
+	token, err := c.AccessTokenValue(ctx)
 	if err != nil {
 		return nil, err
 	}
@@ -149,11 +153,11 @@ func PollSessionStatus(ctx context.Context, session *UploadSession, s *Client) (
 		}
 
 		response := &SessionStatusResponse{}
-		resp, err := s.Client.R().
+		resp, err := c.Client.R().
 			SetContext(ctx).
 			SetAuthToken(token).
 			SetResult(response).
-			Get(s.URL + "/sessions/" + session.ReferenceNumber)
+			Get(c.URL + "/sessions/" + session.ReferenceNumber)
 		if err != nil {
 			return nil, err
 		}

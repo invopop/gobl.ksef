@@ -23,7 +23,7 @@ func TestUploadInvoice(t *testing.T) {
 		err := client.Authenticate(ctx)
 		require.NoError(t, err)
 
-		uploadSession, err := ksef_api.CreateSession(ctx, client)
+		uploadSession, err := client.CreateSession(ctx)
 		require.NoError(t, err)
 
 		doc, err := test.NewDocumentFrom("invoice-pl-pl.json")
@@ -31,16 +31,16 @@ func TestUploadInvoice(t *testing.T) {
 		invoiceBytes, err := doc.Bytes()
 		require.NoError(t, err)
 
-		err = ksef_api.UploadInvoice(ctx, uploadSession, invoiceBytes, client)
+		err = client.UploadInvoice(ctx, uploadSession, invoiceBytes)
 		require.NoError(t, err)
 
-		err = ksef_api.FinishUpload(uploadSession, ctx, client)
+		err = client.FinishUpload(ctx, uploadSession)
 		assert.NoError(t, err)
 
-		_, err = ksef_api.PollSessionStatus(ctx, uploadSession, client)
+		_, err = client.PollSessionStatus(ctx, uploadSession)
 		assert.NoError(t, err)
 
-		failedUploads, err := ksef_api.GetFailedUploadData(ctx, uploadSession, client)
+		failedUploads, err := client.GetFailedUploadData(ctx, uploadSession)
 		assert.NoError(t, err)
 		for _, inv := range failedUploads {
 			fmt.Printf("Failed invoice %s (ordinal %d): %+v\n", inv.ReferenceNumber, inv.OrdinalNumber, inv.Status)

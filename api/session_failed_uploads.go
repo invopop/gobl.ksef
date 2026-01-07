@@ -24,12 +24,12 @@ type FailedUploadInvoicesResponse struct {
 }
 
 // GetFailedUploadData lists invoices that failed during upload for the session, following continuation tokens if needed.
-func GetFailedUploadData(ctx context.Context, session *UploadSession, s *Client) ([]FailedUploadInvoice, error) {
+func (c *Client) GetFailedUploadData(ctx context.Context, session *UploadSession) ([]FailedUploadInvoice, error) {
 	if session == nil {
 		return nil, fmt.Errorf("upload session is nil")
 	}
 
-	token, err := s.AccessTokenValue(ctx)
+	token, err := c.AccessTokenValue(ctx)
 	if err != nil {
 		return nil, err
 	}
@@ -42,7 +42,7 @@ func GetFailedUploadData(ctx context.Context, session *UploadSession, s *Client)
 	for {
 		response := &FailedUploadInvoicesResponse{}
 
-		req := s.Client.R().
+		req := c.Client.R().
 			SetContext(ctx).
 			SetAuthToken(token).
 			SetResult(response)
@@ -50,7 +50,7 @@ func GetFailedUploadData(ctx context.Context, session *UploadSession, s *Client)
 			req.SetHeader("x-continuation-token", continuationToken)
 		}
 
-		resp, err := req.Get(s.URL + "/sessions/" + session.ReferenceNumber + "/invoices/failed")
+		resp, err := req.Get(c.URL + "/sessions/" + session.ReferenceNumber + "/invoices/failed")
 		if err != nil {
 			return nil, err
 		}
