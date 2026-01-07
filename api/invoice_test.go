@@ -2,52 +2,38 @@ package api_test
 
 import (
 	"context"
-	"os"
 	"testing"
 
 	ksef_api "github.com/invopop/gobl.ksef/api"
-	api_test "github.com/invopop/gobl.ksef/api/test"
-	"github.com/jarcoal/httpmock"
+	"github.com/invopop/gobl.ksef/test"
 	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 )
 
-func TestSendInvoice(t *testing.T) {
-	t.Run("should post invoice", func(t *testing.T) {
-		client, err := api_test.Client()
-		defer httpmock.DeactivateAndReset()
-		assert.NoError(t, err)
-
-		elementReferenceNumber := "ExampleReferenceNumber"
-		httpmock.RegisterResponder("PUT", "https://ksef-test.mf.gov.pl/api/online/Invoice/Send",
-			httpmock.NewJsonResponderOrPanic(200, &ksef_api.SendInvoiceResponse{ElementReferenceNumber: elementReferenceNumber}))
-
-		content, err := os.ReadFile("../test/data/out/invoice-pl-pl.xml")
-		assert.NoError(t, err)
+func TestUploadInvoice(t *testing.T) {
+	t.Run("uploads invoice during session", func(t *testing.T) {
+		client := ksef_api.NewClient(
+			&ksef_api.ContextIdentifier{Nip: "8126178616"},
+			"./test/cert-20260102-131809.pfx",
+			ksef_api.WithDebugClient(),
+		)
 
 		ctx := context.Background()
-		sendInvoiceResponse, err := ksef_api.SendInvoice(ctx, client, content)
-		if err != nil {
-			t.Fatal(err)
-		}
-		assert.Equal(t, sendInvoiceResponse.ElementReferenceNumber, elementReferenceNumber)
-	})
-}
+		err := client.Authenticate(ctx)
+		require.NoError(t, err)
 
-func TestGetInvoiceStatus(t *testing.T) {
-	t.Run("should get invoice status", func(t *testing.T) {
-		client, err := api_test.Client()
-		defer httpmock.DeactivateAndReset()
+		uploadSession, err := ksef_api.CreateSession(ctx, client)
+		require.NoError(t, err)
+
+		doc, err := test.NewDocumentFrom("invoice-pl-pl.json")
+		require.NoError(t, err)
+		invoiceBytes, err := doc.Bytes()
+		require.NoError(t, err)
+
+		err = ksef_api.UploadInvoice(ctx, uploadSession, invoiceBytes, client)
+		require.NoError(t, err)
+
+		err = ksef_api.TerminateSession(uploadSession, ctx, client)
 		assert.NoError(t, err)
-
-		httpmock.RegisterResponder("GET", "https://ksef-test.mf.gov.pl/api/online/Invoice/Status/exampleReferenceNumber",
-			httpmock.NewJsonResponderOrPanic(200, &ksef_api.InvoiceStatusResponse{ProcessingCode: 200}))
-
-		ctx := context.Background()
-		invoiceStatusResponse, err := ksef_api.FetchInvoiceStatus(ctx, client, "exampleReferenceNumber")
-		if err != nil {
-			t.Fatal(err)
-		}
-
-		assert.Equal(t, invoiceStatusResponse.ProcessingCode, 200)
 	})
 }
