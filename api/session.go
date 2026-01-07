@@ -93,9 +93,9 @@ func CreateSession(ctx context.Context, s *Client) (*UploadSession, error) {
 	}, nil
 }
 
-// TerminateSession ends the current session. When the session is terminated, all uploaded invoices start
+// FinishUpload ends the current session. When the session is terminated, all uploaded invoices start
 // to be processed by the KSeF system.
-func TerminateSession(session *UploadSession, ctx context.Context, s *Client) error {
+func FinishUpload(session *UploadSession, ctx context.Context, s *Client) error {
 	token, err := s.AccessTokenValue(ctx)
 	if err != nil {
 		return err
@@ -115,7 +115,7 @@ func TerminateSession(session *UploadSession, ctx context.Context, s *Client) er
 	return nil
 }
 
-// PollSessionStatus checks the status of a session after upload is completed.
+// PollSessionStatus checks the status of an upload session, after upload is completed.
 func PollSessionStatus(ctx context.Context, session *UploadSession, s *Client) (*SessionStatusResponse, error) {
 	if session == nil {
 		return nil, fmt.Errorf("upload session is nil")

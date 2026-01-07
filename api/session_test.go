@@ -28,7 +28,7 @@ func TestCreateSession(t *testing.T) {
 		assert.Len(t, uploadSession.SymmetricKey, 32)
 		assert.Len(t, uploadSession.InitializationVector, 16)
 
-		err = ksef_api.TerminateSession(uploadSession, ctx, client)
+		err = ksef_api.FinishUpload(uploadSession, ctx, client)
 		assert.NoError(t, err)
 	})
 }

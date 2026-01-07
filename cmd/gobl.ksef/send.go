@@ -151,7 +151,7 @@ func waitUntilInvoiceIsProcessed(ctx context.Context, c *ksef_api.Client, refere
 }
 
 func waitUntilSessionIsTerminated(ctx context.Context, c *ksef_api.Client) (*ksef_api.SessionStatusByReferenceResponse, error) {
-	_, err := ksef_api.TerminateSession(ctx, c)
+	_, err := ksef_api.FinishUpload(ctx, c)
 	if err != nil {
 		return nil, err
 	}
