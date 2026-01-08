@@ -6,27 +6,29 @@ import (
 	"time"
 )
 
+// CreateSessionFormCode identifies the document schema that will be submitted during a session.
 type CreateSessionFormCode struct {
 	SystemCode    string `json:"systemCode"`
 	SchemaVersion string `json:"schemaVersion"`
 	Value         string `json:"value"`
 }
 
-type CreateSessionEncryption struct {
+type createSessionEncryption struct {
 	EncryptedSymmetricKey string `json:"encryptedSymmetricKey"`
 	InitializationVector  string `json:"initializationVector"`
 }
 
-type CreateSessionRequest struct {
+type createSessionRequest struct {
 	FormCode   CreateSessionFormCode   `json:"formCode"`
-	Encryption CreateSessionEncryption `json:"encryption"`
+	Encryption createSessionEncryption `json:"encryption"`
 }
 
-type CreateSessionResponse struct {
+type createSessionResponse struct {
 	ReferenceNumber string `json:"referenceNumber"`
 	ValidUntil      string `json:"validUntil"`
 }
 
+// UploadSession represents a live KSeF invoice upload session, including encryption material and metadata.
 type UploadSession struct {
 	ReferenceNumber      string
 	ValidUntil           string
@@ -45,23 +47,26 @@ func (s *UploadSession) clientForRequests() (*Client, error) {
 	return s.client, nil
 }
 
-// Note that there are more fields, but we only need these for now
+// SessionStatus contains basic status information for a session returned by the API.
 type SessionStatus struct {
 	Code        int    `json:"code"`
 	Description string `json:"description"`
 }
 
-// UPO = urzędowe potwierdzenie odbioru = confirmation that the invoice has been successfully received by the system
+// SessionStatusUpoPage stores a single confirmation (UPO) download page returned by the service.
+// UPO = urzędowe potwierdzenie odbioru = confirmation that the invoice has been successfully received by the system.
 type SessionStatusUpoPage struct {
 	ReferenceNumber           string `json:"referenceNumber"`
 	DownloadURL               string `json:"downloadUrl"`
 	DownloadURLExpirationDate string `json:"downloadUrlExpirationDate"`
 }
 
+// SessionStatusUpo groups all UPO pages associated with a session.
 type SessionStatusUpo struct {
 	Pages []SessionStatusUpoPage `json:"pages"`
 }
 
+// SessionStatusResponse summarizes the result of polling a session, including invoice stats and UPO links.
 type SessionStatusResponse struct {
 	Status                 *SessionStatus    `json:"status"`
 	InvoiceCount           int               `json:"invoiceCount"`
@@ -77,7 +82,7 @@ func (c *Client) CreateSession(ctx context.Context) (*UploadSession, error) {
 	if err != nil {
 		return nil, err
 	}
-	publicKeyCertificate, err := GetRSAPublicKey(ctx, c)
+	publicKeyCertificate, err := getRSAPublicKey(ctx, c)
 	if err != nil {
 		return nil, err
 	}
@@ -87,7 +92,7 @@ func (c *Client) CreateSession(ctx context.Context) (*UploadSession, error) {
 		return nil, err
 	}
 
-	request := &CreateSessionRequest{
+	request := &createSessionRequest{
 		FormCode: CreateSessionFormCode{
 			SystemCode:    "FA (3)",
 			SchemaVersion: "1-0E",
@@ -95,7 +100,7 @@ func (c *Client) CreateSession(ctx context.Context) (*UploadSession, error) {
 		},
 		Encryption: *encryption,
 	}
-	response := &CreateSessionResponse{}
+	response := &createSessionResponse{}
 
 	resp, err := c.client.R().
 		SetBody(request).

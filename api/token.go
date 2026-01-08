@@ -6,7 +6,7 @@ import (
 	"time"
 )
 
-func (t *ApiToken) isExpired(now time.Time) bool {
+func (t *apiToken) isExpired(now time.Time) bool {
 	if t == nil {
 		return true
 	}
@@ -69,5 +69,5 @@ func (c *Client) refreshAccessToken(ctx context.Context) error {
 }
 
 type refreshAccessTokenResponse struct {
-	AccessToken *ApiToken `json:"accessToken"`
+	AccessToken *apiToken `json:"accessToken"`
 }

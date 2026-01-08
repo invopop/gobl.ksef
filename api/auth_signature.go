@@ -12,7 +12,7 @@ import (
 	"software.sslmate.com/src/go-pkcs12"
 )
 
-func buildSignedAuthorizationRequest(c *Client, challenge *AuthorizationChallengeResponse, contextIdentifier *ContextIdentifier) ([]byte, error) {
+func buildSignedAuthorizationRequest(c *Client, challenge *authorizationChallengeResponse, contextIdentifier *ContextIdentifier) ([]byte, error) {
 	// I tried to use the github.com/invopop/xmldsig library, but it doesn't work, as it has many options hardcoded that aren't compatible with the KSEF API
 
 	// 1. Assembly the XML request - the signing library requires XML as an etree object

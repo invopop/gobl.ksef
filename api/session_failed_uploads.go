@@ -4,12 +4,14 @@ import (
 	"context"
 )
 
+// FailedUploadInvoiceStatus describes the status payload for invoices that failed to upload.
 type FailedUploadInvoiceStatus struct {
 	Code        int      `json:"code"`
 	Description string   `json:"description"`
 	Details     []string `json:"details"`
 }
 
+// FailedUploadInvoice contains a single failed invoice entry returned by the API.
 type FailedUploadInvoice struct {
 	OrdinalNumber   int                        `json:"ordinalNumber"`
 	ReferenceNumber string                     `json:"referenceNumber"`
@@ -17,7 +19,7 @@ type FailedUploadInvoice struct {
 	Status          *FailedUploadInvoiceStatus `json:"status"`
 }
 
-type FailedUploadInvoicesResponse struct {
+type failedUploadInvoicesResponse struct {
 	ContinuationToken string                `json:"continuationToken"`
 	Invoices          []FailedUploadInvoice `json:"invoices"`
 }
@@ -40,7 +42,7 @@ func (s *UploadSession) GetFailedUploadData(ctx context.Context) ([]FailedUpload
 	)
 
 	for {
-		response := &FailedUploadInvoicesResponse{}
+		response := &failedUploadInvoicesResponse{}
 
 		req := c.client.R().
 			SetContext(ctx).

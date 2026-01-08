@@ -11,7 +11,7 @@ import (
 func TestSelectSymmetricKeyCertificate(t *testing.T) {
 	now := time.Date(2024, time.July, 11, 12, 0, 0, 0, time.UTC)
 
-	certificates := []PublicKeyCertificate{
+	certificates := []publicKeyCertificate{
 		{
 			Certificate: "inactive",
 			ValidFrom:   now.Add(-24 * time.Hour),
@@ -49,7 +49,7 @@ func TestSelectSymmetricKeyCertificate(t *testing.T) {
 func TestSelectSymmetricKeyCertificateNoMatch(t *testing.T) {
 	now := time.Date(2024, time.July, 11, 12, 0, 0, 0, time.UTC)
 
-	certificates := []PublicKeyCertificate{
+	certificates := []publicKeyCertificate{
 		{
 			Certificate: "missing-usage",
 			ValidFrom:   now.Add(-time.Hour),

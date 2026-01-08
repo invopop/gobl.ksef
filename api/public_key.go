@@ -6,8 +6,8 @@ import (
 	"time"
 )
 
-// PublicKeyCertificate describes the payload returned from /security/public-key-certificates
-type PublicKeyCertificate struct {
+// payload returned from /security/public-key-certificates
+type publicKeyCertificate struct {
 	Certificate string    `json:"certificate"`
 	ValidFrom   time.Time `json:"validFrom"`
 	ValidTo     time.Time `json:"validTo"`
@@ -16,9 +16,9 @@ type PublicKeyCertificate struct {
 
 const symmetricKeyUsage = "SymmetricKeyEncryption"
 
-// GetRSAPublicKey returns the RSA public key used to encrypt the per-session symmetric key.
-func GetRSAPublicKey(ctx context.Context, s *Client) (*PublicKeyCertificate, error) {
-	var certificates []PublicKeyCertificate
+// returns the RSA public key used to encrypt the per-session symmetric key.
+func getRSAPublicKey(ctx context.Context, s *Client) (*publicKeyCertificate, error) {
+	var certificates []publicKeyCertificate
 	resp, err := s.client.R().
 		SetContext(ctx).
 		SetResult(&certificates).
@@ -33,7 +33,7 @@ func GetRSAPublicKey(ctx context.Context, s *Client) (*PublicKeyCertificate, err
 	return selectSymmetricKeyCertificate(certificates, time.Now().UTC())
 }
 
-func selectSymmetricKeyCertificate(certificates []PublicKeyCertificate, now time.Time) (*PublicKeyCertificate, error) {
+func selectSymmetricKeyCertificate(certificates []publicKeyCertificate, now time.Time) (*publicKeyCertificate, error) {
 	for i := range certificates {
 		cert := &certificates[i]
 		if cert.ValidFrom.After(now) {

@@ -18,8 +18,8 @@ type clientOpts struct {
 	contextIdentifier   *ContextIdentifier // Identifies the business entity the requests are made for
 	certificatePath     string             // Path to the .p12 / .pfx certificate for KSeF API authorization
 	certificatePassword string             // Password to certificate above
-	accessToken         *ApiToken          // Access token used for making most of the requests
-	refeshToken         *ApiToken          // Refresh token used for refreshing the access token
+	accessToken         *apiToken          // Access token used for making most of the requests
+	refeshToken         *apiToken          // Refresh token used for refreshing the access token
 }
 
 func defaultClientOpts(contextIdentifier *ContextIdentifier, certificatePath string) clientOpts {
@@ -81,7 +81,7 @@ func NewClient(contextIdentifier *ContextIdentifier, certificatePath string, opt
 	}
 }
 
-// Performs the complete authentication flow
+// Authenticate performs the full authorization exchange and stores the resulting tokens on the client.
 func (c *Client) Authenticate(ctx context.Context) error {
 	challenge, err := fetchChallenge(ctx, c)
 	if err != nil {

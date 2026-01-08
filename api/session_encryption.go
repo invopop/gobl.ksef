@@ -11,7 +11,7 @@ import (
 
 // buildSessionEncryption generates AES key/IV pair and encrypts the key using the RSA certificate.
 // It returns both the payload required by the API and the raw values so they can encrypt invoice data later.
-func buildSessionEncryption(certificate string) (*CreateSessionEncryption, []byte, []byte, error) {
+func buildSessionEncryption(certificate string) (*createSessionEncryption, []byte, []byte, error) {
 	publicKey, err := certificateToPublicKey(certificate)
 	if err != nil {
 		return nil, nil, nil, err
@@ -32,7 +32,7 @@ func buildSessionEncryption(certificate string) (*CreateSessionEncryption, []byt
 		return nil, nil, nil, fmt.Errorf("encrypt symmetric key: %w", err)
 	}
 
-	return &CreateSessionEncryption{
+	return &createSessionEncryption{
 		EncryptedSymmetricKey: base64.StdEncoding.EncodeToString(encryptedSymmetricKey),
 		InitializationVector:  base64.StdEncoding.EncodeToString(initializationVector),
 	}, symmetricKey, initializationVector, nil
