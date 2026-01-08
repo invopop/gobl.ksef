@@ -27,6 +27,10 @@ There is a CLI application in .NET that allows to generate a self-signed certifi
 4. Run the application: `dotnet run --framework net10.0 --output file --nip 8976111986 --no-startup-warnings`
 5. The application will generate a self-signed certificate and save it to the current directory. It will generate two files: `cert-{timestamp}.pfx` and `cert-{timestamp}.cer`.
 
+## Login using the client
+
+The client provides a simple way to login to the KSeF API using a certificate. Internally, it uses the same process as described below. See the [README](../api/README.md) for more details.
+
 ## Login to the KSeF API
 
 This is translated from [Authentication in KSeF](https://github.com/CIRFMF/ksef-docs/blob/main/uwierzytelnianie.md) document:
