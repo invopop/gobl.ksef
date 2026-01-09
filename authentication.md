@@ -93,6 +93,8 @@ Public key is needed to:
 ## How to authorize an external company to act on your behalf
 
 If you are a Polish company X, to allow company Y to act on your behalf in KSeF:
-1. Company Y needs to obtain an appropriate certificate - a qualified EU certificate
+1. Company Y needs to obtain a [qualified EU certificate](https://eidas.ec.europa.eu/efda/trust-services/browse/eidas/tls).
 2. The Polish company X needs to give company Y permissions. It's possible to do this through the API endpoint for this purpose, `permissions/eu-entities/administration/grants`, where company X provides company Y's certificate fingerprint, EU VAT number and company name. It's also possible to do this through the KSeF web interface - [a video showing how to do it is here](https://youtu.be/COXvohndNCA).
-3. After that, company Y can login to KSeF API using the qualified EU certificate, and providing context identifier (NipVatUe) containing company X's NIP (Polish business entity identifier) and Y's EU VAT number.
+3. After that, company Y can login to KSeF API using the qualified EU certificate, and providing context identifier (`NipVatUe`) containing company X's NIP (Polish business entity identifier) and Y's EU VAT number.
+
+`NipVatUe` context binds a Polish company identified by NIP with EU business entity identified by EU VAT number.
