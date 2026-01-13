@@ -152,8 +152,8 @@ func (s *UploadSession) FinishUpload(ctx context.Context) error {
 	return nil
 }
 
-// PollSessionStatus checks the status of an upload session, after upload is completed.
-func (s *UploadSession) PollSessionStatus(ctx context.Context) (*SessionStatusResponse, error) {
+// PollStatus checks the status of an upload session, after upload is completed.
+func (s *UploadSession) PollStatus(ctx context.Context) (*SessionStatusResponse, error) {
 	c, err := s.clientForRequests()
 	if err != nil {
 		return nil, err

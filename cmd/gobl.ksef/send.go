@@ -121,7 +121,7 @@ func SendInvoice(c *ksef_api.Client, data []byte) (*gobl.Envelope, error) {
 		return nil, err
 	}
 
-	_, err = uploadSession.PollSessionStatus(ctx)
+	_, err = uploadSession.PollStatus(ctx)
 	if err != nil {
 		return nil, err
 	}

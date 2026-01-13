@@ -37,7 +37,7 @@ func TestUploadInvoice(t *testing.T) {
 		err = uploadSession.FinishUpload(ctx)
 		assert.NoError(t, err)
 
-		_, err = uploadSession.PollSessionStatus(ctx)
+		_, err = uploadSession.PollStatus(ctx)
 		assert.NoError(t, err)
 
 		failedUploads, err := uploadSession.GetFailedUploadData(ctx)

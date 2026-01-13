@@ -43,7 +43,7 @@ type apiToken struct {
 	ValidUntil string `json:"validUntil"`
 }
 
-func fetchChallenge(ctx context.Context, c *Client) (*authorizationChallengeResponse, error) {
+func (c *Client) fetchChallenge(ctx context.Context) (*authorizationChallengeResponse, error) {
 	response := &authorizationChallengeResponse{}
 
 	resp, err := c.client.R().
@@ -61,8 +61,8 @@ func fetchChallenge(ctx context.Context, c *Client) (*authorizationChallengeResp
 	return response, nil
 }
 
-func authorizeWithCertificate(ctx context.Context, c *Client, challenge *authorizationChallengeResponse, contextIdentifier *ContextIdentifier) (*authorizationResponse, error) {
-	signedRequestStr, err := buildSignedAuthorizationRequest(c, challenge, contextIdentifier)
+func (c *Client) authorizeWithCertificate(ctx context.Context, challenge *authorizationChallengeResponse, contextIdentifier *ContextIdentifier) (*authorizationResponse, error) {
+	signedRequestStr, err := c.buildSignedAuthorizationRequest(challenge, contextIdentifier)
 	if err != nil {
 		return nil, err
 	}
@@ -86,7 +86,7 @@ func authorizeWithCertificate(ctx context.Context, c *Client, challenge *authori
 	return response, nil
 }
 
-func pollAuthorizationStatus(ctx context.Context, c *Client, referenceNumber string, authorizationToken string) error {
+func (c *Client) pollAuthorizationStatus(ctx context.Context, referenceNumber string, authorizationToken string) error {
 	attempt := 0
 	for {
 		attempt++
@@ -119,7 +119,7 @@ func pollAuthorizationStatus(ctx context.Context, c *Client, referenceNumber str
 	}
 }
 
-func exchangeToken(ctx context.Context, c *Client, authorizationToken string) (*exchangeResponse, error) {
+func (c *Client) exchangeToken(ctx context.Context, authorizationToken string) (*exchangeResponse, error) {
 	response := &exchangeResponse{}
 	resp, err := c.client.R().
 		SetHeader("Authorization", "Bearer "+authorizationToken).

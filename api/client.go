@@ -83,12 +83,12 @@ func NewClient(contextIdentifier *ContextIdentifier, certificatePath string, opt
 
 // Authenticate performs the full authorization exchange and stores the resulting tokens on the client.
 func (c *Client) Authenticate(ctx context.Context) error {
-	challenge, err := fetchChallenge(ctx, c)
+	challenge, err := c.fetchChallenge(ctx)
 	if err != nil {
 		return err
 	}
 
-	authResp, err := authorizeWithCertificate(ctx, c, challenge, c.contextIdentifier)
+	authResp, err := c.authorizeWithCertificate(ctx, challenge, c.contextIdentifier)
 	if err != nil {
 		return err
 	}
@@ -96,12 +96,12 @@ func (c *Client) Authenticate(ctx context.Context) error {
 		return fmt.Errorf("authorization response missing authentication token")
 	}
 
-	err = pollAuthorizationStatus(ctx, c, authResp.ReferenceNumber, authResp.AuthenticationToken.Token)
+	err = c.pollAuthorizationStatus(ctx, authResp.ReferenceNumber, authResp.AuthenticationToken.Token)
 	if err != nil {
 		return err
 	}
 
-	exchResp, err := exchangeToken(ctx, c, authResp.AuthenticationToken.Token)
+	exchResp, err := c.exchangeToken(ctx, authResp.AuthenticationToken.Token)
 	if err != nil {
 		return err
 	}
