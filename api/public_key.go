@@ -17,12 +17,12 @@ type publicKeyCertificate struct {
 const symmetricKeyUsage = "SymmetricKeyEncryption"
 
 // returns the RSA public key used to encrypt the per-session symmetric key.
-func getRSAPublicKey(ctx context.Context, s *Client) (*publicKeyCertificate, error) {
+func (c *Client) getRSAPublicKey(ctx context.Context) (*publicKeyCertificate, error) {
 	var certificates []publicKeyCertificate
-	resp, err := s.client.R().
+	resp, err := c.client.R().
 		SetContext(ctx).
 		SetResult(&certificates).
-		Get(s.url + "/security/public-key-certificates")
+		Get(c.url + "/security/public-key-certificates")
 	if err != nil {
 		return nil, err
 	}

@@ -82,7 +82,7 @@ func (c *Client) CreateSession(ctx context.Context) (*UploadSession, error) {
 	if err != nil {
 		return nil, err
 	}
-	publicKeyCertificate, err := getRSAPublicKey(ctx, c)
+	publicKeyCertificate, err := c.getRSAPublicKey(ctx)
 	if err != nil {
 		return nil, err
 	}
