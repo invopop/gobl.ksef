@@ -152,18 +152,39 @@ func (s *UploadSession) FinishUpload(ctx context.Context) error {
 	return nil
 }
 
-// PollStatus checks the status of an upload session, after upload is completed.
-func (s *UploadSession) PollStatus(ctx context.Context) (*SessionStatusResponse, error) {
+// GetStatus fetches the current status of an upload session.
+func (s *UploadSession) GetStatus(ctx context.Context) (*SessionStatusResponse, error) {
 	c, err := s.clientForRequests()
 	if err != nil {
 		return nil, err
 	}
-
 	token, err := c.getAccessToken(ctx)
 	if err != nil {
 		return nil, err
 	}
 
+	response := &SessionStatusResponse{}
+	resp, err := c.client.R().
+		SetContext(ctx).
+		SetAuthToken(token).
+		SetResult(response).
+		Get(c.url + "/sessions/" + s.ReferenceNumber)
+	if err != nil {
+		return nil, err
+	}
+	if resp.IsError() {
+		return nil, newErrorResponse(resp)
+	}
+
+	if response.Status == nil {
+		return nil, fmt.Errorf("session status missing in response")
+	}
+
+	return response, nil
+}
+
+// PollStatus waits until an upload session is processed, after upload is completed.
+func (s *UploadSession) PollStatus(ctx context.Context) (*SessionStatusResponse, error) {
 	attempt := 0
 	for {
 		attempt++
@@ -171,25 +192,13 @@ func (s *UploadSession) PollStatus(ctx context.Context) (*SessionStatusResponse,
 			return nil, fmt.Errorf("session polling count exceeded")
 		}
 
-		response := &SessionStatusResponse{}
-		resp, err := c.client.R().
-			SetContext(ctx).
-			SetAuthToken(token).
-			SetResult(response).
-			Get(c.url + "/sessions/" + s.ReferenceNumber)
+		response, err := s.GetStatus(ctx)
 		if err != nil {
 			return nil, err
 		}
-		if resp.IsError() {
-			return nil, newErrorResponse(resp)
-		}
-
-		if response.Status == nil {
-			return nil, fmt.Errorf("session status missing in response")
-		}
 
 		switch response.Status.Code {
-		case 100, 150, 170: // still processing
+		case 100, 150, 170: // 100 = upload not finished yet, 150/170 = uploaded invoices are being processed
 			time.Sleep(2 * time.Second)
 			continue
 		case 200:
