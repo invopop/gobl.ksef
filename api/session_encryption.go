@@ -1,6 +1,8 @@
 package api
 
 import (
+	"crypto/aes"
+	"crypto/cipher"
 	"crypto/rand"
 	"crypto/rsa"
 	"crypto/sha256"
@@ -63,4 +65,31 @@ func randomBytes(length int) ([]byte, error) {
 		return nil, fmt.Errorf("read random bytes: %w", err)
 	}
 	return buffer, nil
+}
+
+func encryptInvoice(key, iv, invoice []byte) ([]byte, error) {
+	block, err := aes.NewCipher(key)
+	if err != nil {
+		return nil, fmt.Errorf("create cipher: %w", err)
+	}
+
+	padded := pkcs7Pad(invoice, aes.BlockSize)
+	ciphertext := make([]byte, len(padded))
+	cipher.NewCBCEncrypter(block, iv).CryptBlocks(ciphertext, padded)
+
+	return ciphertext, nil
+}
+
+func pkcs7Pad(data []byte, blockSize int) []byte {
+	padding := blockSize - (len(data) % blockSize)
+	if padding == 0 {
+		padding = blockSize
+	}
+
+	out := make([]byte, len(data)+padding)
+	copy(out, data)
+	for i := len(data); i < len(out); i++ {
+		out[i] = byte(padding)
+	}
+	return out
 }
