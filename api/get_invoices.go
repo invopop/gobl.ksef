@@ -29,10 +29,10 @@ const (
 type InvoiceSubjectType string
 
 const (
-	InvoiceSubjectTypeSubject1          InvoiceSubjectType = "Subject1"
-	InvoiceSubjectTypeSubject2          InvoiceSubjectType = "Subject2"
-	InvoiceSubjectTypeSubject3          InvoiceSubjectType = "Subject3"
-	InvoiceSubjectTypeSubjectAuthorized InvoiceSubjectType = "SubjectAuthorized"
+	InvoiceSubjectTypeSupplier   InvoiceSubjectType = "Subject1"          // outgoing (seller)
+	InvoiceSubjectTypeCustomer   InvoiceSubjectType = "Subject2"          // incoming (buyer)
+	InvoiceSubjectTypeThirdParty InvoiceSubjectType = "Subject3"          // third party
+	InvoiceSubjectTypeAuthorized InvoiceSubjectType = "SubjectAuthorized" // when acting on behalf of another party
 )
 
 // ListInvoicesParams describe how invoice metadata should be queried.
