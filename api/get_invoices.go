@@ -4,6 +4,7 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"net/url"
 	"strconv"
 )
 
@@ -157,4 +158,30 @@ func (p ListInvoicesParams) normalize() (ListInvoicesParams, error) {
 		p.PageSize = 100
 	}
 	return p, nil
+}
+
+// GetInvoice downloads the XML invoice body for the provided KSeF number.
+func (c *Client) GetInvoice(ctx context.Context, ksefNumber string) ([]byte, error) {
+	if ksefNumber == "" {
+		return nil, fmt.Errorf("ksef number is required")
+	}
+
+	token, err := c.getAccessToken(ctx)
+	if err != nil {
+		return nil, err
+	}
+
+	resp, err := c.client.R().
+		SetContext(ctx).
+		SetAuthToken(token).
+		SetHeader("Accept", "application/xml").
+		Get(c.url + "/invoices/ksef/" + url.PathEscape(ksefNumber)) // PathEscape only for additional safety, KSeF numbers should be URL-safe
+	if err != nil {
+		return nil, err
+	}
+	if resp.IsError() {
+		return nil, newErrorResponse(resp)
+	}
+
+	return resp.Body(), nil
 }
