@@ -57,8 +57,8 @@ func TestUploadInvoice(t *testing.T) {
 		// Generate unique identifier for the invoice.
 		// Without it, uploading will result in error because of a duplicate.
 		now := time.Now().UTC()
-		doc.Inv.IssueDate = now.Format("2006-01-02")                                               // current date
-		doc.Inv.SequentialNumber = fmt.Sprintf("%d", now.Hour()*3600+now.Minute()*60+now.Second()) // seconds since midnight
+		doc.Inv.IssueDate = now.Format("2006-01-02")             // current date
+		doc.Inv.SequentialNumber = fmt.Sprintf("%d", now.Unix()) // Unix timestamp in seconds
 
 		invoiceBytes, err := doc.Bytes()
 		require.NoError(t, err)
