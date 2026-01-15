@@ -2,8 +2,14 @@ package api
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"time"
+)
+
+var (
+	ErrAuthorizationPollingCountExceeded = errors.New("authorization polling count exceeded")
+	ErrAuthorizationFailed               = errors.New("authorization failed")
 )
 
 // ContextIdentifier defines the context of the authorization (what business entity we're making the request for)
@@ -91,7 +97,7 @@ func (c *Client) pollAuthorizationStatus(ctx context.Context, referenceNumber st
 	for {
 		attempt++
 		if attempt > 30 {
-			return fmt.Errorf("authorization polling count exceeded")
+			return ErrAuthorizationPollingCountExceeded
 		}
 
 		response := &authorizationPollResponse{}
@@ -115,7 +121,7 @@ func (c *Client) pollAuthorizationStatus(ctx context.Context, referenceNumber st
 			continue
 		}
 		// any other status means that the authorization failed
-		return fmt.Errorf("authorization failed: %s", response.Status.Description)
+		return fmt.Errorf("%w: %s", ErrAuthorizationFailed, response.Status.Description)
 	}
 }
 

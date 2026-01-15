@@ -69,8 +69,8 @@ type ListInvoicesPageResponse struct {
 	Invoices    []InvoiceMetadata `json:"invoices"`
 }
 
-// ListInvoicesPage calls the metadata endpoint for a single page of results.
-func (c *Client) ListInvoicesPage(ctx context.Context, params ListInvoicesParams) (*ListInvoicesPageResponse, error) {
+// listInvoicesPage calls the metadata endpoint for a single page of results.
+func (c *Client) listInvoicesPage(ctx context.Context, params ListInvoicesParams) (*ListInvoicesPageResponse, error) {
 	prepared, err := params.normalize()
 	if err != nil {
 		return nil, err
@@ -110,7 +110,7 @@ func (c *Client) ListInvoicesPage(ctx context.Context, params ListInvoicesParams
 	return response, nil
 }
 
-// ListInvoices fetches invoices page by page until the API indicates there is nothing more.
+// ListInvoices fetches invoices matching given parameters.
 func (c *Client) ListInvoices(ctx context.Context, params ListInvoicesParams) ([]InvoiceMetadata, error) {
 	params, err := params.normalize()
 	if err != nil {
@@ -119,7 +119,7 @@ func (c *Client) ListInvoices(ctx context.Context, params ListInvoicesParams) ([
 
 	var invoices []InvoiceMetadata
 	for {
-		response, err := c.ListInvoicesPage(ctx, params)
+		response, err := c.listInvoicesPage(ctx, params)
 		if err != nil {
 			return nil, err
 		}

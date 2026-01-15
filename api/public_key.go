@@ -2,9 +2,11 @@ package api
 
 import (
 	"context"
-	"fmt"
+	"errors"
 	"time"
 )
+
+var ErrNoSuitableRSAPublicKey = errors.New("no suitable RSA public key found")
 
 // payload returned from /security/public-key-certificates
 type publicKeyCertificate struct {
@@ -48,7 +50,7 @@ func selectSymmetricKeyCertificate(certificates []publicKeyCertificate, now time
 		return cert, nil
 	}
 
-	return nil, fmt.Errorf("no suitable RSA public key found")
+	return nil, ErrNoSuitableRSAPublicKey
 }
 
 func containsUsage(usages []string, desired string) bool {

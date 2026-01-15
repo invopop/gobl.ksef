@@ -2,8 +2,15 @@ package api
 
 import (
 	"context"
-	"fmt"
+	"errors"
 	"time"
+)
+
+var (
+	ErrMissingAccessTokenAfterRefresh = errors.New("missing access token after refresh")
+	ErrRefreshTokenUnavailable        = errors.New("refresh token not available")
+	ErrRefreshTokenExpired            = errors.New("refresh token expired")
+	ErrRefreshResponseMissingToken    = errors.New("refresh response missing access token")
 )
 
 func (t *apiToken) isExpired(now time.Time) bool {
@@ -32,7 +39,7 @@ func (c *Client) getAccessToken(ctx context.Context) (string, error) {
 	}
 
 	if c.accessToken == nil {
-		return "", fmt.Errorf("missing access token after refresh")
+		return "", ErrMissingAccessTokenAfterRefresh
 	}
 
 	return c.accessToken.Token, nil
@@ -40,11 +47,11 @@ func (c *Client) getAccessToken(ctx context.Context) (string, error) {
 
 func (c *Client) refreshAccessToken(ctx context.Context) error {
 	if c.refeshToken == nil {
-		return fmt.Errorf("refresh token not available")
+		return ErrRefreshTokenUnavailable
 	}
 	if c.refeshToken.isExpired(time.Now()) {
 		// LATER: Re-authenticate
-		return fmt.Errorf("refresh token expired")
+		return ErrRefreshTokenExpired
 	}
 
 	response := &refreshAccessTokenResponse{}
@@ -60,7 +67,7 @@ func (c *Client) refreshAccessToken(ctx context.Context) error {
 		return newErrorResponse(resp)
 	}
 	if response.AccessToken == nil {
-		return fmt.Errorf("refresh response missing access token")
+		return ErrRefreshResponseMissingToken
 	}
 
 	c.accessToken = response.AccessToken

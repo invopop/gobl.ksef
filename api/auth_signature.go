@@ -3,7 +3,7 @@ package api
 import (
 	"crypto"
 	"crypto/rsa"
-	"fmt"
+	"errors"
 	"os"
 
 	xades "github.com/MieszkoGulinski/goxades"
@@ -11,6 +11,8 @@ import (
 	dsig "github.com/russellhaering/goxmldsig"
 	"software.sslmate.com/src/go-pkcs12"
 )
+
+var ErrCertificatePrivateKeyNotRSA = errors.New("certificate private key is not RSA, goxades only supports RSA")
 
 func (c *Client) buildSignedAuthorizationRequest(challenge *authorizationChallengeResponse, contextIdentifier *ContextIdentifier) ([]byte, error) {
 	// I tried to use the github.com/invopop/xmldsig library, but it doesn't work, as it has many options hardcoded that aren't compatible with the KSEF API
@@ -61,7 +63,7 @@ func (c *Client) buildSignedAuthorizationRequest(challenge *authorizationChallen
 
 	rsaKey, ok := privateKey.(*rsa.PrivateKey)
 	if !ok {
-		return nil, fmt.Errorf("certificate private key is not RSA, goxades only supports RSA")
+		return nil, ErrCertificatePrivateKeyNotRSA
 	}
 
 	store := xades.MemoryX509KeyStore{
