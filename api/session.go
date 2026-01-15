@@ -287,3 +287,77 @@ func (s *UploadSession) buildUploadInvoiceRequest(invoice []byte) (*uploadInvoic
 		OfflineMode:             false,
 	}, nil
 }
+
+// UploadedInvoice describes a successfully uploaded invoice linked to a session.
+type UploadedInvoice struct {
+	KsefNumber string `json:"ksefNumber"`
+	// There are more fields - TODO add them
+}
+
+type listUploadedInvoicesResponse struct {
+	ContinuationToken string            `json:"continuationToken"`
+	Invoices          []UploadedInvoice `json:"invoices"`
+}
+
+// listUploadedInvoicesPage fetches a single page of invoices uploaded in the session.
+func (s *UploadSession) listUploadedInvoicesPage(ctx context.Context, continuationToken string) (*listUploadedInvoicesResponse, error) {
+	if s == nil {
+		return nil, fmt.Errorf("upload session is nil")
+	}
+	if s.ReferenceNumber == "" {
+		return nil, fmt.Errorf("upload session missing reference number")
+	}
+
+	c, err := s.clientForRequests()
+	if err != nil {
+		return nil, err
+	}
+
+	token, err := c.getAccessToken(ctx)
+	if err != nil {
+		return nil, err
+	}
+
+	response := &listUploadedInvoicesResponse{}
+	request := c.client.R().
+		SetContext(ctx).
+		SetAuthToken(token).
+		SetResult(response).
+		SetQueryParam("pageSize", "100")
+	if continuationToken != "" {
+		request.SetHeader("x-continuation-token", continuationToken)
+	}
+
+	resp, err := request.Get(c.url + "/sessions/" + s.ReferenceNumber + "/invoices")
+	if err != nil {
+		return nil, err
+	}
+	if resp.IsError() {
+		return nil, newErrorResponse(resp)
+	}
+
+	return response, nil
+}
+
+// ListUploadedInvoices retrieves all invoices uploaded in the session, following continuation tokens.
+func (s *UploadSession) ListUploadedInvoices(ctx context.Context) ([]UploadedInvoice, error) {
+	var (
+		allInvoices       []UploadedInvoice
+		continuationToken string
+	)
+
+	for {
+		response, err := s.listUploadedInvoicesPage(ctx, continuationToken)
+		if err != nil {
+			return nil, err
+		}
+		allInvoices = append(allInvoices, response.Invoices...)
+
+		if response.ContinuationToken == "" {
+			break
+		}
+		continuationToken = response.ContinuationToken
+	}
+
+	return allInvoices, nil
+}

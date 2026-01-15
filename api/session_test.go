@@ -72,6 +72,10 @@ func TestUploadInvoice(t *testing.T) {
 		_, err = uploadSession.PollStatus(ctx)
 		assert.NoError(t, err)
 
+		uploadedInvoices, err := uploadSession.ListUploadedInvoices(ctx)
+		assert.NoError(t, err)
+		assert.Len(t, uploadedInvoices, 1)
+
 		failedUploads, err := uploadSession.GetFailedUploadData(ctx)
 		assert.NoError(t, err)
 		for _, inv := range failedUploads {
