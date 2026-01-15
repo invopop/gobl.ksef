@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"testing"
+	"time"
 
 	ksef_api "github.com/invopop/gobl.ksef/api"
 	"github.com/invopop/gobl.ksef/test"
@@ -52,6 +53,13 @@ func TestUploadInvoice(t *testing.T) {
 
 		doc, err := test.NewDocumentFrom("invoice-pl-pl.json")
 		require.NoError(t, err)
+
+		// Generate unique identifier for the invoice.
+		// Without it, uploading will result in error because of a duplicate.
+		now := time.Now().UTC()
+		doc.Inv.IssueDate = now.Format("2006-01-02")                                               // current date
+		doc.Inv.SequentialNumber = fmt.Sprintf("%d", now.Hour()*3600+now.Minute()*60+now.Second()) // seconds since midnight
+
 		invoiceBytes, err := doc.Bytes()
 		require.NoError(t, err)
 
