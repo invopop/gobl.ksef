@@ -174,7 +174,6 @@ func (c *Client) GetInvoice(ctx context.Context, ksefNumber string) ([]byte, err
 	resp, err := c.client.R().
 		SetContext(ctx).
 		SetAuthToken(token).
-		SetHeader("Accept", "application/xml").
 		Get(c.url + "/invoices/ksef/" + url.PathEscape(ksefNumber)) // PathEscape only for additional safety, KSeF numbers should be URL-safe
 	if err != nil {
 		return nil, err
