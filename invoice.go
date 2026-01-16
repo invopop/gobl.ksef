@@ -17,8 +17,8 @@ type Inv struct {
 	IssuePlace                         string        `xml:"P_1M,omitempty"`
 	SequentialNumber                   string        `xml:"P_2"`
 	CompletionDate                     string        `xml:"P_6,omitempty"`
-	StartDate                          string        `xml:"P_6_Od,omitempty"`
-	EndDate                            string        `xml:"P_6_Do,omitempty"`
+	StartDate                          string        `xml:"P_6_Od,omitempty"` // TODO should be wrapped in OkresFa
+	EndDate                            string        `xml:"P_6_Do,omitempty"` // TODO should be wrapped in OkresFa
 	StandardRateNetSale                string        `xml:"P_13_1,omitempty"`
 	StandardRateTax                    string        `xml:"P_14_1,omitempty"`
 	StandardRateTaxConvertedToPln      string        `xml:"P_14_1W,omitempty"`
