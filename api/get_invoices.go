@@ -38,8 +38,8 @@ const (
 // ListInvoicesParams describe how invoice metadata should be queried.
 type ListInvoicesParams struct {
 	SubjectType InvoiceSubjectType
-	DateFrom    string
-	DateTo      string
+	From        string // RFC3339
+	To          string // RFC3339
 	SortOrder   InvoiceSortOrder
 	PageOffset  int
 	PageSize    int
@@ -71,7 +71,7 @@ type ListInvoicesPageResponse struct {
 
 // listInvoicesPage calls the metadata endpoint for a single page of results.
 func (c *Client) listInvoicesPage(ctx context.Context, params ListInvoicesParams) (*ListInvoicesPageResponse, error) {
-	prepared, err := params.normalize()
+	normalizedParams, err := params.normalize()
 	if err != nil {
 		return nil, err
 	}
@@ -82,11 +82,11 @@ func (c *Client) listInvoicesPage(ctx context.Context, params ListInvoicesParams
 	}
 
 	request := &listInvoicesRequest{
-		SubjectType: string(prepared.SubjectType),
+		SubjectType: string(normalizedParams.SubjectType),
 		DateRange: listInvoicesDateRange{
 			DateType: "PermanentStorage",
-			From:     prepared.DateFrom,
-			To:       prepared.DateTo,
+			From:     normalizedParams.From,
+			To:       normalizedParams.To,
 		},
 	}
 
@@ -96,9 +96,9 @@ func (c *Client) listInvoicesPage(ctx context.Context, params ListInvoicesParams
 		SetAuthToken(token).
 		SetBody(request).
 		SetResult(response).
-		SetQueryParam("sortOrder", string(prepared.SortOrder)).
-		SetQueryParam("pageOffset", strconv.Itoa(prepared.PageOffset)).
-		SetQueryParam("pageSize", strconv.Itoa(prepared.PageSize)).
+		SetQueryParam("sortOrder", string(normalizedParams.SortOrder)).
+		SetQueryParam("pageOffset", strconv.Itoa(normalizedParams.PageOffset)).
+		SetQueryParam("pageSize", strconv.Itoa(normalizedParams.PageSize)).
 		Post(c.url + "/invoices/query/metadata")
 	if err != nil {
 		return nil, err
@@ -141,7 +141,7 @@ func (p ListInvoicesParams) normalize() (ListInvoicesParams, error) {
 	if p.SubjectType == "" {
 		return p, ErrInvoiceSubjectTypeRequired
 	}
-	if p.DateFrom == "" {
+	if p.From == "" {
 		return p, ErrInvoiceDateFromRequired
 	}
 	switch p.SortOrder {

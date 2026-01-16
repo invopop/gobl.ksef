@@ -23,8 +23,8 @@ func TestListInvoices(t *testing.T) {
 		today := time.Now().UTC()
 		params := ksef_api.ListInvoicesParams{
 			SubjectType: ksef_api.InvoiceSubjectTypeSupplier,
-			DateFrom:    today.AddDate(0, 0, -14).Format(time.RFC3339),
-			DateTo:      today.Format(time.RFC3339),
+			From:        today.AddDate(0, 0, -14).Format(time.RFC3339),
+			To:          today.Format(time.RFC3339),
 		}
 
 		_, err := client.ListInvoices(ctx, params)
