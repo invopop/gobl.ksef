@@ -26,7 +26,7 @@ type clientOpts struct {
 func defaultClientOpts(contextIdentifier *ContextIdentifier, certificatePath string) clientOpts {
 	return clientOpts{
 		client:              resty.New(),
-		url:                 "https://ksef-test.mf.gov.pl/api/v2",
+		url:                 "https://api-test.ksef.mf.gov.pl/v2",
 		qrUrl:               "https://qr-test.ksef.mf.gov.pl/invoice",
 		contextIdentifier:   contextIdentifier,
 		certificatePath:     certificatePath,
@@ -64,13 +64,13 @@ func WithCertificatePassword(password string) ClientOptFunc {
 
 // WithProductionURL sets the client url to KSeF production
 func WithProductionURL(o *clientOpts) {
-	o.url = "https://ksef.mf.gov.pl/api/v2"
+	o.url = "https://api.mf.gov.pl/v2"
 	o.qrUrl = "https://qr.ksef.mf.gov.pl/invoice"
 }
 
 // WithDemoURL sets the client url to KSeF demo
 func WithDemoURL(o *clientOpts) {
-	o.url = "https://ksef-demo.mf.gov.pl/api/v2"
+	o.url = "https://api-demo.ksef.mf.gov.pl/v2"
 	o.qrUrl = "https://qr-demo.ksef.mf.gov.pl/invoice"
 }
 
