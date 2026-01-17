@@ -290,8 +290,16 @@ func (s *UploadSession) buildUploadInvoiceRequest(invoice []byte) (*uploadInvoic
 
 // UploadedInvoice describes a successfully uploaded invoice linked to a session.
 type UploadedInvoice struct {
-	KsefNumber string `json:"ksefNumber"`
-	// There are more fields - TODO add them
+	OrdinalNumber                int       `json:"ordinalNumber"`
+	InvoiceNumber                string    `json:"invoiceNumber"`
+	KsefNumber                   string    `json:"ksefNumber"`
+	ReferenceNumber              string    `json:"referenceNumber"`
+	InvoiceHash                  string    `json:"invoiceHash"`
+	AcquisitionDate              time.Time `json:"acquisitionDate"`
+	InvoicingDate                time.Time `json:"invoicingDate"`
+	PermanentStorageDate         time.Time `json:"permanentStorageDate"`
+	UpoDownloadURL               string    `json:"upoDownloadUrl"`
+	UpoDownloadURLExpirationDate time.Time `json:"upoDownloadUrlExpirationDate"`
 }
 
 type listUploadedInvoicesResponse struct {

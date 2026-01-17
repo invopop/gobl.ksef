@@ -21,10 +21,11 @@ func TestListInvoices(t *testing.T) {
 		require.NoError(t, client.Authenticate(ctx))
 
 		today := time.Now().UTC()
+		to := today
 		params := ksef_api.ListInvoicesParams{
 			SubjectType: ksef_api.InvoiceSubjectTypeSupplier,
-			From:        today.AddDate(0, 0, -14).Format(time.RFC3339),
-			To:          today.Format(time.RFC3339),
+			From:        today.AddDate(0, 0, -14),
+			To:          &to,
 		}
 
 		_, err := client.ListInvoices(ctx, params)

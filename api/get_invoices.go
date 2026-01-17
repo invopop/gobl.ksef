@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"net/url"
 	"strconv"
+	"time"
 )
 
 var (
@@ -38,8 +39,8 @@ const (
 // ListInvoicesParams describe how invoice metadata should be queried.
 type ListInvoicesParams struct {
 	SubjectType InvoiceSubjectType
-	From        string // RFC3339
-	To          string // RFC3339
+	From        time.Time
+	To          *time.Time
 	SortOrder   InvoiceSortOrder
 	PageOffset  int
 	PageSize    int
@@ -76,6 +77,14 @@ func (c *Client) listInvoicesPage(ctx context.Context, params ListInvoicesParams
 		return nil, err
 	}
 
+	var (
+		from = normalizedParams.From.Format(time.RFC3339)
+		to   string
+	)
+	if normalizedParams.To != nil {
+		to = normalizedParams.To.Format(time.RFC3339)
+	}
+
 	token, err := c.getAccessToken(ctx)
 	if err != nil {
 		return nil, err
@@ -85,8 +94,8 @@ func (c *Client) listInvoicesPage(ctx context.Context, params ListInvoicesParams
 		SubjectType: string(normalizedParams.SubjectType),
 		DateRange: listInvoicesDateRange{
 			DateType: "PermanentStorage",
-			From:     normalizedParams.From,
-			To:       normalizedParams.To,
+			From:     from,
+			To:       to,
 		},
 	}
 
@@ -141,8 +150,13 @@ func (p ListInvoicesParams) normalize() (ListInvoicesParams, error) {
 	if p.SubjectType == "" {
 		return p, ErrInvoiceSubjectTypeRequired
 	}
-	if p.From == "" {
+	if p.From.IsZero() {
 		return p, ErrInvoiceDateFromRequired
+	}
+	p.From = p.From.UTC()
+	if p.To != nil {
+		to := p.To.UTC()
+		p.To = &to
 	}
 	switch p.SortOrder {
 	case "":
