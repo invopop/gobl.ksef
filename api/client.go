@@ -15,6 +15,7 @@ type ClientOptFunc func(*clientOpts)
 type clientOpts struct {
 	client              *resty.Client      // Resty client used for making the requests
 	url                 string             // Base API URL for the requests
+	qrUrl               string             // Base API URL for QR code verification
 	contextIdentifier   *ContextIdentifier // Identifies the business entity the requests are made for
 	certificatePath     string             // Path to the .p12 / .pfx certificate for KSeF API authorization
 	certificatePassword string             // Password to certificate above
@@ -26,6 +27,7 @@ func defaultClientOpts(contextIdentifier *ContextIdentifier, certificatePath str
 	return clientOpts{
 		client:              resty.New(),
 		url:                 "https://ksef-test.mf.gov.pl/api/v2",
+		qrUrl:               "https://qr-test.ksef.mf.gov.pl/invoice",
 		contextIdentifier:   contextIdentifier,
 		certificatePath:     certificatePath,
 		certificatePassword: "",
@@ -63,11 +65,13 @@ func WithCertificatePassword(password string) ClientOptFunc {
 // WithProductionURL sets the client url to KSeF production
 func WithProductionURL(o *clientOpts) {
 	o.url = "https://ksef.mf.gov.pl/api/v2"
+	o.qrUrl = "https://qr.ksef.mf.gov.pl/invoice"
 }
 
 // WithDemoURL sets the client url to KSeF demo
 func WithDemoURL(o *clientOpts) {
 	o.url = "https://ksef-demo.mf.gov.pl/api/v2"
+	o.qrUrl = "https://qr-demo.ksef.mf.gov.pl/invoice"
 }
 
 // NewClient returns a KSeF API client
