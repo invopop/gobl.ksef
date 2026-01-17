@@ -348,6 +348,7 @@ func (s *UploadSession) listUploadedInvoicesPage(ctx context.Context, continuati
 }
 
 // ListUploadedInvoices retrieves all invoices uploaded in the session, following continuation tokens.
+// Note: immediately after uploading invoices, they may have no KSeF Number assigned yet, and it may be necessary to retry the request
 func (s *UploadSession) ListUploadedInvoices(ctx context.Context) ([]UploadedInvoice, error) {
 	var (
 		allInvoices       []UploadedInvoice
