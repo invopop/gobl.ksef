@@ -50,7 +50,7 @@ The KSeF system provides endpoints for checking the current limit values for the
 
 ### Get Limits for Current Context
 
-GET [/limits/context](https://ksef-test.mf.gov.pl/docs/v2/index.html#tag/Limity-i-ograniczenia/paths/~1api~1v2~1limits~1context/get)
+GET [/limits/context](https://api-test.ksef.mf.gov.pl/docs/v2/index.html#tag/Limity-i-ograniczenia/paths/~1api~1v2~1limits~1context/get)
 
 Returns the applicable interactive and batch session limit values for the current context.
 
@@ -72,7 +72,7 @@ GetContextLimitResponse response = ksefClient.getContextSessionLimit(accessToken
 
 ### Get Limits for Current Entity
 
-GET [/limits/subject](https://ksef-test.mf.gov.pl/docs/v2/index.html#tag/Limity-i-ograniczenia/paths/~1api~1v2~1limits~1subject/get)
+GET [/limits/subject](https://api-test.ksef.mf.gov.pl/docs/v2/index.html#tag/Limity-i-ograniczenia/paths/~1api~1v2~1limits~1subject/get)
 
 Returns the applicable certificate and certificate application limits for the current authenticated entity.
 
@@ -100,7 +100,7 @@ These operations are available only for authenticated entities and do not affect
 
 ### Change Session Limits for Current Context
 
-POST [/testdata/limits/context/session](https://ksef-test.mf.gov.pl/docs/v2/index.html#tag/Limity-i-ograniczenia/paths/~1api~1v2~1testdata~1limits~1context~1session/post)
+POST [/testdata/limits/context/session](https://api-test.ksef.mf.gov.pl/docs/v2/index.html#tag/Limity-i-ograniczenia/paths/~1api~1v2~1testdata~1limits~1context~1session/post)
 
 Example in C#:
 [KSeF.Client.Tests.Core/E2E/Limits/LimitsE2ETests.cs](https://github.com/CIRFMF/ksef-client-csharp/blob/main/KSeF.Client.Tests.Core/E2E/Limits/LimitsE2ETests.cs)
@@ -153,7 +153,7 @@ ksefClient.changeContextLimitTest(request, accessToken);
 
 ### Restore Session Limits for Context to Default Values
 
-DELETE [/testdata/limits/context/session](https://ksef-test.mf.gov.pl/docs/v2/index.html#tag/Limity-i-ograniczenia/paths/~1api~1v2~1testdata~1limits~1context~1session/delete)
+DELETE [/testdata/limits/context/session](https://api-test.ksef.mf.gov.pl/docs/v2/index.html#tag/Limity-i-ograniczenia/paths/~1api~1v2~1testdata~1limits~1context~1session/delete)
 
 Example in C#:
 [KSeF.Client.Tests.Core/E2E/Limits/LimitsE2ETests.cs](https://github.com/CIRFMF/ksef-client-csharp/blob/main/KSeF.Client.Tests.Core/E2E/Limits/LimitsE2ETests.cs)
@@ -171,7 +171,7 @@ ksefClient.resetContextLimitTest(accessToken);
 
 ### Change Certificate Limits for Current Entity
 
-POST [/testdata/limits/subject/certificate](https://ksef-test.mf.gov.pl/docs/v2/index.html#tag/Limity-i-ograniczenia/paths/~1api~1v2~1testdata~1limits~1subject~1certificate/post)
+POST [/testdata/limits/subject/certificate](https://api-test.ksef.mf.gov.pl/docs/v2/index.html#tag/Limity-i-ograniczenia/paths/~1api~1v2~1testdata~1limits~1subject~1certificate/post)
 
 Example in C#:
 [KSeF.Client.Tests.Core/E2E/Limits/LimitsE2ETests.cs](https://github.com/CIRFMF/ksef-client-csharp/blob/main/KSeF.Client.Tests.Core/E2E/Limits/LimitsE2ETests.cs)
@@ -209,7 +209,7 @@ ksefClient.changeSubjectLimitTest(request, accessToken);
 
 ### Restore Certificate Limits for Entity to Default Values ###
 
-DELETE [/testdata/limits/subject/certificate](https://ksef-test.mf.gov.pl/docs/v2/index.html#tag/Limity-i-ograniczenia/paths/~1api~1v2~1testdata~1limits~1subject~1certificate/delete)
+DELETE [/testdata/limits/subject/certificate](https://api-test.ksef.mf.gov.pl/docs/v2/index.html#tag/Limity-i-ograniczenia/paths/~1api~1v2~1testdata~1limits~1subject~1certificate/delete)
 
 Example in C#:
 [KSeF.Client.Tests.Core/E2E/Limits/LimitsE2ETests.cs](https://github.com/CIRFMF/ksef-client-csharp/blob/main/KSeF.Client.Tests.Core/E2E/Limits/LimitsE2ETests.cs)

@@ -4,7 +4,7 @@
 
 Returns the invoice with the specified KSeF number.
 
-GET [/invoices/ksef/\{ksefReferenceNumber\}](https://ksef-test.mf.gov.pl/docs/v2/index.html#tag/Pobieranie-faktur/paths/~1api~1v2~1invoices~1ksef~1%7BksefNumber%7D/get)
+GET [/invoices/ksef/\{ksefReferenceNumber\}](https://api-test.ksef.mf.gov.pl/docs/v2/index.html#tag/Pobieranie-faktur/paths/~1api~1v2~1invoices~1ksef~1%7BksefNumber%7D/get)
 
 Example in C#:
 [KSeF.Client.Tests.Core\E2E\Invoice\InvoiceE2ETests.cs](https://github.com/CIRFMF/ksef-client-csharp/blob/main/KSeF.Client.Tests.Core/E2E/Invoice/InvoiceE2ETests.cs)
@@ -27,7 +27,7 @@ Returns a list of invoice metadata matching the specified search criteria.
 **The _metadata.json file in the export package**
 The export package contains a `_metadata.json` file containing an array of `InvoiceMetadata` objects (the model returned by POST `/invoices/query/metadata` - "Retrieving invoice metadata").
 
-POST [/invoices/query/metadata](https://ksef-test.mf.gov.pl/docs/v2/index.html#tag/Pobieranie-faktur/paths/~1api~1v2~1invoices~1query~1metadata/post)
+POST [/invoices/query/metadata](https://api-test.ksef.mf.gov.pl/docs/v2/index.html#tag/Pobieranie-faktur/paths/~1api~1v2~1invoices~1query~1metadata/post)
 
 Example in C#:
 [KSeF.Client.Tests.Core\E2E\Invoice\InvoiceE2ETests.cs](https://github.com/CIRFMF/ksef-client-csharp/blob/main/KSeF.Client.Tests.Core/E2E/Invoice/InvoiceE2ETests.cs)
@@ -73,7 +73,7 @@ QueryInvoiceMetadataResponse response = ksefClient.queryInvoiceMetadata(pageOffs
 
 Starts an asynchronous invoice search process in the KSeF system based on the provided filters. It is required to provide encryption information in the `encryption` field, which is used to encrypt the generated invoice packages.
 
-POST [/invoices/exports](https://ksef-test.mf.gov.pl/docs/v2/index.html#tag/Pobieranie-faktur/paths/~1api~1v2~1invoices~1exports/post)
+POST [/invoices/exports](https://api-test.ksef.mf.gov.pl/docs/v2/index.html#tag/Pobieranie-faktur/paths/~1api~1v2~1invoices~1exports/post)
 
 Example in C#:
 [KSeF.Client.Tests.Core\E2E\Invoice\InvoiceE2ETests.cs](https://github.com/CIRFMF/ksef-client-csharp/blob/main/KSeF.Client.Tests.Core/E2E/Invoice/InvoiceE2ETests.cs)
@@ -104,7 +104,7 @@ OperationResponse invoicesForSellerResponse = await KsefClient.ExportInvoicesAsy
     CancellationToken);
 ```
 
-Available values for `DateType` and `SubjectType` are described [here](https://ksef-test.mf.gov.pl/docs/v2/index.html#tag/Pobieranie-faktur/paths/~1api~1v2~1invoices~1query~1metadata/post).
+Available values for `DateType` and `SubjectType` are described [here](https://api-test.ksef.mf.gov.pl/docs/v2/index.html#tag/Pobieranie-faktur/paths/~1api~1v2~1invoices~1query~1metadata/post).
 
 Invoices in the package are sorted in ascending order by the date type specified in `DateRange` during export initialization.
 
@@ -131,7 +131,7 @@ InitAsyncInvoicesQueryResponse response = ksefClient.initAsyncQueryInvoice(reque
 
 Retrieves the status of a previously initialized asynchronous query based on the operation identifier. It allows tracking the processing progress of the query and downloading ready packages with results, if already available.
 
-GET [/invoices/exports/{operationReferenceNumber}](https://ksef-test.mf.gov.pl/docs/v2/index.html#tag/Pobieranie-faktur/paths/~1api~1v2~1invoices~1exports~1%7BoperationReferenceNumber%7D/get)
+GET [/invoices/exports/{operationReferenceNumber}](https://api-test.ksef.mf.gov.pl/docs/v2/index.html#tag/Pobieranie-faktur/paths/~1api~1v2~1invoices~1exports~1%7BoperationReferenceNumber%7D/get)
 
 Example in C#:
 [KSeF.Client.Tests.Core\E2E\Invoice\InvoiceE2ETests.cs](https://github.com/CIRFMF/ksef-client-csharp/blob/main/KSeF.Client.Tests.Core/E2E/Invoice/InvoiceE2ETests.cs)

@@ -5,7 +5,7 @@
 
 Returns a list of active authentication sessions.
 
-GET [/auth/sessions](https://ksef-test.mf.gov.pl/docs/v2/index.html#tag/Aktywne-sesje/paths/~1api~1v2~1auth~1sessions/get)
+GET [/auth/sessions](https://api-test.ksef.mf.gov.pl/docs/v2/index.html#tag/Aktywne-sesje/paths/~1api~1v2~1auth~1sessions/get)
 
 Example in ```C#```:
 [KSeF.Client.Tests.Core/E2E/Authorization/Sessions/SessionE2ETests.cs](https://github.com/CIRFMF/ksef-client-csharp/blob/main/KSeF.Client.Tests.Core/E2E/Authorization/Sessions/SessionE2ETests.cs)
@@ -39,7 +39,7 @@ while (Strings.isNotBlank(activeSessions.getContinuationToken())) {
 
 ### Revoking Current Session
 
-DELETE [`/auth/sessions/current`](https://ksef-test.mf.gov.pl/docs/v2/index.html#tag/Aktywne-sesje/paths/~1api~1v2~1auth~1sessions~1current/delete)
+DELETE [`/auth/sessions/current`](https://api-test.ksef.mf.gov.pl/docs/v2/index.html#tag/Aktywne-sesje/paths/~1api~1v2~1auth~1sessions~1current/delete)
 
 Revokes the session associated with the token used to call this endpoint. After the operation:
 - the associated ```refreshToken``` is revoked,
@@ -60,7 +60,7 @@ createKSeFClient().revokeCurrentSession(accessToken);
 
 ### Revoking Selected Session
 
-DELETE [`/auth/sessions/{referenceNumber}`](https://ksef-test.mf.gov.pl/docs/v2/index.html#tag/Aktywne-sesje/paths/~1api~1v2~1auth~1sessions~1%7BreferenceNumber%7D/delete)
+DELETE [`/auth/sessions/{referenceNumber}`](https://api-test.ksef.mf.gov.pl/docs/v2/index.html#tag/Aktywne-sesje/paths/~1api~1v2~1auth~1sessions~1%7BreferenceNumber%7D/delete)
 
 Revokes the session with the specified reference number. After the operation:
 - the associated ```refreshToken``` is revoked,

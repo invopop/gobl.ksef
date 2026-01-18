@@ -15,7 +15,7 @@ Generating a ```KSeF token``` is only possible after a one-time authentication u
 ### 1. Token Generation
 
 A token can only be generated in the context of `Nip` or `InternalId`. Generation is done by calling the endpoint:
-POST [/tokens](https://ksef-test.mf.gov.pl/docs/v2/index.html#tag/Tokeny/paths/~1api~1v2~1tokens/post)
+POST [/tokens](https://api-test.ksef.mf.gov.pl/docs/v2/index.html#tag/Tokeny/paths/~1api~1v2~1tokens/post)
 
 Providing in the request body a collection of permissions and a token description.
 
@@ -55,7 +55,7 @@ GenerateTokenResponse ksefToken = ksefClient.generateKsefToken(request, authToke
 ### 2. Filtering Tokens
 
 KSeF token metadata can be retrieved and filtered using the call:<br>
-GET [/tokens](https://ksef-test.mf.gov.pl/docs/v2/index.html#tag/Tokeny/paths/~1api~1v2~1tokens/get)
+GET [/tokens](https://api-test.ksef.mf.gov.pl/docs/v2/index.html#tag/Tokeny/paths/~1api~1v2~1tokens/get)
 
 Example in C#:
 [KSeF.Client.Tests.Core\E2E\KsefToken\KsefTokenE2ETests.cs](https://github.com/CIRFMF/ksef-client-csharp/blob/main/KSeF.Client.Tests.Core/E2E/KsefToken/KsefTokenE2ETests.cs)
@@ -92,7 +92,7 @@ The response returns token metadata, including information about who generated t
 ### 3. Retrieving a Specific Token
 
 To retrieve details of a specific token, use the call:<br>
-GET [/tokens/\{referenceNumber\}](https://ksef-test.mf.gov.pl/docs/v2/index.html#tag/Tokeny/paths/~1api~1v2~1tokens~1%7BreferenceNumber%7D/get)
+GET [/tokens/\{referenceNumber\}](https://api-test.ksef.mf.gov.pl/docs/v2/index.html#tag/Tokeny/paths/~1api~1v2~1tokens~1%7BreferenceNumber%7D/get)
 
 ```referenceNumber``` is the unique token identifier, which can be obtained during its creation or from the token list.
 
@@ -111,7 +111,7 @@ AuthenticationToken ksefToken = ksefClient.getKsefToken(token.getReferenceNumber
 ### 4. Token Revocation
 
 To revoke a token, use the call:<br>
-DELETE [/tokens/\{referenceNumber\}](https://ksef-test.mf.gov.pl/docs/v2/index.html#tag/Tokeny/paths/~1api~1v2~1tokens~1%7BreferenceNumber%7D/delete)
+DELETE [/tokens/\{referenceNumber\}](https://api-test.ksef.mf.gov.pl/docs/v2/index.html#tag/Tokeny/paths/~1api~1v2~1tokens~1%7BreferenceNumber%7D/delete)
 
 ```referenceNumber``` is the unique identifier of the token we want to revoke.
 

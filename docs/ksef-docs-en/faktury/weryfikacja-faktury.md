@@ -1,5 +1,5 @@
 # Invoice Verification
-22.09.2025
+15.01.2026
 
 An invoice sent to the KSeF system undergoes a series of technical and semantic checks. Verification includes the following criteria:
 
@@ -17,6 +17,14 @@ The invoice must be prepared in XML format, encoded in UTF-8 without the BOM mar
 
 ## Date Validation
 The invoice issue date (`P_1`) cannot be later than the date of document acceptance into the KSeF system.
+
+## NIP Number Validation
+  - NIP checksum verification for: `Podmiot1`, `Podmiot2`, `Podmiot3`, and `PodmiotUpowazniony` (if present).
+  - Applies only to production environment.
+
+## NIP Number Validation in Internal Identifier
+  - NIP checksum verification in internal identifier (`InternalId`) for `Podmiot3` - if this identifier is present.
+  - Applies only to production environment.
 
 ## File Size
 - Maximum invoice size without attachments: **1 MB \*** (1,000,000 bytes).

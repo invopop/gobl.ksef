@@ -6,7 +6,7 @@ This document describes operations for monitoring session status (interactive or
 ### 1. Retrieve Session List
 Returns a list of sessions meeting the specified search criteria.
 
-GET [sessions](https://ksef-test.mf.gov.pl/docs/v2/index.html#tag/Status-wysylki-i-UPO/paths/~1api~1v2~1sessions/get)
+GET [sessions](https://api-test.ksef.mf.gov.pl/docs/v2/index.html#tag/Status-wysylki-i-UPO/paths/~1api~1v2~1sessions/get)
 
 Returns the current session status along with aggregated data on the number of sent, correctly and incorrectly processed invoices; after session closure, it additionally provides a list of references to the collective UPO.
 
@@ -57,7 +57,7 @@ while (Strings.isNotBlank(activeSessions.getContinuationToken())) {
 ### 2. Check Session Status
 Checks the current session status.
 
-GET [sessions/\{referenceNumber\}](https://ksef-test.mf.gov.pl/docs/v2/index.html#tag/Status-wysylki-i-UPO/paths/~1api~1v2~1sessions~1%7BreferenceNumber%7D/get)
+GET [sessions/\{referenceNumber\}](https://api-test.ksef.mf.gov.pl/docs/v2/index.html#tag/Status-wysylki-i-UPO/paths/~1api~1v2~1sessions~1%7BreferenceNumber%7D/get)
 
 Returns the current session status along with aggregated data on the number of sent, correctly and incorrectly processed invoices; after session closure, it additionally provides a list of references to the collective UPO.
 
@@ -81,7 +81,7 @@ SessionStatusResponse statusResponse = ksefClient.getSessionStatus(referenceNumb
 
 ### 3. Retrieve Information About Sent Invoices
 
-GET [sessions/\{referenceNumber\}/invoices](https://ksef-test.mf.gov.pl/docs/v2/index.html#tag/Status-wysylki-i-UPO/paths/~1api~1v2~1sessions~1%7BreferenceNumber%7D~1invoices/get)
+GET [sessions/\{referenceNumber\}/invoices](https://api-test.ksef.mf.gov.pl/docs/v2/index.html#tag/Status-wysylki-i-UPO/paths/~1api~1v2~1sessions~1%7BreferenceNumber%7D~1invoices/get)
 
 Returns a list of metadata for all sent invoices along with their statuses and the total number of these invoices in the session.
 
@@ -128,7 +128,7 @@ Allows retrieving detailed information about a single invoice in the session, in
 
 You need to provide the session reference number `referenceNumber` and the invoice reference number `invoiceReferenceNumber`.
 
-GET [sessions/\{referenceNumber\}/invoices/\{invoiceReferenceNumber\}](https://ksef-test.mf.gov.pl/docs/v2/index.html#tag/Status-wysylki-i-UPO/paths/~1api~1v2~1sessions~1%7BreferenceNumber%7D~1invoices~1%7BinvoiceReferenceNumber%7D/get)
+GET [sessions/\{referenceNumber\}/invoices/\{invoiceReferenceNumber\}](https://api-test.ksef.mf.gov.pl/docs/v2/index.html#tag/Status-wysylki-i-UPO/paths/~1api~1v2~1sessions~1%7BreferenceNumber%7D~1invoices~1%7BinvoiceReferenceNumber%7D/get)
 
 Example in C#:
 ```csharp
@@ -154,7 +154,7 @@ Allows downloading the UPO for a single, correctly accepted invoice.
 
 #### 5.1 Based on Invoice Reference Number
 
-GET [sessions/\{referenceNumber\}/invoices/\{invoiceReferenceNumber\}/upo](https://ksef-test.mf.gov.pl/docs/v2/index.html#tag/Status-wysylki-i-UPO/paths/~1api~1v2~1sessions~1%7BreferenceNumber%7D~1invoices~1%7BinvoiceReferenceNumber%7D~1upo/get)
+GET [sessions/\{referenceNumber\}/invoices/\{invoiceReferenceNumber\}/upo](https://api-test.ksef.mf.gov.pl/docs/v2/index.html#tag/Status-wysylki-i-UPO/paths/~1api~1v2~1sessions~1%7BreferenceNumber%7D~1invoices~1%7BinvoiceReferenceNumber%7D~1upo/get)
 
 Example in C#:
 ```csharp
@@ -175,7 +175,7 @@ byte[] upoResponse = ksefClient.getSessionInvoiceUpoByReferenceNumber(sessionRef
 
 #### 5.2 Based on Invoice KSeF Number
 
-GET [sessions/\{referenceNumber\}/invoices/\{ksefNumber\}/upo](https://ksef-test.mf.gov.pl/docs/v2/index.html#tag/Status-wysylki-i-UPO/paths/~1api~1v2~1sessions~1%7BreferenceNumber%7D~1invoices~1ksef~1%7BksefNumber%7D~1upo/get)
+GET [sessions/\{referenceNumber\}/invoices/\{ksefNumber\}/upo](https://api-test.ksef.mf.gov.pl/docs/v2/index.html#tag/Status-wysylki-i-UPO/paths/~1api~1v2~1sessions~1%7BreferenceNumber%7D~1invoices~1ksef~1%7BksefNumber%7D~1upo/get)
 
 Example in C#:
 ```csharp
@@ -200,7 +200,7 @@ The received XML document is:
 
 ### 6. Retrieve List of Incorrectly Accepted Invoices
 
-GET [sessions/\{referenceNumber\}/invoices/failed](https://ksef-test.mf.gov.pl/docs/v2/index.html#tag/Status-wysylki-i-UPO/paths/~1api~1v2~1sessions~1%7BreferenceNumber%7D~1invoices~1failed/get)
+GET [sessions/\{referenceNumber\}/invoices/failed](https://api-test.ksef.mf.gov.pl/docs/v2/index.html#tag/Status-wysylki-i-UPO/paths/~1api~1v2~1sessions~1%7BreferenceNumber%7D~1invoices~1failed/get)
 
 Returns the total number of rejected invoices in the session and detailed information (status and error details) for each incorrectly processed invoice.
 
@@ -242,7 +242,7 @@ The endpoint allows selective retrieval of only rejected invoices, which facilit
 
 The session UPO is a collective confirmation of acceptance for all invoices correctly sent within the given session.
 
-After closing the session, in response to checking its [status](https://ksef-test.mf.gov.pl/docs/v2/index.html#tag/Status-wysylki-i-UPO/paths/~1api~1v2~1sessions~1%7BreferenceNumber%7D/get) (step 2 - Check Session Status), not only information about the number of correctly and incorrectly processed invoices is returned, but also a list of references to collective UPOs.
+After closing the session, in response to checking its [status](https://api-test.ksef.mf.gov.pl/docs/v2/index.html#tag/Status-wysylki-i-UPO/paths/~1api~1v2~1sessions~1%7BreferenceNumber%7D/get) (step 2 - Check Session Status), not only information about the number of correctly and incorrectly processed invoices is returned, but also a list of references to collective UPOs.
 
 Each element of the `upo.pages[]` array contains the UPO reference number (`referenceNumber`) and a link (`downloadUrl`) allowing its download:
 
@@ -263,7 +263,7 @@ Each element of the `upo.pages[]` array contains the UPO reference number (`refe
 ```
 
 With this list, the API client can download UPOs individually by calling the endpoint specified in the `downloadUrl` field, i.e.
-GET [/sessions/\{referenceNumber\}/upo/\{upoReferenceNumber\}](https://ksef-test.mf.gov.pl/docs/v2/index.html#tag/Status-wysylki-i-UPO/paths/~1api~1v2~1sessions~1%7BreferenceNumber%7D~1upo~1%7BupoReferenceNumber%7D/get)
+GET [/sessions/\{referenceNumber\}/upo/\{upoReferenceNumber\}](https://api-test.ksef.mf.gov.pl/docs/v2/index.html#tag/Status-wysylki-i-UPO/paths/~1api~1v2~1sessions~1%7BreferenceNumber%7D~1upo~1%7BupoReferenceNumber%7D/get)
 
 The received XML document is compliant with the [XSD](/faktury/upo/schemy/upo-v4-2.xsd) schema and can contain a maximum of 10,000 invoice entries.
 

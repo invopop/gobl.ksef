@@ -32,7 +32,7 @@ Tokens are automatically invalidated in case of loss of authorizations.
 
 The authentication process begins by retrieving the so-called **auth challenge**, which is a required element for further creation of the authentication request.
 The challenge is retrieved using the call:<br>
-POST [/auth/challenge](https://ksef-test.mf.gov.pl/docs/v2/index.html#tag/Uwierzytelnianie/paths/~1api~1v2~1auth~1challenge/post)<br>
+POST [/auth/challenge](https://api-test.ksef.mf.gov.pl/docs/v2/index.html#tag/Uwierzytelnianie/paths/~1api~1v2~1auth~1challenge/post)<br>
 
 The challenge lifetime is 10 minutes.
 
@@ -58,12 +58,12 @@ The response returns challenge and timestamp.
 
 #### 1. Preparing XML document (AuthTokenRequest)
 
-After obtaining the auth challenge, you need to prepare an XML document compliant with the [AuthTokenRequest](https://ksef-test.mf.gov.pl/docs/v2/schemas/authv2.xsd) schema, which will be used in the further authentication process. This document contains:
+After obtaining the auth challenge, you need to prepare an XML document compliant with the [AuthTokenRequest](https://api-test.ksef.mf.gov.pl/docs/v2/schemas/authv2.xsd) schema, which will be used in the further authentication process. This document contains:
 
 
 |    Key     |           Value                                                                                                                              |
 |--------------|------------------------------------------------------------------------------------------------------------------------------------------------|
-| Challenge    | `Value received from POST [/auth/challenge](https://ksef-test.mf.gov.pl/docs/v2/index.html#tag/Uzyskiwanie-dostepu/paths/~1api~1v2~1auth~1challenge/post) call`                                                                                                          |
+| Challenge    | `Value received from POST [/auth/challenge](https://api-test.ksef.mf.gov.pl/docs/v2/index.html#tag/Uzyskiwanie-dostepu/paths/~1api~1v2~1auth~1challenge/post) call`                                                                                                          |
 | ContextIdentifier| `Context identifier for which authentication is performed (NIP, internal identifier, EU VAT composite identifier)`                                                                       |
 | SubjectIdentifierType | `Method of identifying the authenticating entity. Possible values: certificateSubject (e.g., NIP/PESEL from certificate) or certificateFingerprint (certificate fingerprint).` |
 |(optional) AuthorizationPolicy | `Authorization rules. Currently supported list of allowed client IP addresses.` |
@@ -229,7 +229,7 @@ String signedXml = signatureService.sign(xml.getBytes(), cert.certificate(), cer
 #### 3. Sending signed XML
 
 After signing the AuthTokenRequest document, it should be sent to the KSeF system by calling the endpoint <br>
-POST [/auth/xades-signature](https://ksef-test.mf.gov.pl/docs/v2/index.html#tag/Uwierzytelnianie/paths/~1api~1v2~1auth~1xades-signature/post). <br>
+POST [/auth/xades-signature](https://api-test.ksef.mf.gov.pl/docs/v2/index.html#tag/Uwierzytelnianie/paths/~1api~1v2~1auth~1xades-signature/post). <br>
 Since the authentication process is asynchronous, the response returns a temporary authentication operation token (JWT) (```authenticationToken```) along with a reference number (```referenceNumber```). Both identifiers are used to:
 * check the status of the authentication process,
 * retrieve the actual access token (`accessToken`) in JWT format.
@@ -300,7 +300,7 @@ The encrypted KSeF token should be sent together with
 
 by calling the endpoint:
 
-POST [/auth/ksef-token](https://ksef-test.mf.gov.pl/docs/v2/index.html#tag/Uwierzytelnianie/paths/~1api~1v2~1auth~1ksef-token/post). <br>
+POST [/auth/ksef-token](https://api-test.ksef.mf.gov.pl/docs/v2/index.html#tag/Uwierzytelnianie/paths/~1api~1v2~1auth~1ksef-token/post). <br>
 
 Example in ```C#```:
 [KSeF.Client.Tests.Core\E2E\KsefToken\KsefTokenE2ETests.cs](https://github.com/CIRFMF/ksef-client-csharp/blob/main/KSeF.Client.Tests.Core/E2E/KsefToken/KsefTokenE2ETests.cs)
@@ -350,7 +350,7 @@ Since the authentication process is asynchronous, the response returns a tempora
 ### 3. Checking authentication status
 
 After sending the signed XML document (```AuthTokenRequest```) and receiving a response containing ```authenticationToken``` and ```referenceNumber```, you need to check the status of the ongoing authentication operation by providing Bearer \<authenticationToken\> in the ```Authorization``` header. <br>
-GET [/auth/{referenceNumber}](https://ksef-test.mf.gov.pl/docs/v2/index.html#tag/Uwierzytelnianie/paths/~1api~1v2~1auth~1%7BreferenceNumber%7D/get)
+GET [/auth/{referenceNumber}](https://api-test.ksef.mf.gov.pl/docs/v2/index.html#tag/Uwierzytelnianie/paths/~1api~1v2~1auth~1%7BreferenceNumber%7D/get)
 The response returns a status – code and description of the operation state (e.g., "Authentication in progress", "Authentication completed successfully").
 
 **Note**
@@ -379,7 +379,7 @@ AuthStatus authStatus = ksefClient.getAuthStatus(referenceNumber, tempToken);
 ### 4. Obtaining access token (accessToken)
 The endpoint returns a one-time pair of tokens generated for a successfully completed authentication process. Each subsequent call with the same ```authenticationToken``` will return a 400 error.
 
-POST [/auth/token/redeem](https://ksef-test.mf.gov.pl/docs/v2/index.html#tag/Uwierzytelnianie/paths/~1api~1v2~1auth~1token~1redeem/post)
+POST [/auth/token/redeem](https://api-test.ksef.mf.gov.pl/docs/v2/index.html#tag/Uwierzytelnianie/paths/~1api~1v2~1auth~1token~1redeem/post)
 
 Example in ```C#```:
 [KSeF.Client.Tests.Core\E2E\KsefToken\KsefTokenE2ETests.cs](https://github.com/CIRFMF/ksef-client-csharp/blob/main/KSeF.Client.Tests.Core/E2E/KsefToken/KsefTokenE2ETests.cs)
@@ -406,7 +406,7 @@ The response returns:
 #### 5. Refreshing the access token (```accessToken```)
 To maintain continuous access to protected API resources, the KSeF system provides a mechanism for refreshing the access token (```accessToken```) using a special refresh token (```refreshToken```). This solution eliminates the need to repeat the full authentication process each time, but also improves system security – the short lifetime of ```accessToken``` limits the risk of its unauthorized use in case of interception.
 
-POST [/auth/token/refresh](https://ksef-test.mf.gov.pl/docs/v2/index.html#tag/Uwierzytelnianie/paths/~1api~1v2~1auth~1token~1refresh/post) <br>
+POST [/auth/token/refresh](https://api-test.ksef.mf.gov.pl/docs/v2/index.html#tag/Uwierzytelnianie/paths/~1api~1v2~1auth~1token~1refresh/post) <br>
 ```RefreshToken``` should be passed in the Authorization header in the format:
 ```
 Authorization: Bearer {refreshToken}

@@ -23,12 +23,12 @@ KSeF API version 2.0 has been described in the OpenAPI standard, which enables b
 
 * **Documentation** (interactive online version):
   A documentation interface in the form of a technical portal, containing descriptions of methods, data structures, parameters, and examples. Intended for use by developers and integration analysts.
-  <br> Test environment (TE): \[[link](https://ksef-test.mf.gov.pl/docs/v2/index.html)\]
+  <br> Test environment (TE): \[[link](https://api-test.ksef.mf.gov.pl/docs/v2/index.html)\]
   <br> Production environment (PRD)
 
 * **Specification** (OpenAPI JSON file):
   A raw OpenAPI specification file in JSON format, intended for use in integration automation tools (e.g., code generators, API contract validators).
-  <br> Test environment (TE): \[[link](https://ksef-test.mf.gov.pl/docs/v2/openapi.json)\]
+  <br> Test environment (TE): \[[link](https://api-test.ksef.mf.gov.pl/docs/v2/openapi.json)\]
   <br> Production environment (PRD)
 
 **Official KSeF 2.0 Client Integration Library (open source)**
