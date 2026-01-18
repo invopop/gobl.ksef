@@ -15,7 +15,7 @@ func TestNewDocument(t *testing.T) {
 		require.NoError(t, err)
 
 		assert.Equal(t, "Faktura", doc.XMLName.Local)
-		assert.Equal(t, "http://crd.gov.pl/wzor/2023/06/29/12648/", doc.XMLNamespace)
+		assert.Equal(t, "http://crd.gov.pl/wzor/2025/06/25/13775/", doc.XMLNamespace)
 		assert.Equal(t, "http://www.w3.org/2001/XMLSchema", doc.XSDNamespace)
 		assert.Equal(t, "http://www.w3.org/2001/XMLSchema-instance", doc.XSINamespace)
 		assert.NotNil(t, doc.Header)
@@ -55,7 +55,7 @@ func TestNewDocument(t *testing.T) {
 		require.NoError(t, err)
 		defer xsdvalidate.Cleanup()
 
-		xsdBuf, err := test.LoadSchemaFile("FA2.xsd")
+		xsdBuf, err := test.LoadSchemaFile("FA3.xsd")
 		require.NoError(t, err)
 
 		xsdhandler, err := xsdvalidate.NewXsdHandlerMem(xsdBuf, xsdvalidate.ParsErrVerbose)
@@ -77,7 +77,7 @@ func TestNewDocument(t *testing.T) {
 		require.NoError(t, err)
 		defer xsdvalidate.Cleanup()
 
-		xsdBuf, err := test.LoadSchemaFile("FA2.xsd")
+		xsdBuf, err := test.LoadSchemaFile("FA3.xsd")
 		require.NoError(t, err)
 
 		xsdhandler, err := xsdvalidate.NewXsdHandlerMem(xsdBuf, xsdvalidate.ParsErrVerbose)
@@ -99,7 +99,7 @@ func TestNewDocument(t *testing.T) {
 		require.NoError(t, err)
 		defer xsdvalidate.Cleanup()
 
-		xsdBuf, err := test.LoadSchemaFile("FA2.xsd")
+		xsdBuf, err := test.LoadSchemaFile("FA3.xsd")
 		require.NoError(t, err)
 
 		xsdhandler, err := xsdvalidate.NewXsdHandlerMem(xsdBuf, xsdvalidate.ParsErrVerbose)

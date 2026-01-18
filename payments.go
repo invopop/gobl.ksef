@@ -16,8 +16,7 @@ type AdvancePayment struct {
 
 // DueDate defines the XML structure for KSeF due date
 type DueDate struct {
-	Date        string `xml:"Termin,omitempty"`
-	Description string `xml:"TerminOpis,omitempty"`
+	Date string `xml:"Termin,omitempty"`
 }
 
 // BankAccount defines the XML structure for KSeF bank accounts
@@ -42,7 +41,7 @@ type Payment struct {
 	PartiallyPaidMarker    string            `xml:"ZnacznikZaplatyCzesciowej,omitempty"`
 	AdvancePayments        []*AdvancePayment `xml:"ZaplataCzesciowa,omitempty"`
 	DueDates               []*DueDate        `xml:"TerminPlatnosci,omitempty"`
-	PaymentMean            string            `xml:"FormaPlatnosci,omitempty"`
+	PaymentMean            string            `xml:"FormaPlatnosci,omitempty"` // enum: 1 = cash, 2 = card etc. (see KSeF documentation)
 	OtherPaymentMeanMarker string            `xml:"PlatnoscInna,omitempty"`
 	OtherPaymentMean       string            `xml:"OpisPlatnosci,omitempty"`
 	BankAccounts           []*BankAccount    `xml:"RachunekBankowy,omitempty"`
@@ -86,18 +85,34 @@ func NewPayment(pay *bill.PaymentDetails, totals *bill.Totals) *Payment {
 	if terms := pay.Terms; terms != nil {
 		for _, dueDate := range pay.Terms.DueDates {
 			payment.DueDates = append(payment.DueDates, &DueDate{
-				Date:        dueDate.Date.String(),
-				Description: dueDate.Amount.String(),
+				Date: dueDate.Date.String(),
 			})
 		}
 	}
 
+	// According to FA_VAT v3 schema:
+	// If an invoice is paid in full in one payment, PaidMarker should be "1"
+	// Otherwise, set PartiallyPaidMarker with the following values:
+	// 1 = invoice paid partially
+	// 2 = paid in full after partial payments, and the last payment is the final one
+	// If the invoice is not paid at all, do not add PaidMarker or PartiallyPaidMarker.
+
 	if advances := pay.Advances; advances != nil {
-		if totals.Due.IsZero() {
+		if len(advances) == 1 && totals.Due.IsZero() {
+			// Invoice already paid in full in one payment
 			payment.PaidMarker = "1"
 			payment.PaymentDate = advances[len(advances)-1].Date.String()
-		} else if !totals.Advances.IsZero() {
-			payment.PartiallyPaidMarker = "1"
+		} else {
+			if totals.Due.IsZero() {
+				// Invoice already paid in full in multiple payments
+				payment.PartiallyPaidMarker = "2"
+			}
+			if !totals.Due.IsZero() && len(advances) > 0 {
+				// Invoice paid partially
+				payment.PartiallyPaidMarker = "1"
+			}
+			// Otherwise, not paid at all - no markers needed
+
 			for _, advance := range advances {
 				payment.AdvancePayments = append(payment.AdvancePayments, &AdvancePayment{
 					PaymentAmount: advance.Amount.String(),
@@ -126,6 +141,9 @@ func findPaymentMeansCode(key cbc.Key) (string, error) {
 }
 
 func findPaymentKeyDefinition(key cbc.Key) *cbc.Definition {
+	// TODO in the newest gobl library version it's moved from regime to addon
+	// The addon will be at github.com/invopop/gobl/addons/pl/favat
+
 	for _, keyDef := range regime.PaymentMeansKeys {
 		if key == keyDef.Key {
 			return keyDef

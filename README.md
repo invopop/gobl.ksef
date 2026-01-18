@@ -18,6 +18,10 @@ The following list the steps to follow through on in order to accomplish the goa
 3. Build a CLI (copy from gobl.cfdi and gobl.verifactu projects) to convert GOBL JSON documents into FA_VAT XML.
 4. Build a second part of this project that allows documents to be sent directly to the KSeF. A partial example of this can be found in the [gobl.ticketbai project](https://github.com/invopop/gobl.ticketbai/tree/refactor/internal/gateways). It'd probably be useful to be able to upload via the CLI too.
 
+## Unsupported fields
+
+Fields `JST` (Jednostka Samorządu Terytorialnego = local government unit) and `GV` (grupa VAT = VAT group) are currently hardcoded as "No" (value 2).
+
 ## FA_VAT documentation
 
 FA_VAT is the Polish electronic invoice format. The format uses XML.
