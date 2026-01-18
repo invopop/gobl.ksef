@@ -7,10 +7,14 @@ import (
 	"os"
 	"path/filepath"
 	"strings"
+	"testing"
 
 	"github.com/invopop/gobl"
 	ksef "github.com/invopop/gobl.ksef"
 	"github.com/invopop/gobl/bill"
+	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
+	xsdvalidate "github.com/terminalstatic/go-xsd-validate"
 )
 
 // NewDocumentFrom creates a KSeF Document from a GOBL file in the `test/data` folder
@@ -130,4 +134,21 @@ func removeLastEntry(dir string) string {
 	lastEntry := "/" + filepath.Base(dir)
 	i := strings.LastIndex(dir, lastEntry)
 	return dir[:i]
+}
+
+// ValidateAgainstFA3Schema validates the given data against the FA3 schema
+func ValidateAgainstFA3Schema(t *testing.T, data []byte) {
+	err := xsdvalidate.Init()
+	require.NoError(t, err)
+	t.Cleanup(xsdvalidate.Cleanup)
+
+	xsdBuf, err := LoadSchemaFile("FA3.xsd")
+	require.NoError(t, err)
+
+	xsdhandler, err := xsdvalidate.NewXsdHandlerMem(xsdBuf, xsdvalidate.ParsErrVerbose)
+	require.NoError(t, err)
+	t.Cleanup(xsdhandler.Free)
+
+	validation := xsdhandler.ValidateMem(data, xsdvalidate.ParsErrDefault)
+	assert.Nil(t, validation)
 }

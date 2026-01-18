@@ -14,19 +14,19 @@
 		"type": "credit-note",
 		"series": "CN",
 		"code": "002",
-		"issue_date": "2023-12-21",
+		"issue_date": "2025-12-21",
 		"currency": "PLN",
 		"preceding": [
 			{
 				"type": "standard",
-				"issue_date": "2023-12-20",
+				"issue_date": "2025-12-20",
 				"series": "SAMPLE",
 				"code": "001",
 				"reason": "Special Discount",
 				"stamps": [
 					{
 						"prv": "ksef-id",
-						"val": "9876543210-20231220-107FDF72DB53-F7"
+						"val": "9876543210-20251220-107FDF72DB53-F7"
 					}
 				],
 				"ext": {

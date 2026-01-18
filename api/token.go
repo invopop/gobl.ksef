@@ -1,0 +1,80 @@
+package api
+
+import (
+	"context"
+	"errors"
+	"time"
+)
+
+var (
+	ErrMissingAccessTokenAfterRefresh = errors.New("missing access token after refresh")
+	ErrRefreshTokenUnavailable        = errors.New("refresh token not available")
+	ErrRefreshTokenExpired            = errors.New("refresh token expired")
+	ErrRefreshResponseMissingToken    = errors.New("refresh response missing access token")
+)
+
+func (t *apiToken) isExpired(now time.Time) bool {
+	if t == nil {
+		return true
+	}
+	if t.ValidUntil == "" {
+		return true
+	}
+	expiry, err := time.Parse(time.RFC3339Nano, t.ValidUntil)
+	if err != nil {
+		return true
+	}
+	return !now.Before(expiry)
+}
+
+// getAccessToken returns a valid access token, refreshing it when needed
+// This token needs to be inserted in Authorization: Bearer <token> header
+func (c *Client) getAccessToken(ctx context.Context) (string, error) {
+	if c.accessToken != nil && !c.accessToken.isExpired(time.Now()) {
+		return c.accessToken.Token, nil
+	}
+
+	if err := c.refreshAccessToken(ctx); err != nil {
+		return "", err
+	}
+
+	if c.accessToken == nil {
+		return "", ErrMissingAccessTokenAfterRefresh
+	}
+
+	return c.accessToken.Token, nil
+}
+
+func (c *Client) refreshAccessToken(ctx context.Context) error {
+	if c.refeshToken == nil {
+		return ErrRefreshTokenUnavailable
+	}
+	if c.refeshToken.isExpired(time.Now()) {
+		// LATER: Re-authenticate
+		return ErrRefreshTokenExpired
+	}
+
+	response := &refreshAccessTokenResponse{}
+	resp, err := c.client.R().
+		SetHeader("Authorization", "Bearer "+c.refeshToken.Token).
+		SetResult(response).
+		SetContext(ctx).
+		Post(c.url + "/auth/token/refresh")
+	if err != nil {
+		return err
+	}
+	if resp.IsError() {
+		return newErrorResponse(resp)
+	}
+	if response.AccessToken == nil {
+		return ErrRefreshResponseMissingToken
+	}
+
+	c.accessToken = response.AccessToken
+
+	return nil
+}
+
+type refreshAccessTokenResponse struct {
+	AccessToken *apiToken `json:"accessToken"`
+}

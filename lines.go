@@ -17,7 +17,7 @@ type Line struct {
 	NetPriceTotal           string `xml:"P_11,omitempty"`
 	VATRate                 string `xml:"P_12,omitempty"`
 	ExciseDuty              string `xml:"KwotaAkcyzy,omitempty"`
-	SpecialGoodsCode        string `xml:"GTU,omitempty"` // values GTU_1 to GTU_13
+	SpecialGoodsCode        string `xml:"GTU,omitempty"` // values GTU_01 to GTU_13
 	OSSTaxRate              string `xml:"P_12_XII,omitempty"`
 	Attachment15GoodsMarker string `xml:"P_12_Zal_15,omitempty"`
 	Procedure               string `xml:"Procedura,omitempty"`

@@ -9,10 +9,10 @@ import (
 
 // KSEF schema constants
 const (
-	systemCode    = "FA (2)"
+	systemCode    = "FA (3)"
 	formCode      = "FA"
 	schemaVersion = "1-0E"
-	formVariant   = 2
+	formVariant   = 3
 	systemInfo    = "GOBL.KSEF"
 )
 

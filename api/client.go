@@ -3,51 +3,46 @@ package api
 
 import (
 	"context"
-	"crypto/rand"
-	"crypto/rsa"
-	"crypto/x509"
-	"encoding/pem"
 	"fmt"
-	"os"
 
 	"github.com/go-resty/resty/v2"
 )
 
 // ClientOptFunc defines function for customizing the KSeF client
-type ClientOptFunc func(*ClientOpts)
+type ClientOptFunc func(*clientOpts)
 
-// ClientOpts defines the client parameters
-type ClientOpts struct {
-	Client           *resty.Client
-	URL              string
-	ID               string
-	Token            string
-	SessionToken     string
-	SessionReference string
-	KeyPath          string
+// clientOpts defines the client parameters
+type clientOpts struct {
+	client              *resty.Client      // Resty client used for making the requests
+	url                 string             // Base API URL for the requests
+	qrUrl               string             // Base API URL for QR code verification
+	contextIdentifier   *ContextIdentifier // Identifies the business entity the requests are made for
+	certificatePath     string             // Path to the .p12 / .pfx certificate for KSeF API authorization
+	certificatePassword string             // Password to certificate above
+	accessToken         *apiToken          // Access token used for making most of the requests
+	refeshToken         *apiToken          // Refresh token used for refreshing the access token
 }
 
-func defaultClientOpts() ClientOpts {
-	return ClientOpts{
-		Client:           resty.New(),
-		URL:              "https://ksef-test.mf.gov.pl",
-		ID:               "",
-		Token:            "",
-		SessionToken:     "",
-		SessionReference: "",
-		KeyPath:          "",
+func defaultClientOpts(contextIdentifier *ContextIdentifier, certificatePath string) clientOpts {
+	return clientOpts{
+		client:              resty.New(),
+		url:                 "https://api-test.ksef.mf.gov.pl/v2",
+		qrUrl:               "https://qr-test.ksef.mf.gov.pl/invoice",
+		contextIdentifier:   contextIdentifier,
+		certificatePath:     certificatePath,
+		certificatePassword: "",
 	}
 }
 
 // Client defines KSeF client
 type Client struct {
-	ClientOpts
+	clientOpts
 }
 
 // WithClient allows to customize the http client used for making the requests
 func WithClient(client *resty.Client) ClientOptFunc {
-	return func(o *ClientOpts) {
-		o.Client = client
+	return func(o *clientOpts) {
+		o.client = client
 	}
 }
 
@@ -55,96 +50,68 @@ func WithClient(client *resty.Client) ClientOptFunc {
 func WithDebugClient() ClientOptFunc {
 	c := resty.New()
 	c.SetDebug(true)
-	return func(o *ClientOpts) {
-		o.Client = c
+	return func(o *clientOpts) {
+		o.client = c
 	}
 }
 
-// WithID allows customizing the Polish tax id number (NIP)
-func WithID(id string) ClientOptFunc {
-	return func(o *ClientOpts) {
-		o.ID = id
-	}
-}
-
-// WithToken allows customizing the KSeF authorization token
-func WithToken(token string) ClientOptFunc {
-	return func(o *ClientOpts) {
-		o.Token = token
-	}
-}
-
-// WithKeyPath allows customizing the public key for KSeF API authorization
-func WithKeyPath(keyPath string) ClientOptFunc {
-	return func(o *ClientOpts) {
-		o.KeyPath = keyPath
+// WithCertificatePassword allows passing the password to the certificate above
+func WithCertificatePassword(password string) ClientOptFunc {
+	return func(o *clientOpts) {
+		o.certificatePassword = password
 	}
 }
 
 // WithProductionURL sets the client url to KSeF production
-func WithProductionURL(o *ClientOpts) {
-	o.URL = "https://ksef.mf.gov.pl"
+func WithProductionURL(o *clientOpts) {
+	o.url = "https://api.mf.gov.pl/v2"
+	o.qrUrl = "https://qr.ksef.mf.gov.pl/invoice"
 }
 
 // WithDemoURL sets the client url to KSeF demo
-func WithDemoURL(o *ClientOpts) {
-	o.URL = "https://ksef-demo.mf.gov.pl"
+func WithDemoURL(o *clientOpts) {
+	o.url = "https://api-demo.ksef.mf.gov.pl/v2"
+	o.qrUrl = "https://qr-demo.ksef.mf.gov.pl/invoice"
 }
 
 // NewClient returns a KSeF API client
-func NewClient(opts ...ClientOptFunc) *Client {
-	o := defaultClientOpts()
+func NewClient(contextIdentifier *ContextIdentifier, certificatePath string, opts ...ClientOptFunc) *Client {
+	o := defaultClientOpts(contextIdentifier, certificatePath)
 	for _, fn := range opts {
 		fn(&o)
 	}
 	return &Client{
-		ClientOpts: o,
+		clientOpts: o,
 	}
 }
 
-// FetchSessionToken requests new session token
-func FetchSessionToken(ctx context.Context, c *Client) error {
-	challenge, err := fetchChallenge(ctx, c)
+// Authenticate performs the full authorization exchange and stores the resulting tokens on the client.
+func (c *Client) Authenticate(ctx context.Context) error {
+	challenge, err := c.fetchChallenge(ctx)
 	if err != nil {
 		return err
 	}
 
-	encryptedToken, err := encryptToken(c, challenge)
+	authResp, err := c.authorizeWithCertificate(ctx, challenge, c.contextIdentifier)
 	if err != nil {
-		return fmt.Errorf("cannot encrypt token: %v", err)
+		return err
+	}
+	if authResp.AuthenticationToken == nil {
+		return fmt.Errorf("authorization response missing authentication token")
 	}
 
-	sessionToken, err := initTokenSession(ctx, c, encryptedToken, challenge.Challenge)
+	err = c.pollAuthorizationStatus(ctx, authResp.ReferenceNumber, authResp.AuthenticationToken.Token)
 	if err != nil {
-		return fmt.Errorf("cannot init session token: %v", err)
+		return err
 	}
 
-	c.SessionToken = sessionToken.SessionToken.Token
-	c.SessionReference = sessionToken.ReferenceNumber
+	exchResp, err := c.exchangeToken(ctx, authResp.AuthenticationToken.Token)
+	if err != nil {
+		return err
+	}
+
+	c.accessToken = exchResp.AccessToken
+	c.refeshToken = exchResp.RefreshToken
 
 	return nil
-}
-
-func publicKey(keyPath string) (*rsa.PublicKey, error) {
-	key, err := os.ReadFile(keyPath)
-	if err != nil {
-		return nil, fmt.Errorf("cannot read key file %s: %v", keyPath, err)
-	}
-	block, _ := pem.Decode(key)
-	parsedKey, err := x509.ParsePKIXPublicKey(block.Bytes)
-	if err != nil {
-		return nil, fmt.Errorf("cannot parse public key: %v", err)
-	}
-	return parsedKey.(*rsa.PublicKey), nil
-}
-
-func encryptToken(c *Client, challenge *AuthorisationChallengeResponse) ([]byte, error) {
-	rawToken := fmt.Sprintf("%s|%d", c.Token, challenge.Timestamp.UnixMilli())
-
-	publicKey, err := publicKey(c.KeyPath)
-	if err != nil {
-		return nil, err
-	}
-
-	return rsa.EncryptPKCS1v15(rand.Reader, publicKey, []byte(rawToken))
 }

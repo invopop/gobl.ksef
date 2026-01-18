@@ -1,8 +1,6 @@
 package api
 
 import (
-	"encoding/xml"
-	"fmt"
 	"net/url"
 
 	"github.com/invopop/gobl"
@@ -10,35 +8,25 @@ import (
 	"github.com/invopop/gobl/regimes/pl"
 )
 
-// UPO defines the XML structure for KSeF UPO
-type UPO struct {
-	KSeFNumber string `xml:"Dokument>NumerKSeFDokumentu"`
-	KSeFHash   string `xml:"Dokument>SkrotDokumentu"`
-}
-
-// Sign reads the UPO file and adds the QR code values to the envelope
-func Sign(env *gobl.Envelope, upoBytes []byte, c *Client) error {
-	upo := new(UPO)
-	if err := xml.Unmarshal(upoBytes, upo); err != nil {
-		return fmt.Errorf("parsing input as UPO: %w", err)
-	}
-
+// Sign attached QR code and other identification values to the envelope
+func (c *Client) Sign(env *gobl.Envelope, nip string, uploadedInvoice *UploadedInvoice) error {
 	env.Head.AddStamp(
 		&head.Stamp{
 			Provider: pl.StampProviderKSeFID,
-			Value:    upo.KSeFNumber,
+			Value:    uploadedInvoice.KsefNumber,
 		},
 	)
 	env.Head.AddStamp(
 		&head.Stamp{
 			Provider: pl.StampProviderKSeFHash,
-			Value:    upo.KSeFHash,
+			Value:    uploadedInvoice.InvoiceHash,
 		},
 	)
+	// URL contains invoicing date in DD-MM-YYYY format
 	env.Head.AddStamp(
 		&head.Stamp{
 			Provider: pl.StampProviderKSeFQR,
-			Value:    c.URL + "/web/verify/" + upo.KSeFNumber + "/" + url.QueryEscape(upo.KSeFHash),
+			Value:    c.qrUrl + "/" + nip + "/" + uploadedInvoice.InvoicingDate.Format("02-01-2006") + "/" + url.QueryEscape(uploadedInvoice.InvoiceHash),
 		},
 	)
 
