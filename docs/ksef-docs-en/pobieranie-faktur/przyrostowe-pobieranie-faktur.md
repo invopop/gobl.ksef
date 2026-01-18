@@ -3,7 +3,7 @@
 
 ## Introduction
 
-Incremental invoice retrieval, based on package export (POST [`/invoice/exports`](https://ksef-test.mf.gov.pl/docs/v2/index.html#tag/Pobieranie-faktur/paths/~1api~1v2~1invoices~1exports/post)), is the recommended synchronization mechanism between the central KSeF repository and local databases of external systems.
+Incremental invoice retrieval, based on package export (POST [`/invoice/exports`](https://api-test.ksef.mf.gov.pl/docs/v2/index.html#tag/Pobieranie-faktur/paths/~1api~1v2~1invoices~1exports/post)), is the recommended synchronization mechanism between the central KSeF repository and local databases of external systems.
 
 A key role is played by the **[High Water Mark (HWM)](hwm.md)** mechanism - a stable point in time up to which the system guarantees data completeness.
 
@@ -15,7 +15,7 @@ Incremental retrieval is based on three key components:
 2. **API limit handling** - controlling the rate of calls, handling HTTP 429 and Retry-After.
 3. **Deduplication** - eliminating duplicates based on metadata from `_metadata.json` files.
 
-Base method: POST [`/invoice/exports`](https://ksef-test.mf.gov.pl/docs/v2/index.html#tag/Pobieranie-faktur/paths/~1api~1v2~1invoices~1exports/post) initiates asynchronous export. After processing is complete, the operation status provides unique URLs to download package parts.
+Base method: POST [`/invoice/exports`](https://api-test.ksef.mf.gov.pl/docs/v2/index.html#tag/Pobieranie-faktur/paths/~1api~1v2~1invoices~1exports/post) initiates asynchronous export. After processing is complete, the operation status provides unique URLs to download package parts.
 
 ## Time window synchronization (Windowing)
 

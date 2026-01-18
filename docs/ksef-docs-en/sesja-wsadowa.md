@@ -18,7 +18,9 @@ Before creating a package for batch submission, it is recommended to calculate t
 
 Before opening a session and sending invoices, the following is required:
 * generating a symmetric key with a length of 256 bits and an initialization vector with a length of 128 bits (IV), appended as a prefix to the ciphertext,
-* encrypting the document with the AES-256-CBC algorithm with PKCS#7 padding,
+* preparing the ZIP package,
+* (optionally, if the package exceeds the allowed size) dividing the ZIP package into parts,
+* encrypting the parts with the AES-256-CBC algorithm with PKCS#7 padding,
 * encrypting the symmetric key with the RSAES-OAEP algorithm (OAEP padding with MGF1 function based on SHA-256 and SHA-256 hash), using the Ministry of Finance KSeF public key.
 
 These operations can be performed using the ```CryptographyService``` component, available in the official KSeF client. This library provides ready-made methods for generating and encrypting keys, in accordance with system requirements.
@@ -175,7 +177,7 @@ specifies which XSD version the system will use to validate submitted invoices.
 the symmetric key used to encrypt XML files, encrypted with the Ministry of Finance public key; it is recommended to use a newly generated key for each session.
 * ZIP package and parts metadata: file name, hash, size, and list of parts (if the package is split)
 
-POST [/sessions/batch](https://ksef-test.mf.gov.pl/docs/v2/index.html#tag/Wysylka-wsadowa/operation/batch.open)
+POST [/sessions/batch](https://api-test.ksef.mf.gov.pl/docs/v2/index.html#tag/Wysylka-wsadowa/paths/~1sessions~1batch/post)
 
 In response to opening the session, you will receive an object containing `referenceNumber`, which will be used in subsequent steps to identify the batch session.
 
@@ -295,7 +297,7 @@ Authorization is verified at the beginning of each HTTP request. If the address 
 ### 6. Closing the Batch Session
 After all package parts have been sent, you must close the batch session, which asynchronously initiates the processing of the invoice package ([verification details](faktury/weryfikacja-faktury.md)), and generates a collective UPO.
 
-POST [/sessions/batch/\{referenceNumber\}/close](https://ksef-test.mf.gov.pl/docs/v2/index.html#tag/Wysylka-wsadowa/paths/~1api~1v2~1sessions~1batch~1%7BreferenceNumber%7D~1close/post)}]
+POST [/sessions/batch/\{referenceNumber\}/close](https://api-test.ksef.mf.gov.pl/docs/v2/index.html#tag/Wysylka-wsadowa/paths/~1sessions~1batch~1%7BreferenceNumber%7D~1close/post)}]
 
 Example in C#:
 [KSeF.Client.Tests.Core\E2E\BatchSession\BatchSessionStreamE2ETests.cs](https://github.com/CIRFMF/ksef-client-csharp/blob/main/KSeF.Client.Tests.Core/E2E/BatchSession/BatchSessionStreamE2ETests.cs)

@@ -37,7 +37,7 @@ the symmetric key for encrypting XML files, encrypted with the Ministry of Finan
 
 Opening a session is a lightweight and synchronous operation – multiple interactive sessions can be maintained simultaneously within a single authentication.
 
-POST [sessions/online](https://ksef-test.mf.gov.pl/docs/v2/index.html#tag/Wysylka-interaktywna/operation/onlineSession.open)
+POST [sessions/online](https://api-test.ksef.mf.gov.pl/docs/v2/index.html#tag/Wysylka-interaktywna/operation/onlineSession.open)
 
 The response returns an object containing:
  - ```referenceNumber``` – a unique identifier of the interactive session, which must be passed in all subsequent API calls.
@@ -74,7 +74,7 @@ OpenOnlineSessionResponse openOnlineSessionResponse = ksefClient.openOnlineSessi
 
 The encrypted invoice should be sent to the endpoint:
 
-POST [sessions/online/{referenceNumber}/invoices/](https://ksef-test.mf.gov.pl/docs/v2/index.html#tag/Wysylka-interaktywna/paths/~1api~1v2~1sessions~1online~1%7BreferenceNumber%7D~1invoices/post)
+POST [sessions/online/{referenceNumber}/invoices/](https://api-test.ksef.mf.gov.pl/docs/v2/index.html#tag/Wysylka-interaktywna/paths/~1api~1v2~1sessions~1online~1%7BreferenceNumber%7D~1invoices/post)
 
 The response contains the document's ```referenceNumber``` – used to identify the invoice in subsequent operations (e.g., document lists).
 
@@ -126,7 +126,7 @@ SendInvoiceResponse sendInvoiceResponse = ksefClient.onlineSessionSendInvoice(se
 ### 3. Closing the Session
 After sending all invoices, the session should be closed, which initiates asynchronous generation of the consolidated UPO.
 
-POST [/sessions/online/\{referenceNumber\}/close](https://ksef-test.mf.gov.pl/docs/v2/index.html#tag/Wysylka-interaktywna/paths/~1api~1v2~1sessions~1online~1%7BreferenceNumber%7D~1close/post)
+POST [/sessions/online/\{referenceNumber\}/close](https://api-test.ksef.mf.gov.pl/docs/v2/index.html#tag/Wysylka-interaktywna/paths/~1api~1v2~1sessions~1online~1%7BreferenceNumber%7D~1close/post)
 
 The consolidated UPO will be available after checking the session status.
 

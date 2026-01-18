@@ -79,9 +79,9 @@ For this reason, limits are dynamic and may be adjusted depending on operational
 On the TE environment, limits have been configured to allow integrators to work freely and test integrations without risk of blocking. Default limit values are **ten times higher** than in production, enabling intensive testing.
 Additionally, the following endpoints allow simulation of various scenarios:
 
-* [POST /testdata/rate-limits/production](https://ksef-test.mf.gov.pl/docs/v2/index.html#tag/Limity-i-ograniczenia/paths/~1api~1v2~1testdata~1rate-limits~1production/post) - activates production (PRD) limits,
-* [POST /testdata/rate-limits](https://ksef-test.mf.gov.pl/docs/v2/index.html#tag/Limity-i-ograniczenia/paths/~1api~1v2~1testdata~1rate-limits/post) - allows setting custom values,
-* [DELETE /testdata/rate-limits](https://ksef-test.mf.gov.pl/docs/v2/index.html#tag/Limity-i-ograniczenia/paths/~1api~1v2~1testdata~1rate-limits/delete) - restores default TE environment limits.
+* [POST /testdata/rate-limits/production](https://api-test.ksef.mf.gov.pl/docs/v2/index.html#tag/Limity-i-ograniczenia/paths/~1api~1v2~1testdata~1rate-limits~1production/post) - activates production (PRD) limits,
+* [POST /testdata/rate-limits](https://api-test.ksef.mf.gov.pl/docs/v2/index.html#tag/Limity-i-ograniczenia/paths/~1api~1v2~1testdata~1rate-limits/post) - allows setting custom values,
+* [DELETE /testdata/rate-limits](https://api-test.ksef.mf.gov.pl/docs/v2/index.html#tag/Limity-i-ograniczenia/paths/~1api~1v2~1testdata~1rate-limits/delete) - restores default TE environment limits.
 
 **DEMO Environment (pre-production)**
 On the DEMO environment, **the same limits as in production** apply for a given context. These values are **replicated from PRD** and serve for final validation of performance and integration stability before production deployment.

@@ -209,7 +209,7 @@ Entity A has `InvoiceRead` permission with `canDelegate = true` for many clients
 
 Within organizations using KSeF, it is possible to grant permissions to specific natural persons - e.g., employees of the accounting or IT department. Permissions are assigned to a person based on their identifier (PESEL, NIP, or Fingerprint). Permissions can include both operational activities (e.g., issuing invoices) and administrative ones (e.g., managing permissions). This section describes how to grant such permissions via the API and the permission requirements on the granting party's side.
 
-POST [/permissions/persons/grants](https://ksef-test.mf.gov.pl/docs/v2/index.html#tag/Nadawanie-uprawnien/paths/~1api~1v2~1permissions~1persons~1grants/post)
+POST [/permissions/persons/grants](https://api-test.ksef.mf.gov.pl/docs/v2/index.html#tag/Nadawanie-uprawnien/paths/~1api~1v2~1permissions~1persons~1grants/post)
 
 
 | Field                                       | Value                                         |
@@ -278,7 +278,7 @@ Permissions can be granted by someone who is:
 
 KSeF allows granting permissions to entities that will process invoices on behalf of a given organization - e.g., accounting offices, shared service centers, or outsourcing companies. InvoiceRead and InvoiceWrite permissions can be granted directly and, if needed - with the option for further delegation (flag `canDelegate`). This section discusses the mechanism for granting these permissions, required roles, and example implementations.
 
-POST [/permissions/entities/grants](https://ksef-test.mf.gov.pl/docs/v2/index.html#tag/Nadawanie-uprawnien/paths/~1api~1v2~1permissions~1entities~1grants/post)
+POST [/permissions/entities/grants](https://api-test.ksef.mf.gov.pl/docs/v2/index.html#tag/Nadawanie-uprawnien/paths/~1api~1v2~1permissions~1entities~1grants/post)
 
 
 * **InvoiceWrite (Issuing invoices)**: This permission allows sending invoice files in XML format to the KSeF system. After successful verification and KSeF number assignment, these files become structured invoices.
@@ -329,7 +329,7 @@ OperationResponse response = ksefClient.grantsPermissionEntity(request, accessTo
 
 For selected invoicing processes, KSeF provides so-called entity permissions, which apply in the context of invoicing on behalf of another entity (`TaxRepresentative`, `SelfInvoicing`, `RRInvoicing`). These permissions can only be granted by the owner or an administrator with `CredentialsManage`. This section presents how to grant them, their application, and technical limitations.
 
-POST [/permissions/authorizations/grants](https://ksef-test.mf.gov.pl/docs/v2/index.html#tag/Nadawanie-uprawnien/paths/~1api~1v2~1permissions~1authorizations~1grants/post)
+POST [/permissions/authorizations/grants](https://api-test.ksef.mf.gov.pl/docs/v2/index.html#tag/Nadawanie-uprawnien/paths/~1api~1v2~1permissions~1authorizations~1grants/post)
 
 Used to grant so-called entity permissions, such as `SelfInvoicing` (self-invoicing), `RRInvoicing` (RR self-invoicing), or `TaxRepresentative` (tax representative operations).
 
@@ -385,7 +385,7 @@ The indirect permission granting mechanism enables the operation of a so-called 
 
 `InvoiceWrite` and `InvoiceRead` are the only permissions that can be granted indirectly. This means that an intermediary entity can grant these permissions to another entity (authorized), which will apply in the context of the target entity (partner). These permissions can be selective (for a specific partner) or general (for all partners of the intermediary entity). For selective granting, the target entity identifier should specify the type `"Nip"` and the value of the specific NIP number. For general permissions, the target entity identifier should specify the type `"AllPartners"`, without a filled `value` field.
 
-POST [/permissions/indirect/grants](https://ksef-test.mf.gov.pl/docs/v2/index.html#tag/Nadawanie-uprawnien/paths/~1api~1v2~1permissions~1indirect~1grants/post)
+POST [/permissions/indirect/grants](https://api-test.ksef.mf.gov.pl/docs/v2/index.html#tag/Nadawanie-uprawnien/paths/~1api~1v2~1permissions~1indirect~1grants/post)
 
 
 
@@ -430,7 +430,7 @@ OperationResponse response = ksefClient.grantsPermissionIndirectEntity(request, 
 
 The organizational structure of an entity may include subordinate units or entities - e.g., branches, departments, subsidiaries, VAT group members, and local government units. KSeF allows assigning permissions to manage such units. Having the `SubunitManage` permission is required. This section presents how to grant administrative permissions in the context of a subordinate unit or subordinate entity, taking into account the `InternalId` or `Nip` identifier.
 
-POST [/permissions/subunits/grants](https://ksef-test.mf.gov.pl/docs/v2/index.html#tag/Nadawanie-uprawnien/paths/~1api~1v2~1permissions~1subunits~1grants/post)
+POST [/permissions/subunits/grants](https://api-test.ksef.mf.gov.pl/docs/v2/index.html#tag/Nadawanie-uprawnien/paths/~1api~1v2~1permissions~1subunits~1grants/post)
 
 
 
@@ -485,7 +485,7 @@ OperationResponse response = ksefClient.grantsPermissionSubUnit(request, accessT
 
 Granting EU entity administrator permissions in KSeF allows authorizing an entity or person designated by an EU entity that has the right to self-invoice on behalf of the Polish entity granting the permission. Executing this operation causes the person authorized in this way to gain the ability to log in with a composite context: `NipVatUe`, linking the Polish entity granting permission with the EU entity having the right to self-invoice. After granting EU entity administrator permissions, such a person will be able to perform invoice operations and manage the permissions of other persons (so-called EU entity representatives) within this composite context.
 
-POST [/permissions/eu-entities/administration/grants](https://ksef-test.mf.gov.pl/docs/v2/index.html#tag/Nadawanie-uprawnien/paths/~1api~1v2~1permissions~1eu-entities~1administration~1grants/post)
+POST [/permissions/eu-entities/administration/grants](https://api-test.ksef.mf.gov.pl/docs/v2/index.html#tag/Nadawanie-uprawnien/paths/~1api~1v2~1permissions~1eu-entities~1administration~1grants/post)
 
 
 
@@ -529,7 +529,7 @@ OperationResponse response = ksefClient.grantsPermissionEUEntity(request, access
 
 An EU entity representative is a person acting on behalf of an EU-registered entity that needs access to KSeF for viewing or issuing invoices. Such permission can only be granted by a VAT UE administrator. This section presents the data structure and how to call the appropriate endpoint.
 
-POST [/permissions/eu-entities/grants](https://ksef-test.mf.gov.pl/docs/v2/index.html#tag/Nadawanie-uprawnien/paths/~1api~1v2~1permissions~1eu-entities~1grants/post)
+POST [/permissions/eu-entities/grants](https://api-test.ksef.mf.gov.pl/docs/v2/index.html#tag/Nadawanie-uprawnien/paths/~1api~1v2~1permissions~1eu-entities~1grants/post)
 
 
 
@@ -584,7 +584,7 @@ The process of revoking permissions in KSeF is equally important as granting the
 
 The standard method of revoking permissions, which can be used for most cases: natural persons, domestic entities, subordinate units, as well as EU representatives or EU administrators. The operation requires knowledge of `permissionId` and having the appropriate permission.
 
-DELETE [/permissions/common/grants/\{permissionId\}](https://ksef-test.mf.gov.pl/docs/v2/index.html#tag/Odbieranie-uprawnien/paths/~1api~1v2~1permissions~1common~1grants~1%7BpermissionId%7D/delete)
+DELETE [/permissions/common/grants/\{permissionId\}](https://api-test.ksef.mf.gov.pl/docs/v2/index.html#tag/Odbieranie-uprawnien/paths/~1api~1v2~1permissions~1common~1grants~1%7BpermissionId%7D/delete)
 
 This method is used to revoke permissions such as:
 
@@ -612,7 +612,7 @@ OperationResponse response = ksefClient.revokeCommonPermission(permissionId, acc
 
 For entity-type permissions (`SelfInvoicing`, `RRInvoicing`, `TaxRepresentative`), a separate revocation method applies - using an endpoint dedicated to authorization operations. These types of permissions are not transferable, so their revocation has an immediate effect and terminates the ability to perform invoice operations in that mode. Knowledge of `permissionId` is required.
 
-DELETE [/permissions/authorizations/grants/\{permissionId\}](https://ksef-test.mf.gov.pl/docs/v2/index.html#tag/Odbieranie-uprawnien/paths/~1api~1v2~1permissions~1authorizations~1grants~1%7BpermissionId%7D/delete)
+DELETE [/permissions/authorizations/grants/\{permissionId\}](https://api-test.ksef.mf.gov.pl/docs/v2/index.html#tag/Odbieranie-uprawnien/paths/~1api~1v2~1permissions~1authorizations~1grants~1%7BpermissionId%7D/delete)
 
 This method is used to revoke permissions such as:
 
@@ -649,7 +649,7 @@ The query allows retrieving a list of permissions held by the authenticated enti
 - granted indirectly, where the context is the intermediary or target entity
 - granted to an entity for invoice handling (`"InvoiceRead"` and `"InvoiceWrite"`) by another entity, if the authenticated entity has owner permissions (`"Owner"`)
 
-POST [/permissions/query/personal/grants](https://ksef-test.mf.gov.pl/docs/v2/index.html#tag/Wyszukiwanie-nadanych-uprawnien/paths/~1api~1v2~1permissions~1query~1personal~1grants/post)
+POST [/permissions/query/personal/grants](https://api-test.ksef.mf.gov.pl/docs/v2/index.html#tag/Wyszukiwanie-nadanych-uprawnien/paths/~1api~1v2~1permissions~1query~1personal~1grants/post)
 
 Example in C#:
 [KSeF.Client.Tests.Core\E2E\Permissions\PersonPermission\PersonalPermissions_AuthorizedPesel_InNipContext_E2ETests.cs](https://github.com/CIRFMF/ksef-client-csharp/blob/main/KSeF.Client.Tests.Core/E2E/Permissions/PersonPermission/PersonalPermissions_AuthorizedPesel_InNipContext_E2ETests.cs)
@@ -678,7 +678,7 @@ QueryPersonalGrantResponse response = ksefClient.searchPersonalGrantPermission(r
 
 The query allows retrieving a list of permissions granted to natural persons or entities - e.g., company employees. Filtering by permission type, state (`Active` / `Inactive`), as well as grantor and grantee identifiers is possible. This endpoint is used during onboarding, auditing, and monitoring personal permissions.
 
-POST [/permissions/query/persons/grants](https://ksef-test.mf.gov.pl/docs/v2/index.html#tag/Wyszukiwanie-nadanych-uprawnien/paths/~1api~1v2~1permissions~1query~1persons~1grants/post)
+POST [/permissions/query/persons/grants](https://api-test.ksef.mf.gov.pl/docs/v2/index.html#tag/Wyszukiwanie-nadanych-uprawnien/paths/~1api~1v2~1permissions~1query~1persons~1grants/post)
 
 | Field                  | Description                                                                 |
 | :-------------------- | :------------------------------------------------------------------- |
@@ -719,7 +719,7 @@ QueryPersonPermissionsResponse response = ksefClient.searchGrantedPersonPermissi
 
 This endpoint is used to retrieve information about administrators of subordinate units or subordinate entities (e.g., branches, VAT groups). It allows monitoring who has management permissions for a given subordinate structure, identified by `InternalId` or `Nip`.
 
-POST [/permissions/query/subunits/grants](https://ksef-test.mf.gov.pl/docs/v2/index.html#tag/Wyszukiwanie-nadanych-uprawnien/paths/~1api~1v2~1permissions~1query~1subunits~1grants/post)
+POST [/permissions/query/subunits/grants](https://api-test.ksef.mf.gov.pl/docs/v2/index.html#tag/Wyszukiwanie-nadanych-uprawnien/paths/~1api~1v2~1permissions~1query~1subunits~1grants/post)
 
 | Field                  | Description                                                                 |
 | :-------------------- | :------------------------------------------------------------------- |
@@ -757,7 +757,7 @@ QuerySubunitPermissionsResponse response = ksefClient.searchSubunitAdminPermissi
 
 The endpoint returns the set of roles assigned to the context in which we are authenticated (i.e., on whose behalf the query is executed). The function is mainly used for automatic access verification by client systems.
 
-GET [/permissions/query/entities/roles](https://ksef-test.mf.gov.pl/docs/v2/index.html#tag/Wyszukiwanie-nadanych-uprawnien/paths/~1api~1v2~1permissions~1query~1entities~1roles/get)
+GET [/permissions/query/entities/roles](https://api-test.ksef.mf.gov.pl/docs/v2/index.html#tag/Wyszukiwanie-nadanych-uprawnien/paths/~1api~1v2~1permissions~1query~1entities~1roles/get)
 
 Example in C#:
 [KSeF.Client.Tests.Core\E2E\Permissions\SubunitPermission\SubunitPermissionsE2ETests.cs](https://github.com/CIRFMF/ksef-client-csharp/blob/main/KSeF.Client.Tests.Core/E2E/Permissions/SubunitPermission/SubunitPermissionsE2ETests.cs)
@@ -783,7 +783,7 @@ QueryEntityRolesResponse response = ksefClient.searchEntityInvoiceRoles(0, 10, t
 
 Allows obtaining information about related subordinate entities for the context in which we are authenticated (i.e., on whose behalf the query is executed). The function is mainly used to verify the structure of local government units or VAT groups.
 
-POST [/permissions/query/subordinate-entities/roles](https://ksef-test.mf.gov.pl/docs/v2/index.html#tag/Wyszukiwanie-nadanych-uprawnien/paths/~1api~1v2~1permissions~1query~1subordinate-entities~1roles/post)
+POST [/permissions/query/subordinate-entities/roles](https://api-test.ksef.mf.gov.pl/docs/v2/index.html#tag/Wyszukiwanie-nadanych-uprawnien/paths/~1api~1v2~1permissions~1query~1subordinate-entities~1roles/post)
 
 | Field                     | Description                                                                                                              |
 | :----------------------- | :---------------------------------------------------------------------------------------------------------------- |
@@ -818,7 +818,7 @@ This endpoint is used to review all entity permissions granted by the context in
 
 
 
-POST [/permissions/query/authorizations/grants](https://ksef-test.mf.gov.pl/docs/v2/index.html#tag/Wyszukiwanie-nadanych-uprawnien/paths/~1api~1v2~1permissions~1query~1authorizations~1grants/post)
+POST [/permissions/query/authorizations/grants](https://api-test.ksef.mf.gov.pl/docs/v2/index.html#tag/Wyszukiwanie-nadanych-uprawnien/paths/~1api~1v2~1permissions~1query~1authorizations~1grants/post)
 
 | Field                     | Description                                                                                                              |
 | :----------------------- | :---------------------------------------------------------------------------------------------------------------- |
@@ -859,7 +859,7 @@ QueryEntityAuthorizationPermissionsResponse response = ksefClient.searchEntityAu
 
 EU entities can also have permissions assigned for using KSeF. In this section, it is possible to retrieve information about access granted to them, taking into account VAT UE identifiers and certificate fingerprint.
 
-POST [/permissions/query/eu-entities/grants](https://ksef-test.mf.gov.pl/docs/v2/index.html#tag/Wyszukiwanie-nadanych-uprawnien/paths/~1api~1v2~1permissions~1query~1eu-entities~1grants/post)
+POST [/permissions/query/eu-entities/grants](https://api-test.ksef.mf.gov.pl/docs/v2/index.html#tag/Wyszukiwanie-nadanych-uprawnien/paths/~1api~1v2~1permissions~1query~1eu-entities~1grants/post)
 
 | Field                        | Description                                                                 |
 | :-------------------------- | :------------------------------------------------------------------- |
@@ -900,7 +900,7 @@ The National e-Invoice System allows tracking and verifying the status of operat
 
 After granting or revoking a permission, the system returns an operation reference number (`operationReferenceNumber`). This identifier allows checking the current state of request processing: whether it completed successfully, whether an error occurred, or whether processing is still ongoing. This information can be crucial in supervisory systems, automatic retry logic, or administrative action reporting. This section presents an example of an API call used to retrieve operation status.
 
-GET [/permissions/operations/{operationReferenceNumber}](https://ksef-test.mf.gov.pl/docs/v2/index.html#tag/Operacje/paths/~1api~1v2~1permissions~1operations~1%7BoperationReferenceNumber%7D/get)
+GET [/permissions/operations/{operationReferenceNumber}](https://api-test.ksef.mf.gov.pl/docs/v2/index.html#tag/Operacje/paths/~1api~1v2~1permissions~1operations~1%7BoperationReferenceNumber%7D/get)
 
 Each permission grant operation returns an operation identifier that should be used to check the status of that operation.
 
@@ -922,7 +922,7 @@ PermissionStatusInfo status = ksefClient.permissionOperationStatus(referenceNumb
 
 Consent is required for issuing invoices containing attachments and applies within the current context (`ContextIdentifier`) used during authentication. Consent is granted outside the API, exclusively in the e-Tax Office (e-Urzad Skarbowy) service, and applications can be submitted from January 1, 2026. The API does not provide a consent submission operation.
 
-GET [/permissions/attachments/status](https://ksef-test.mf.gov.pl/docs/v2/index.html#tag/Operacje/paths/~1api~1v2~1permissions~1attachments~1status/get)
+GET [/permissions/attachments/status](https://api-test.ksef.mf.gov.pl/docs/v2/index.html#tag/Operacje/paths/~1api~1v2~1permissions~1attachments~1status/get)
 
 Returns the consent status for the current context. If consent is not active, an invoice with an attachment sent to the KSeF API will be rejected.
 

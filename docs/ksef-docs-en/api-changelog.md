@@ -1,5 +1,27 @@
 ## API 2.0 Changes
 
+### Version 2.0.1
+
+- **Permissions**
+  - Get list of personal permissions (POST `/permissions/query/personal/grants`).
+    - Fixed the logic for returning the "My permissions" list for context owner - results now also include entity permissions for invoice issuance and viewing (`InvoiceWrite`, `InvoiceRead`) granted **without** delegation rights `canDelegate = false`. Previously, the list only returned those with delegation rights.
+    - Added description for `InternalId` value in `PersonalPermissionsContextIdentifierType`;
+    - Updated length restrictions for `PersonalPermissionsContextIdentifier.value` (`maxLength` from 10 to 16).
+  - Fixed examples in OpenAPI documentation for permission endpoints.
+
+- **Invoice retrieval**
+  Clarified `dateRange` validation in `InvoiceQueryFilters`: a 3-month range is considered valid if it fits within three months in UTC or Polish time.
+
+- **Invoice sending**
+  - NIP number validation
+    Added NIP checksum verification for: `Podmiot1`, `Podmiot2`, `Podmiot3` and `PodmiotUpowazniony` (if present) - applies only to production environment.
+  - NIP validation in internal identifier
+    Added NIP checksum verification in `InternalId` for `Podmiot3` (if identifier is present) - applies only to production environment.
+  - Updated [documentation](/faktury/weryfikacja-faktury.md).
+
+- **OpenAPI**
+  Minor description updates.
+
 ### Version 2.0.0
 
 - **UPO**
@@ -697,7 +719,7 @@ Extended response model with fields:
   - Changed "Processing in progress" status code from 300 to 150.
 
 - **Authentication using XAdES signature**
-  - ContextIdentifier fix in xsd AuthTokenRequest. Use corrected [XSD schema](https://ksef-test.mf.gov.pl/docs/v2/schemas/authv2.xsd). [XML document preparation](uwierzytelnianie.md#1-przygotowanie-dokumentu-xml-authtokenrequest)
+  - ContextIdentifier fix in xsd AuthTokenRequest. Use corrected [XSD schema](https://api-test.ksef.mf.gov.pl/docs/v2/schemas/authv2.xsd). [XML document preparation](uwierzytelnianie.md#1-przygotowanie-dokumentu-xml-authtokenrequest)
   - Added error code `21117` - "Invalid subject identifier for indicated context type".
 
 - **Removal of anonymous invoice download endpoint ```invoices/download```**

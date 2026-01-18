@@ -108,7 +108,7 @@ byte[] qrOnline = qrCodeService.addLabelToQrCode(qrOnline, invoiceKsefNumber);
 
 > **Note**: The `Authentication` type certificate cannot be used to generate CODE II. Its purpose is solely for API authentication.
 
-The Offline type KSeF certificate can be obtained using the [`/certificates`](https://ksef-test.mf.gov.pl/docs/v2/index.html#tag/Certyfikaty/paths/~1api~1v2~1certificates~1enrollments/post) endpoint.
+The Offline type KSeF certificate can be obtained using the [`/certificates`](https://api-test.ksef.mf.gov.pl/docs/v2/index.html#tag/Certyfikaty/paths/~1api~1v2~1certificates~1enrollments/post) endpoint.
 
 
 #### Verification After Scanning QR Code II
