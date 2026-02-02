@@ -68,7 +68,7 @@ func WithDebugClient() ClientOptFunc {
 
 // WithProductionURL sets the client url to KSeF production
 func WithProductionURL(o *clientOpts) {
-	o.url = "https://api.mf.gov.pl/v2"
+	o.url = "https://api.ksef.mf.gov.pl/v2"
 	o.qrUrl = EnvironmentProductionQrUrl
 }
 
