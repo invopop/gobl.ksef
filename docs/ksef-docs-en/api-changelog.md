@@ -1,5 +1,29 @@
 ## API 2.0 Changes
 
+### Version 2.1.0
+
+- **Authentication**
+  - Added integration with National Node (login.gov.pl). The endpoint used for this integration is not publicly accessible (authentication method intended exclusively for government applications).
+  - **Get authentication status (GET `/auth/{referenceNumber}`)** and **Get list of active sessions (GET `/auth/sessions`)**
+    - Marked the `authenticationMethod` property in the response model as `deprecated`. Planned removal: `2026-11-16`. To maintain contract compatibility during the transition period, the `TrustedProfile` value covers both "Trusted Profile" and authentications performed through the National Node.
+    - Added new `authenticationMethodInfo` property as a flexible description of the authentication method:
+      - `category` - authentication method category (enum: `XadesSignature`, `NationalNode`, `Token`, `Other`),
+      - `code` - authentication method code (string),
+      - `displayName` - authentication method name to display to the user (string).
+    - Extended possible values of the details field for status `460` ("Authentication failed due to certificate error") to include: "Certificate suspended".
+
+  - **Authentication using XAdES signature (POST `/auth/xades-signature`)**
+    Standardized and tightened [XAdES signature](/auth/podpis-xades.md) validation in the authentication process, so that only signatures compliant with XAdES profile requirements are accepted.
+    New requirements are already in effect in the TEST environment. They will take effect in DEMO and PRD environments on **March 16, 2026** (we recommend verifying integration on TEST before that date).
+
+- **Test data**
+  Added new endpoints:
+    - POST `/testdata/context/block` - "Blocks authentication capability for the specified context. Authentication will fail with error 480.",
+    - POST `/testdata/context/unblock` - unblocks authentication capability for the current context.
+
+- **OpenAPI**
+  Minor description updates.
+
 ### Version 2.0.1
 
 - **Permissions**
