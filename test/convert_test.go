@@ -5,15 +5,24 @@ import (
 	"os"
 	"path/filepath"
 	"testing"
+	"time"
 
-	ksef "github.com/invopop/gobl.ksef"
 	"github.com/invopop/gobl"
+	ksef "github.com/invopop/gobl.ksef"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
 
 // TestGOBLToKSeF tests conversion from GOBL JSON to KSeF XML
 func TestGOBLToKSeF(t *testing.T) {
+	// Use a fixed time for deterministic golden files
+	ksef.SetTimeNow(func() time.Time {
+		return time.Date(2024, 11, 26, 0, 0, 0, 0, time.UTC)
+	})
+	t.Cleanup(func() {
+		ksef.SetTimeNow(time.Now)
+	})
+
 	inputDir := filepath.Join(GetDataPath(), "gobl.ksef")
 	outputDir := filepath.Join(GetDataPath(), "gobl.ksef", "out")
 
@@ -116,7 +125,8 @@ func TestKSeFToGOBL(t *testing.T) {
 			outputPath := filepath.Join(outputDir, baseName+".json")
 
 			if UpdateOut {
-				// Update golden file
+				// Normalize dynamic fields for deterministic golden files
+				jsonData = NormalizeJSON(jsonData)
 				err = os.WriteFile(outputPath, jsonData, 0644)
 				require.NoError(t, err, "writing golden file")
 				t.Logf("Updated golden file: %s", outputPath)

@@ -1,10 +1,10 @@
 {
   "$schema": "https://gobl.org/draft-0/envelope",
   "head": {
-    "uuid": "019c7195-650e-7b6b-aa70-7fffea4834a7",
+    "uuid": "00000000-0000-0000-0000-000000000000",
     "dig": {
       "alg": "sha256",
-      "val": "ab245b690062aa20783c27496c62de8b6a63c0285dc7248766da880247b8daf5"
+      "val": "0000000000000000000000000000000000000000000000000000000000000000"
     }
   },
   "doc": {
@@ -16,7 +16,7 @@
     "$tags": [
       "simplified"
     ],
-    "uuid": "019c7195-650e-7b7f-8993-407a2bc05fa0",
+    "uuid": "00000000-0000-0000-0000-000000000000",
     "type": "standard",
     "code": "UPR-001",
     "issue_date": "2026-01-20",
@@ -91,7 +91,7 @@
     },
     "notes": [
       {
-        "key": "general",
+        "code": "general",
         "text": "Simplified invoice for small transactions up to 450 PLN."
       }
     ]

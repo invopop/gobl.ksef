@@ -1,10 +1,10 @@
 {
   "$schema": "https://gobl.org/draft-0/envelope",
   "head": {
-    "uuid": "019c7195-64f6-748b-9db5-e57247942d31",
+    "uuid": "00000000-0000-0000-0000-000000000000",
     "dig": {
       "alg": "sha256",
-      "val": "af1a5733fc243cf1abe29314fcafaa5398fdb72f0f02aa0289b38879294a850c"
+      "val": "0000000000000000000000000000000000000000000000000000000000000000"
     }
   },
   "doc": {
@@ -13,7 +13,7 @@
     "$addons": [
       "pl-favat-v3"
     ],
-    "uuid": "019c7195-64f6-749c-bd23-da85ca5ad3ff",
+    "uuid": "00000000-0000-0000-0000-000000000000",
     "type": "standard",
     "code": "EX-001",
     "issue_date": "2026-01-20",
@@ -105,7 +105,7 @@
         "text": "Exempt from VAT under Article 43(1)(18) of the Polish VAT Act - medical services."
       },
       {
-        "key": "legal",
+        "code": "legal",
         "text": "Exempt from VAT under Article 43(1)(18) of the Polish VAT Act - medical services."
       }
     ]

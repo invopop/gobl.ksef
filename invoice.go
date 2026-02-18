@@ -467,7 +467,7 @@ func (inv *Inv) parseInvoiceData(goblInv *bill.Invoice) error {
 		}
 		for _, desc := range inv.AdditionalDescription {
 			goblInv.Notes = append(goblInv.Notes, &org.Note{
-				Key:  cbc.Key(desc.Key),
+				Code: cbc.Code(desc.Key),
 				Text: desc.Value,
 			})
 		}

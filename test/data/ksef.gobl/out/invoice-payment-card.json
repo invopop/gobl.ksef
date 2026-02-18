@@ -1,10 +1,10 @@
 {
   "$schema": "https://gobl.org/draft-0/envelope",
   "head": {
-    "uuid": "019c7195-64fe-77fc-a05b-8ce0334cd833",
+    "uuid": "00000000-0000-0000-0000-000000000000",
     "dig": {
       "alg": "sha256",
-      "val": "32578a65683f13e2750c8de83a2d9401d39780e18bc6546c835e984d14a8cbd0"
+      "val": "0000000000000000000000000000000000000000000000000000000000000000"
     }
   },
   "doc": {
@@ -13,7 +13,7 @@
     "$addons": [
       "pl-favat-v3"
     ],
-    "uuid": "019c7195-64fe-780c-adab-d3f1516f49f7",
+    "uuid": "00000000-0000-0000-0000-000000000000",
     "type": "standard",
     "code": "PAY-001",
     "issue_date": "2026-01-20",
@@ -109,7 +109,7 @@
     },
     "notes": [
       {
-        "key": "general",
+        "code": "general",
         "text": "Payment received by card at point of sale."
       }
     ]

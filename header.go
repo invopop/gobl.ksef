@@ -5,6 +5,16 @@ import (
 	"time"
 )
 
+// timeNow is a function that returns the current time. It can be overridden
+// in tests to produce deterministic output.
+var timeNow = time.Now
+
+// SetTimeNow overrides the function used to get the current time.
+// This is intended for use in tests to produce deterministic output.
+func SetTimeNow(fn func() time.Time) {
+	timeNow = fn
+}
+
 // KSEF schema constants
 const (
 	systemCode    = "FA (3)"
@@ -38,7 +48,7 @@ func NewFavatHeader() *Header {
 			FormCode:      formCode,
 		},
 		FormVariant:  formVariant,
-		CreationDate: formatGenerationDate(time.Now()),
+		CreationDate: formatGenerationDate(timeNow()),
 		SystemInfo:   systemInfo,
 	}
 
