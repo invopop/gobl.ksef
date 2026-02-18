@@ -551,12 +551,23 @@ func (inv *Inv) parseLines(goblInv *bill.Invoice) error {
 
 	goblInv.Lines = make([]*bill.Line, 0, len(inv.Lines))
 
+	hasGrossPricing := false
 	for _, ksefLine := range inv.Lines {
 		line, err := ksefLine.ToGOBL()
 		if err != nil {
 			return fmt.Errorf("parsing line %d: %w", ksefLine.LineNumber, err)
 		}
 		goblInv.Lines = append(goblInv.Lines, line)
+		if ksefLine.GrossUnitPrice != "" {
+			hasGrossPricing = true
+		}
+	}
+
+	if hasGrossPricing {
+		if goblInv.Tax == nil {
+			goblInv.Tax = &bill.Tax{}
+		}
+		goblInv.Tax.PricesInclude = tax.CategoryVAT
 	}
 
 	return nil

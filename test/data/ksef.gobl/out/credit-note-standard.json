@@ -1,10 +1,10 @@
 {
   "$schema": "https://gobl.org/draft-0/envelope",
   "head": {
-    "uuid": "019c2860-22cf-718b-8e63-5fb5ad0e4d50",
+    "uuid": "019c7195-64ed-70cc-832c-34316d1b6302",
     "dig": {
       "alg": "sha256",
-      "val": "958a3e5147b915f144d7feaaf00854bf821040ca993bf4e167eb65db5e4674e1"
+      "val": "4531b0d7fa7a3b71003018613b6cc9f2258b6fdeed402e4b264961e6fed1f022"
     }
   },
   "doc": {
@@ -13,7 +13,7 @@
     "$addons": [
       "pl-favat-v3"
     ],
-    "uuid": "019c2860-22cf-719b-82ab-928c4532c3c6",
+    "uuid": "019c7195-64ed-70dd-a3ad-778faf5d220f",
     "type": "credit-note",
     "code": "KOR-001",
     "issue_date": "2026-01-20",

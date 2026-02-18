@@ -1,0 +1,99 @@
+<?xml version="1.0"?>
+<ns1:Faktura xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:ns1="http://crd.gov.pl/wzor/2025/06/25/13775/">
+  <ns1:Naglowek>
+    <ns1:KodFormularza kodSystemowy="FA (3)" wersjaSchemy="1-0E">FA</ns1:KodFormularza>
+    <ns1:WariantFormularza>3</ns1:WariantFormularza>
+    <ns1:DataWytworzeniaFa>2024-06-15T10:30:00Z</ns1:DataWytworzeniaFa>
+  </ns1:Naglowek>
+  <ns1:Podmiot1>
+    <ns1:DaneIdentyfikacyjne>
+      <ns1:NIP>9876543210</ns1:NIP>
+      <ns1:Nazwa>Example Supplier Sp. z o.o.</ns1:Nazwa>
+    </ns1:DaneIdentyfikacyjne>
+    <ns1:Adres>
+      <ns1:KodKraju>PL</ns1:KodKraju>
+      <ns1:AdresL1>ul. Testowa 10 00-001 Warszawa</ns1:AdresL1>
+    </ns1:Adres>
+  </ns1:Podmiot1>
+  <ns1:Podmiot2>
+    <ns1:DaneIdentyfikacyjne>
+      <ns1:NIP>1111111111</ns1:NIP>
+      <ns1:Nazwa>Example Buyer Sp. z o.o.</ns1:Nazwa>
+    </ns1:DaneIdentyfikacyjne>
+    <ns1:Adres>
+      <ns1:KodKraju>PL</ns1:KodKraju>
+      <ns1:AdresL1>ul. Przykladowa 5 30-001 Krakow</ns1:AdresL1>
+    </ns1:Adres>
+    <ns1:JST>2</ns1:JST>
+    <ns1:GV>2</ns1:GV>
+  </ns1:Podmiot2>
+  <ns1:Fa>
+    <ns1:KodWaluty>PLN</ns1:KodWaluty>
+    <ns1:P_1>2024-06-15</ns1:P_1>
+    <ns1:P_2>FV-001/2024/06</ns1:P_2>
+    <ns1:P_6>2024-06-15</ns1:P_6>
+    <ns1:P_13_1>261.76</ns1:P_13_1>
+    <ns1:P_14_1>60.21</ns1:P_14_1>
+    <ns1:P_13_2>0.00</ns1:P_13_2>
+    <ns1:P_14_2>0.00</ns1:P_14_2>
+    <ns1:P_13_3>0.00</ns1:P_13_3>
+    <ns1:P_14_3>0.00</ns1:P_14_3>
+    <ns1:P_13_6_1>0.00</ns1:P_13_6_1>
+    <ns1:P_15>321.97</ns1:P_15>
+    <ns1:Adnotacje>
+      <ns1:P_16>2</ns1:P_16>
+      <ns1:P_17>2</ns1:P_17>
+      <ns1:P_18>2</ns1:P_18>
+      <ns1:P_18A>2</ns1:P_18A>
+      <ns1:Zwolnienie>
+        <ns1:P_19N>1</ns1:P_19N>
+      </ns1:Zwolnienie>
+      <ns1:NoweSrodkiTransportu>
+        <ns1:P_22N>1</ns1:P_22N>
+      </ns1:NoweSrodkiTransportu>
+      <ns1:P_23>2</ns1:P_23>
+      <ns1:PMarzy>
+        <ns1:P_PMarzyN>1</ns1:P_PMarzyN>
+      </ns1:PMarzy>
+    </ns1:Adnotacje>
+    <ns1:RodzajFaktury>VAT</ns1:RodzajFaktury>
+    <ns1:FaWiersz>
+      <ns1:NrWierszaFa>1</ns1:NrWierszaFa>
+      <ns1:UU_ID>1</ns1:UU_ID>
+      <ns1:P_6A>2024-06-15</ns1:P_6A>
+      <ns1:P_7>Office Paper Shredder Model X</ns1:P_7>
+      <ns1:Indeks>100001</ns1:Indeks>
+      <ns1:P_8A>HUR</ns1:P_8A>
+      <ns1:P_8B>1.0000</ns1:P_8B>
+      <ns1:P_9B>309.9900</ns1:P_9B>
+      <ns1:P_12>23</ns1:P_12>
+    </ns1:FaWiersz>
+    <ns1:FaWiersz>
+      <ns1:NrWierszaFa>2</ns1:NrWierszaFa>
+      <ns1:UU_ID>2</ns1:UU_ID>
+      <ns1:P_6A>2024-06-15</ns1:P_6A>
+      <ns1:P_7>SMS Notification Service</ns1:P_7>
+      <ns1:Indeks>100002</ns1:Indeks>
+      <ns1:P_8A>HUR</ns1:P_8A>
+      <ns1:P_8B>1.0000</ns1:P_8B>
+      <ns1:P_9B>0.9900</ns1:P_9B>
+      <ns1:P_12>23</ns1:P_12>
+    </ns1:FaWiersz>
+    <ns1:FaWiersz>
+      <ns1:NrWierszaFa>3</ns1:NrWierszaFa>
+      <ns1:UU_ID>3</ns1:UU_ID>
+      <ns1:P_6A>2024-06-15</ns1:P_6A>
+      <ns1:P_7>Next Business Day Courier Delivery</ns1:P_7>
+      <ns1:Indeks>100003</ns1:Indeks>
+      <ns1:P_8A>HUR</ns1:P_8A>
+      <ns1:P_8B>1.0000</ns1:P_8B>
+      <ns1:P_9B>10.9900</ns1:P_9B>
+      <ns1:P_12>23</ns1:P_12>
+    </ns1:FaWiersz>
+    <ns1:Platnosc>
+      <ns1:Zaplacono>1</ns1:Zaplacono>
+      <ns1:DataZaplaty>2024-06-15</ns1:DataZaplaty>
+      <ns1:FormaPlatnosci>6</ns1:FormaPlatnosci>
+    </ns1:Platnosc>
+  </ns1:Fa>
+</ns1:Faktura>

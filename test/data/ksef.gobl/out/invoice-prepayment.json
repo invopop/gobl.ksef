@@ -1,10 +1,10 @@
 {
   "$schema": "https://gobl.org/draft-0/envelope",
   "head": {
-    "uuid": "019c2860-22de-7b26-9c82-268fc7ecfd5f",
+    "uuid": "019c7195-6502-7bcf-b9d8-89da51a20c7f",
     "dig": {
       "alg": "sha256",
-      "val": "c510ea51685e1b490c9acda882c67d4b3f030eefa2ec1131b4cbf3e728d9fa1d"
+      "val": "cd747061ff034d2c41983de5b5d4d1af2e36b036aa3cc35ea0b3021038c7bd94"
     }
   },
   "doc": {
@@ -16,7 +16,7 @@
     "$tags": [
       "partial"
     ],
-    "uuid": "019c2860-22de-7b36-a396-85ee08a339fa",
+    "uuid": "019c7195-6502-7be5-b05f-0351beb5bf4f",
     "type": "standard",
     "code": "ZAL-001",
     "issue_date": "2026-01-20",

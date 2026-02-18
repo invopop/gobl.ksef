@@ -1,10 +1,10 @@
 {
   "$schema": "https://gobl.org/draft-0/envelope",
   "head": {
-    "uuid": "019c2860-22d1-7ea5-a7c5-d6fc9c4d8fda",
+    "uuid": "019c7195-64f6-748b-9db5-e57247942d31",
     "dig": {
       "alg": "sha256",
-      "val": "4ab0487e003a67673af26e19aee9812e0afe100de3e593d25ae254dcf0b73e25"
+      "val": "af1a5733fc243cf1abe29314fcafaa5398fdb72f0f02aa0289b38879294a850c"
     }
   },
   "doc": {
@@ -13,7 +13,7 @@
     "$addons": [
       "pl-favat-v3"
     ],
-    "uuid": "019c2860-22d1-7eb5-be60-2a2a9c1d7da2",
+    "uuid": "019c7195-64f6-749c-bd23-da85ca5ad3ff",
     "type": "standard",
     "code": "EX-001",
     "issue_date": "2026-01-20",

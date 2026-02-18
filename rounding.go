@@ -30,6 +30,10 @@ func AdjustRounding(inv *bill.Invoice, ksefTotalDue string) error {
 		return err
 	}
 
+	if inv.Totals == nil {
+		return fmt.Errorf("invoice totals are nil after calculation")
+	}
+
 	// Parse the KSEF total amount
 	expectedTotal, err := num.AmountFromString(ksefTotalDue)
 	if err != nil {

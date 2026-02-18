@@ -434,4 +434,12 @@ func TestAdjustRounding(t *testing.T) {
 		assert.NotNil(t, inv.Totals.Rounding)
 		assert.True(t, inv.Totals.Rounding.Abs().Compare(num.MakeAmount(2, 2)) <= 0)
 	})
+
+	t.Run("returns error when totals are nil after calculation", func(t *testing.T) {
+		// An empty invoice will fail Calculate() or produce nil Totals
+		inv := &bill.Invoice{}
+
+		err := ksef.AdjustRounding(inv, "100.00")
+		require.Error(t, err)
+	})
 }

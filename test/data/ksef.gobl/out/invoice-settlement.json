@@ -1,10 +1,10 @@
 {
   "$schema": "https://gobl.org/draft-0/envelope",
   "head": {
-    "uuid": "019c2860-22e5-7d07-93b7-ff23104c7ace",
+    "uuid": "019c7195-650b-71f4-b150-9e1063bbcec6",
     "dig": {
       "alg": "sha256",
-      "val": "b52c3bb646d228cf4da32ade8bec9ce73949c89bdd7171a4f4ff0e0d453b2cb5"
+      "val": "8db5c88d75efa246f25f5f65263a1fcd46d106010109a05b1e301e6563ae93c6"
     }
   },
   "doc": {
@@ -16,7 +16,7 @@
     "$tags": [
       "settlement"
     ],
-    "uuid": "019c2860-22e5-7d1c-a961-a2fc97ea3db8",
+    "uuid": "019c7195-650b-720a-a9ef-6c26d8e77b72",
     "type": "standard",
     "code": "ROZ-001",
     "issue_date": "2026-01-20",

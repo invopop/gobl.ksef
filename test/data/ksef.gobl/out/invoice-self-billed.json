@@ -1,10 +1,10 @@
 {
   "$schema": "https://gobl.org/draft-0/envelope",
   "head": {
-    "uuid": "019c2860-22e3-786c-94e7-4f2259d612f9",
+    "uuid": "019c7195-6508-7739-bbf1-4d65cb6a6668",
     "dig": {
       "alg": "sha256",
-      "val": "cb7c6ed444e8f6c291168af7f0c8fed88eb8a1c576332ba35211e684c10ee2f0"
+      "val": "8501d542182c6fafd13bb2aa93b783890991b3d0756f7c5a6564874d0afc7f8a"
     }
   },
   "doc": {
@@ -16,7 +16,7 @@
     "$tags": [
       "self-billed"
     ],
-    "uuid": "019c2860-22e3-7882-b3d3-6ccf462a5df3",
+    "uuid": "019c7195-6508-774a-b8fb-0bb04db833d9",
     "type": "standard",
     "code": "SELF-001",
     "issue_date": "2026-01-20",
