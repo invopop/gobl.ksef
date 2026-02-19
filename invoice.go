@@ -467,7 +467,7 @@ func (inv *Inv) parseInvoiceData(goblInv *bill.Invoice) error {
 		}
 		for _, desc := range inv.AdditionalDescription {
 			goblInv.Notes = append(goblInv.Notes, &org.Note{
-				Key:  cbc.Key(desc.Key),
+				Code: cbc.Code(desc.Key),
 				Text: desc.Value,
 			})
 		}
@@ -551,12 +551,40 @@ func (inv *Inv) parseLines(goblInv *bill.Invoice) error {
 
 	goblInv.Lines = make([]*bill.Line, 0, len(inv.Lines))
 
+	// NOTE: Mixed P_9A/P_9B invoices are not supported.
+	//
+	// KSeF allows P_9A (net unit price, art. 106e(2)-(3)) and P_9B (gross unit
+	// price, art. 106e(7)-(8)) per line, with no schema-level mutual exclusivity.
+	// In practice the Polish VAT act frames this as an invoice-wide choice, but a
+	// document with some lines using P_9A and others using P_9B is technically
+	// valid XML.
+	//
+	// The current approach sets PricesInclude = VAT at the invoice level when any
+	// line uses gross pricing (P_9B without P_9A). This works for pure-gross
+	// invoices but would produce wrong totals on a mixed invoice: GOBL would strip
+	// VAT from the already-net prices on P_9A lines.
+	//
+	// If a mixed invoice is ever encountered, the fix is to drop PricesInclude and
+	// instead convert gross→net explicitly inside Line.ToGOBL() using the line's
+	// own VAT rate (P_12): net = gross / (1 + rate). This works uniformly for
+	// pure-net, pure-gross, and mixed invoices without any invoice-level flag.
+	hasGrossPricing := false
 	for _, ksefLine := range inv.Lines {
 		line, err := ksefLine.ToGOBL()
 		if err != nil {
 			return fmt.Errorf("parsing line %d: %w", ksefLine.LineNumber, err)
 		}
 		goblInv.Lines = append(goblInv.Lines, line)
+		if ksefLine.NetUnitPrice == "" && ksefLine.GrossUnitPrice != "" {
+			hasGrossPricing = true
+		}
+	}
+
+	if hasGrossPricing {
+		if goblInv.Tax == nil {
+			goblInv.Tax = &bill.Tax{}
+		}
+		goblInv.Tax.PricesInclude = tax.CategoryVAT
 	}
 
 	return nil

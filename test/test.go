@@ -192,6 +192,22 @@ func NormalizeXMLDate(xml string) string {
 	return re.ReplaceAllString(xml, "<DataWytworzeniaFa>NORMALIZED</DataWytworzeniaFa>")
 }
 
+// NormalizeJSON replaces dynamic fields (UUIDs and digest) in GOBL envelope
+// JSON with fixed values so that golden files are deterministic across runs.
+func NormalizeJSON(data []byte) []byte {
+	s := string(data)
+
+	// Replace head.uuid (e.g. "uuid": "019c7198-c0d4-7a6d-...")
+	uuidRe := regexp.MustCompile(`"uuid":\s*"[0-9a-f-]+"`)
+	s = uuidRe.ReplaceAllString(s, `"uuid": "00000000-0000-0000-0000-000000000000"`)
+
+	// Replace head.dig.val (e.g. "val": "14c520...")
+	valRe := regexp.MustCompile(`"val":\s*"[0-9a-f]{64}"`)
+	s = valRe.ReplaceAllString(s, `"val": "0000000000000000000000000000000000000000000000000000000000000000"`)
+
+	return []byte(s)
+}
+
 // ValidateAgainstFA3Schema is implemented in build-tagged files:
 // - with `-tags xsdvalidate`: runs schema validation via libxml2
 // - without it: skips schema validation

@@ -1,10 +1,10 @@
 {
   "$schema": "https://gobl.org/draft-0/envelope",
   "head": {
-    "uuid": "019c2860-22e5-7d07-93b7-ff23104c7ace",
+    "uuid": "00000000-0000-0000-0000-000000000000",
     "dig": {
       "alg": "sha256",
-      "val": "b52c3bb646d228cf4da32ade8bec9ce73949c89bdd7171a4f4ff0e0d453b2cb5"
+      "val": "0000000000000000000000000000000000000000000000000000000000000000"
     }
   },
   "doc": {
@@ -16,7 +16,7 @@
     "$tags": [
       "settlement"
     ],
-    "uuid": "019c2860-22e5-7d1c-a961-a2fc97ea3db8",
+    "uuid": "00000000-0000-0000-0000-000000000000",
     "type": "standard",
     "code": "ROZ-001",
     "issue_date": "2026-01-20",
@@ -115,7 +115,7 @@
     },
     "notes": [
       {
-        "key": "general",
+        "code": "general",
         "text": "This is a settlement invoice that finalizes the transaction including all previous advance payments."
       }
     ]

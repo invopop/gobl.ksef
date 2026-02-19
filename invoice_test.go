@@ -226,3 +226,132 @@ func TestNewFavatInv(t *testing.T) {
 		assert.Equal(t, "25.00", invoice.TotalAmountDue)
 	})
 }
+
+func TestParseLinesSetsPricesInclude(t *testing.T) {
+	t.Run("sets PricesInclude when lines use gross pricing", func(t *testing.T) {
+		doc := &ksef.Invoice{
+			Seller: &ksef.Seller{
+				NIP:  "1234567890",
+				Name: "Test Supplier",
+				Address: &ksef.Address{
+					CountryCode: "PL",
+					AddressL1:   "ul. Testowa 1 00-001 Warszawa",
+				},
+			},
+			Buyer: &ksef.Buyer{
+				NIP:  "9876543210",
+				Name: "Test Buyer",
+				Address: &ksef.Address{
+					CountryCode: "PL",
+					AddressL1:   "ul. Testowa 2 00-002 Warszawa",
+				},
+				JST: "2",
+				GV:  "2",
+			},
+			Inv: &ksef.Inv{
+				CurrencyCode:     "PLN",
+				IssueDate:        "2024-06-15",
+				SequentialNumber:  "FV-001",
+				TotalAmountDue:   "123.00",
+				InvoiceType:      "VAT",
+				StandardRateNetSale: "100.00",
+				StandardRateTax:    "23.00",
+				Annotations: &ksef.Annotations{
+					CashAccounting:                      "2",
+					SelfBilling:                         "2",
+					ReverseCharge:                       "2",
+					SplitPaymentMechanism:               "2",
+					SimplifiedProcedureBySecondTaxpayer: "2",
+					TaxExemption: &ksef.TaxExemption{
+						NoExemption: "1",
+					},
+					NewTransportMeans: &ksef.NewTransportMeans{
+						NoNewTransportMeans: "1",
+					},
+					MarginScheme: &ksef.MarginScheme{
+						NoMarginScheme: "1",
+					},
+				},
+				Lines: []*ksef.Line{
+					{
+						LineNumber:     1,
+						Name:           "Gross Price Item",
+						Quantity:       "1",
+						GrossUnitPrice: "123.00",
+						Measure:        "HUR",
+						VATRate:        "23",
+					},
+				},
+			},
+		}
+
+		inv, err := doc.ToGOBL()
+		require.NoError(t, err)
+		require.NotNil(t, inv.Tax)
+		assert.Equal(t, tax.CategoryVAT, inv.Tax.PricesInclude)
+	})
+
+	t.Run("does not set PricesInclude for net pricing", func(t *testing.T) {
+		doc := &ksef.Invoice{
+			Seller: &ksef.Seller{
+				NIP:  "1234567890",
+				Name: "Test Supplier",
+				Address: &ksef.Address{
+					CountryCode: "PL",
+					AddressL1:   "ul. Testowa 1 00-001 Warszawa",
+				},
+			},
+			Buyer: &ksef.Buyer{
+				NIP:  "9876543210",
+				Name: "Test Buyer",
+				Address: &ksef.Address{
+					CountryCode: "PL",
+					AddressL1:   "ul. Testowa 2 00-002 Warszawa",
+				},
+				JST: "2",
+				GV:  "2",
+			},
+			Inv: &ksef.Inv{
+				CurrencyCode:     "PLN",
+				IssueDate:        "2024-06-15",
+				SequentialNumber:  "FV-001",
+				TotalAmountDue:   "123.00",
+				InvoiceType:      "VAT",
+				StandardRateNetSale: "100.00",
+				StandardRateTax:    "23.00",
+				Annotations: &ksef.Annotations{
+					CashAccounting:                      "2",
+					SelfBilling:                         "2",
+					ReverseCharge:                       "2",
+					SplitPaymentMechanism:               "2",
+					SimplifiedProcedureBySecondTaxpayer: "2",
+					TaxExemption: &ksef.TaxExemption{
+						NoExemption: "1",
+					},
+					NewTransportMeans: &ksef.NewTransportMeans{
+						NoNewTransportMeans: "1",
+					},
+					MarginScheme: &ksef.MarginScheme{
+						NoMarginScheme: "1",
+					},
+				},
+				Lines: []*ksef.Line{
+					{
+						LineNumber:    1,
+						Name:          "Net Price Item",
+						Quantity:      "1",
+						NetUnitPrice:  "100.00",
+						Measure:       "HUR",
+						VATRate:       "23",
+						NetPriceTotal: "100.00",
+					},
+				},
+			},
+		}
+
+		inv, err := doc.ToGOBL()
+		require.NoError(t, err)
+		require.NotNil(t, inv.Tax)
+		assert.Empty(t, inv.Tax.PricesInclude)
+	})
+}

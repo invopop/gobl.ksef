@@ -1,10 +1,10 @@
 {
   "$schema": "https://gobl.org/draft-0/envelope",
   "head": {
-    "uuid": "019c2860-22e1-701c-921d-b2cc2c05c08c",
+    "uuid": "00000000-0000-0000-0000-000000000000",
     "dig": {
       "alg": "sha256",
-      "val": "64a79a526071d15866cc214727a289cb674950fb85543f9922e58c531ae8a5da"
+      "val": "0000000000000000000000000000000000000000000000000000000000000000"
     }
   },
   "doc": {
@@ -16,7 +16,7 @@
     "$tags": [
       "reverse-charge"
     ],
-    "uuid": "019c2860-22e1-7031-ae35-3427b501817e",
+    "uuid": "00000000-0000-0000-0000-000000000000",
     "type": "standard",
     "code": "RC-001",
     "issue_date": "2026-01-20",
@@ -102,7 +102,7 @@
     },
     "notes": [
       {
-        "key": "legal",
+        "code": "legal",
         "text": "Reverse charge mechanism applies - VAT to be accounted for by the customer."
       }
     ]

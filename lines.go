@@ -198,6 +198,12 @@ func (l *Line) ToGOBL() (*bill.Line, error) {
 			return nil, err
 		}
 		line.Item.Price = &price
+	} else if l.GrossUnitPrice != "" {
+		price, err := parseAmount(l.GrossUnitPrice)
+		if err != nil {
+			return nil, err
+		}
+		line.Item.Price = &price
 	}
 
 	// Parse unit of measure
@@ -212,6 +218,9 @@ func (l *Line) ToGOBL() (*bill.Line, error) {
 			return nil, err
 		}
 		if !discount.IsZero() {
+			if !line.Quantity.IsZero() {
+				discount = discount.Multiply(line.Quantity)
+			}
 			line.Discounts = []*bill.LineDiscount{
 				{
 					Amount: discount,
@@ -254,9 +263,14 @@ func parseAmount(s string) (num.Amount, error) {
 	return amt, nil
 }
 
-// parseUnit converts KSEF unit code (UNECE) to GOBL unit
+// parseUnit converts KSEF unit code (UNECE) to GOBL unit.
+// Returns empty if the code is not a valid GOBL or UN/ECE unit.
 func parseUnit(code string) org.Unit {
-	return org.Unit(code)
+	u := org.Unit(code)
+	if err := u.Validate(); err != nil {
+		return ""
+	}
+	return u
 }
 
 // TaxRateInfo contains the parsed tax rate information

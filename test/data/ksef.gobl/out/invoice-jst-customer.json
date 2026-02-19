@@ -1,10 +1,10 @@
 {
   "$schema": "https://gobl.org/draft-0/envelope",
   "head": {
-    "uuid": "019c2860-22d9-74f7-aa5f-49911cf448fe",
+    "uuid": "00000000-0000-0000-0000-000000000000",
     "dig": {
       "alg": "sha256",
-      "val": "1b65d7e867bde49532cd61ba276a4bdc7f1cd8460314be080a2feffae6f37bac"
+      "val": "0000000000000000000000000000000000000000000000000000000000000000"
     }
   },
   "doc": {
@@ -13,7 +13,7 @@
     "$addons": [
       "pl-favat-v3"
     ],
-    "uuid": "019c2860-22d9-7508-99d7-9a9c2b60df76",
+    "uuid": "00000000-0000-0000-0000-000000000000",
     "type": "standard",
     "code": "JST-001",
     "issue_date": "2026-01-20",
@@ -112,7 +112,7 @@
     },
     "notes": [
       {
-        "key": "general",
+        "code": "general",
         "text": "Invoice for services provided to Local Government Unit (JST)."
       }
     ]

@@ -1,10 +1,10 @@
 {
   "$schema": "https://gobl.org/draft-0/envelope",
   "head": {
-    "uuid": "019c2860-22d4-7a88-8639-9bf5358c1da7",
+    "uuid": "00000000-0000-0000-0000-000000000000",
     "dig": {
       "alg": "sha256",
-      "val": "0bb52877eadf546e9090fa10fe38b7bf2aa7f0461f384e73fede3602a4156ce3"
+      "val": "0000000000000000000000000000000000000000000000000000000000000000"
     }
   },
   "doc": {
@@ -13,7 +13,7 @@
     "$addons": [
       "pl-favat-v3"
     ],
-    "uuid": "019c2860-22d4-7a98-a894-e8e930a3e86c",
+    "uuid": "00000000-0000-0000-0000-000000000000",
     "type": "standard",
     "code": "GV-001",
     "issue_date": "2026-01-20",
@@ -113,7 +113,7 @@
     },
     "notes": [
       {
-        "key": "general",
+        "code": "general",
         "text": "Invoice for services provided to a VAT Group member."
       }
     ]

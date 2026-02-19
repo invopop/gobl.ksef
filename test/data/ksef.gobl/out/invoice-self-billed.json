@@ -1,10 +1,10 @@
 {
   "$schema": "https://gobl.org/draft-0/envelope",
   "head": {
-    "uuid": "019c2860-22e3-786c-94e7-4f2259d612f9",
+    "uuid": "00000000-0000-0000-0000-000000000000",
     "dig": {
       "alg": "sha256",
-      "val": "cb7c6ed444e8f6c291168af7f0c8fed88eb8a1c576332ba35211e684c10ee2f0"
+      "val": "0000000000000000000000000000000000000000000000000000000000000000"
     }
   },
   "doc": {
@@ -16,7 +16,7 @@
     "$tags": [
       "self-billed"
     ],
-    "uuid": "019c2860-22e3-7882-b3d3-6ccf462a5df3",
+    "uuid": "00000000-0000-0000-0000-000000000000",
     "type": "standard",
     "code": "SELF-001",
     "issue_date": "2026-01-20",
@@ -106,7 +106,7 @@
     },
     "notes": [
       {
-        "key": "legal",
+        "code": "legal",
         "text": "Self-billing invoice issued by the buyer on behalf of the supplier with their agreement."
       }
     ]
