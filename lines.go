@@ -218,6 +218,9 @@ func (l *Line) ToGOBL() (*bill.Line, error) {
 			return nil, err
 		}
 		if !discount.IsZero() {
+			if !line.Quantity.IsZero() {
+				discount = discount.Multiply(line.Quantity)
+			}
 			line.Discounts = []*bill.LineDiscount{
 				{
 					Amount: discount,

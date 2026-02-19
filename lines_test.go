@@ -333,6 +333,61 @@ func TestLineToGOBL(t *testing.T) {
 
 		require.NoError(t, err)
 		assert.Len(t, line.Discounts, 1)
+		// UnitDiscount is per-unit; total line discount = 10.00 * 2 = 20.00
+		assert.Equal(t, "20.00", line.Discounts[0].Amount.String())
+	})
+
+	t.Run("handles discount with single unit quantity", func(t *testing.T) {
+		ksefLine := &ksef.Line{
+			Name:          "Single Unit Discounted Item",
+			Quantity:      "1",
+			NetUnitPrice:  "100.00",
+			UnitDiscount:  "15.00",
+			Measure:       "HUR",
+			VATRate:       "23",
+			NetPriceTotal: "85.00",
+		}
+
+		line, err := ksefLine.ToGOBL()
+
+		require.NoError(t, err)
+		assert.Len(t, line.Discounts, 1)
+		// With quantity 1, line discount equals unit discount
+		assert.Equal(t, "15.00", line.Discounts[0].Amount.String())
+	})
+
+	t.Run("skips discount when unit discount is zero", func(t *testing.T) {
+		ksefLine := &ksef.Line{
+			Name:          "No Discount Item",
+			Quantity:      "2",
+			NetUnitPrice:  "100.00",
+			UnitDiscount:  "0.00",
+			Measure:       "HUR",
+			VATRate:       "23",
+			NetPriceTotal: "200.00",
+		}
+
+		line, err := ksefLine.ToGOBL()
+
+		require.NoError(t, err)
+		assert.Empty(t, line.Discounts)
+	})
+
+	t.Run("handles discount without multiplying when quantity is zero", func(t *testing.T) {
+		ksefLine := &ksef.Line{
+			Name:         "Zero Qty Discounted Item",
+			Quantity:     "0",
+			NetUnitPrice: "100.00",
+			UnitDiscount: "10.00",
+			Measure:      "HUR",
+			VATRate:      "23",
+		}
+
+		line, err := ksefLine.ToGOBL()
+
+		require.NoError(t, err)
+		assert.Len(t, line.Discounts, 1)
+		// When quantity is zero, discount is not multiplied
 		assert.Equal(t, "10.00", line.Discounts[0].Amount.String())
 	})
 
