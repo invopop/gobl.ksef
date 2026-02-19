@@ -17,7 +17,7 @@ import (
 func TestGOBLToKSeF(t *testing.T) {
 	// Use a fixed time for deterministic golden files
 	ksef.SetTimeNow(func() time.Time {
-		return time.Date(2024, 11, 26, 0, 0, 0, 0, time.UTC)
+		return time.Date(2026, 1, 1, 0, 0, 0, 0, time.UTC)
 	})
 	t.Cleanup(func() {
 		ksef.SetTimeNow(time.Now)
