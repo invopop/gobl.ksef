@@ -26,12 +26,19 @@
         "issue_date": "2026-01-20",
         "code": "ZAL-001",
         "reason": "Advance payment cancelled",
+        "stamps": [
+          {
+            "prv": "favat-ksef-number",
+            "val": "8126178616-20260122-0100A0039876-89"
+          }
+        ],
         "ext": {
           "pl-favat-effective-date": "2"
         }
       }
     ],
     "tax": {
+      "rounding": "currency",
       "ext": {
         "pl-favat-invoice-type": "KOR_ZAL"
       }
@@ -65,12 +72,12 @@
     "lines": [
       {
         "i": 1,
-        "quantity": "-1",
+        "quantity": "1",
         "item": {
           "name": "Advance Payment Refund",
           "price": "5000.00"
         },
-        "sum": "-5000.00",
+        "sum": "5000.00",
         "taxes": [
           {
             "cat": "VAT",
@@ -82,12 +89,12 @@
             }
           }
         ],
-        "total": "-5000.00"
+        "total": "5000.00"
       }
     ],
     "totals": {
-      "sum": "-5000.00",
-      "total": "-5000.00",
+      "sum": "5000.00",
+      "total": "5000.00",
       "taxes": {
         "categories": [
           {
@@ -98,19 +105,19 @@
                 "ext": {
                   "pl-favat-tax-category": "1"
                 },
-                "base": "-5000.00",
+                "base": "5000.00",
                 "percent": "23.0%",
-                "amount": "-1150.00"
+                "amount": "1150.00"
               }
             ],
-            "amount": "-1150.00"
+            "amount": "1150.00"
           }
         ],
-        "sum": "-1150.00"
+        "sum": "1150.00"
       },
-      "tax": "-1150.00",
-      "total_with_tax": "-6150.00",
-      "payable": "-6150.00"
+      "tax": "1150.00",
+      "total_with_tax": "6150.00",
+      "payable": "6150.00"
     }
   }
 }

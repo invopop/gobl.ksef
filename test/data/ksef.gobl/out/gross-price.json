@@ -20,6 +20,7 @@
     "currency": "PLN",
     "tax": {
       "prices_include": "VAT",
+      "rounding": "currency",
       "ext": {
         "pl-favat-invoice-type": "VAT"
       }
@@ -59,7 +60,7 @@
           "price": "309.9900",
           "unit": "HUR"
         },
-        "sum": "309.9900",
+        "sum": "309.99",
         "taxes": [
           {
             "cat": "VAT",
@@ -71,7 +72,7 @@
             }
           }
         ],
-        "total": "309.9900"
+        "total": "309.99"
       },
       {
         "i": 2,
@@ -81,7 +82,7 @@
           "price": "0.9900",
           "unit": "HUR"
         },
-        "sum": "0.9900",
+        "sum": "0.99",
         "taxes": [
           {
             "cat": "VAT",
@@ -93,7 +94,7 @@
             }
           }
         ],
-        "total": "0.9900"
+        "total": "0.99"
       },
       {
         "i": 3,
@@ -103,7 +104,7 @@
           "price": "10.9900",
           "unit": "HUR"
         },
-        "sum": "10.9900",
+        "sum": "10.99",
         "taxes": [
           {
             "cat": "VAT",
@@ -115,7 +116,7 @@
             }
           }
         ],
-        "total": "10.9900"
+        "total": "10.99"
       }
     ],
     "payment": {
@@ -128,8 +129,8 @@
     },
     "totals": {
       "sum": "321.97",
-      "tax_included": "60.21",
-      "total": "261.76",
+      "tax_included": "60.20",
+      "total": "261.77",
       "taxes": {
         "categories": [
           {
@@ -142,15 +143,15 @@
                 },
                 "base": "261.76",
                 "percent": "23.0%",
-                "amount": "60.21"
+                "amount": "60.20"
               }
             ],
-            "amount": "60.21"
+            "amount": "60.20"
           }
         ],
-        "sum": "60.21"
+        "sum": "60.20"
       },
-      "tax": "60.21",
+      "tax": "60.20",
       "total_with_tax": "321.97",
       "payable": "321.97"
     }
