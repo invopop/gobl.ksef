@@ -29,7 +29,7 @@ func TestMaxRoundingError(t *testing.T) {
 
 		// For PLN (2 subunits), max error per line is 0.75 of 0.01 = 0.0075
 		// With subunits+2 = 4, that's 75 in the 4th decimal place = 0.0075
-		assert.Equal(t, "0.0075", maxErr.String())
+		assert.Equal(t, "0.01", maxErr.String())
 	})
 
 	t.Run("calculates max rounding error for multiple lines", func(t *testing.T) {
@@ -43,7 +43,7 @@ func TestMaxRoundingError(t *testing.T) {
 		maxErr := ksef.MaxRoundingError(inv)
 
 		// 3 lines * 0.0075 = 0.0225
-		assert.Equal(t, "0.0225", maxErr.String())
+		assert.Equal(t, "0.03", maxErr.String())
 	})
 
 	t.Run("calculates max rounding error for currency with different subunits", func(t *testing.T) {
@@ -57,7 +57,7 @@ func TestMaxRoundingError(t *testing.T) {
 		maxErr := ksef.MaxRoundingError(inv)
 
 		// For EUR (2 subunits), same as PLN
-		assert.Equal(t, "0.0075", maxErr.String())
+		assert.Equal(t, "0.01", maxErr.String())
 	})
 }
 

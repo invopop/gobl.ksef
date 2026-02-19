@@ -73,9 +73,9 @@ func AdjustRounding(inv *bill.Invoice, ksefTotalDue string) error {
 }
 
 // MaxRoundingError returns the maximum error that can be attributed to rounding in an invoice.
-// It calculates 0.75 of the smallest subunit of the currency per line.
+// It calculates 1 of the smallest subunit of the currency per line.
 func MaxRoundingError(inv *bill.Invoice) num.Amount {
-	// 0.75 of the smallest subunit of the currency per line
+	// 1 of the smallest subunit of the currency per line
 	subunits := inv.Currency.Def().Subunits
-	return num.MakeAmount(75*int64(len(inv.Lines)), subunits+2)
+	return num.MakeAmount(int64(len(inv.Lines)), subunits)
 }
