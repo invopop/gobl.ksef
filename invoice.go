@@ -592,16 +592,18 @@ func (inv *Inv) parseLines(goblInv *bill.Invoice) error {
 		}
 
 		// For credit notes: invert non-StanPrzed lines to positive GOBL convention.
-		// StanPrzed lines represent the before-correction state and stay positive
+		// StanPrzed lines represent the before-correction state and stay as-is
 		// (they are the amounts being credited back to the customer).
-		if isCreditNote && ksefLine.BeforeCorrectionMarker == 1 {
-			line.Notes = append(line.Notes, &org.Note{
-				Text: "Before correction (stan przed korektą)",
-			})
-		} else if isCreditNote {
-			line.Quantity = line.Quantity.Invert()
-			for _, d := range line.Discounts {
-				d.Amount = d.Amount.Invert()
+		if isCreditNote {
+			if ksefLine.BeforeCorrectionMarker == 1 {
+				line.Notes = append(line.Notes, &org.Note{
+					Text: "Before correction (stan przed korektą)",
+				})
+			} else {
+				line.Quantity = line.Quantity.Invert()
+				for _, d := range line.Discounts {
+					d.Amount = d.Amount.Invert()
+				}
 			}
 		}
 
