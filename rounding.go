@@ -8,8 +8,8 @@ import (
 )
 
 // RoundingError represents a rounding discrepancy that exceeded acceptable thresholds.
-// The error contains the invoice with the rounding adjustment applied, allowing callers
-// to use the invoice despite the warning.
+// When this error is returned, the inv parameter passed to AdjustRounding has had the
+// rounding adjustment applied, allowing callers to use it despite the warning.
 type RoundingError struct {
 	Diff       num.Amount
 	MaxAllowed num.Amount

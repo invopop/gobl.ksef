@@ -101,7 +101,9 @@ func ParseKSeF(xmlData []byte) (*gobl.Envelope, error) {
 	return env, nil
 }
 
-// ToGOBL converts the KSeF Invoice to a GOBL invoice.
+// ToGOBL converts the KSeF Invoice to a GOBL invoice. If an error occurs
+// during parsing, the invoice is still returned with any successfully parsed
+// fields populated, allowing callers to access partial data.
 func (d *Invoice) ToGOBL() (*bill.Invoice, error) {
 	if d.Inv == nil {
 		return nil, fmt.Errorf("missing invoice data")
