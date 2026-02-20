@@ -1,0 +1,314 @@
+{
+  "$schema": "https://gobl.org/draft-0/envelope",
+  "head": {
+    "uuid": "00000000-0000-0000-0000-000000000000",
+    "dig": {
+      "alg": "sha256",
+      "val": "0000000000000000000000000000000000000000000000000000000000000000"
+    }
+  },
+  "doc": {
+    "$schema": "https://gobl.org/draft-0/bill/invoice",
+    "$regime": "PL",
+    "$addons": [
+      "pl-favat-v3"
+    ],
+    "uuid": "00000000-0000-0000-0000-000000000000",
+    "type": "credit-note",
+    "code": "KOR-BA-001",
+    "issue_date": "2026-02-17",
+    "currency": "PLN",
+    "preceding": [
+      {
+        "issue_date": "2026-02-10",
+        "code": "INV-BA-001",
+        "reason": "Incorrect charge",
+        "stamps": [
+          {
+            "prv": "favat-ksef-number",
+            "val": "9876543210-20260210-0100A0039876-89"
+          }
+        ]
+      }
+    ],
+    "tax": {
+      "rounding": "currency",
+      "ext": {
+        "pl-favat-invoice-type": "KOR"
+      }
+    },
+    "supplier": {
+      "name": "Testowa Wypożyczalnia Sp. z o.o.",
+      "tax_id": {
+        "country": "PL",
+        "code": "9876543210"
+      },
+      "addresses": [
+        {
+          "street": "ul. Główna 1, 00-001 Warszawa",
+          "country": "PL"
+        }
+      ]
+    },
+    "customer": {
+      "name": "Klient Testowy Sp. z o.o.",
+      "tax_id": {
+        "country": "PL",
+        "code": "9876543210"
+      },
+      "addresses": [
+        {
+          "street": "ul. Testowa 10, 30-001 Kraków",
+          "country": "PL"
+        }
+      ]
+    },
+    "lines": [
+      {
+        "i": 1,
+        "quantity": "-1.00",
+        "item": {
+          "name": "Vehicle pickup within city limits",
+          "price": "48.78"
+        },
+        "sum": "-48.78",
+        "taxes": [
+          {
+            "cat": "VAT",
+            "key": "standard",
+            "rate": "general",
+            "percent": "23.0%",
+            "ext": {
+              "pl-favat-tax-category": "1"
+            }
+          }
+        ],
+        "total": "-48.78"
+      },
+      {
+        "i": 2,
+        "quantity": "-6.00",
+        "item": {
+          "name": "Vehicle rental, class A, 2026-02-10 to 2026-02-16",
+          "price": "190.00"
+        },
+        "sum": "-1140.00",
+        "taxes": [
+          {
+            "cat": "VAT",
+            "key": "standard",
+            "rate": "general",
+            "percent": "23.0%",
+            "ext": {
+              "pl-favat-tax-category": "1"
+            }
+          }
+        ],
+        "total": "-1140.00"
+      },
+      {
+        "uuid": "00000000-0000-0000-0000-000000000000",
+        "i": 3,
+        "quantity": "6.00",
+        "item": {
+          "name": "Vehicle rental, class A, 2026-02-10 to 2026-02-16",
+          "price": "190.00"
+        },
+        "sum": "1140.00",
+        "taxes": [
+          {
+            "cat": "VAT",
+            "key": "standard",
+            "rate": "general",
+            "percent": "23.0%",
+            "ext": {
+              "pl-favat-tax-category": "1"
+            }
+          }
+        ],
+        "total": "1140.00",
+        "notes": [
+          {
+            "text": "Before correction (stan przed korektą)"
+          }
+        ]
+      },
+      {
+        "i": 4,
+        "quantity": "-6.00",
+        "item": {
+          "name": "Insurance package, 2026-02-10 to 2026-02-16",
+          "price": "36.59"
+        },
+        "sum": "-219.54",
+        "taxes": [
+          {
+            "cat": "VAT",
+            "key": "standard",
+            "rate": "general",
+            "percent": "23.0%",
+            "ext": {
+              "pl-favat-tax-category": "1"
+            }
+          }
+        ],
+        "total": "-219.54"
+      },
+      {
+        "i": 5,
+        "quantity": "6.00",
+        "item": {
+          "name": "Insurance package, 2026-02-10 to 2026-02-16",
+          "price": "36.59"
+        },
+        "sum": "219.54",
+        "taxes": [
+          {
+            "cat": "VAT",
+            "key": "standard",
+            "rate": "general",
+            "percent": "23.0%",
+            "ext": {
+              "pl-favat-tax-category": "1"
+            }
+          }
+        ],
+        "total": "219.54",
+        "notes": [
+          {
+            "text": "Before correction (stan przed korektą)"
+          }
+        ]
+      },
+      {
+        "i": 6,
+        "quantity": "0.00",
+        "item": {
+          "name": "Vehicle delivery outside city",
+          "price": "1.63",
+          "unit": "km"
+        },
+        "sum": "0.00",
+        "taxes": [
+          {
+            "cat": "VAT",
+            "key": "standard",
+            "rate": "general",
+            "percent": "23.0%",
+            "ext": {
+              "pl-favat-tax-category": "1"
+            }
+          }
+        ],
+        "total": "0.00"
+      },
+      {
+        "i": 7,
+        "quantity": "222.00",
+        "item": {
+          "name": "Vehicle delivery outside city",
+          "price": "1.63",
+          "unit": "km"
+        },
+        "sum": "361.86",
+        "taxes": [
+          {
+            "cat": "VAT",
+            "key": "standard",
+            "rate": "general",
+            "percent": "23.0%",
+            "ext": {
+              "pl-favat-tax-category": "1"
+            }
+          }
+        ],
+        "total": "361.86",
+        "notes": [
+          {
+            "text": "Before correction (stan przed korektą)"
+          }
+        ]
+      },
+      {
+        "i": 8,
+        "quantity": "-1.00",
+        "item": {
+          "name": "Initial delivery fee",
+          "price": "48.78"
+        },
+        "sum": "-48.78",
+        "taxes": [
+          {
+            "cat": "VAT",
+            "key": "standard",
+            "rate": "general",
+            "percent": "23.0%",
+            "ext": {
+              "pl-favat-tax-category": "1"
+            }
+          }
+        ],
+        "total": "-48.78"
+      },
+      {
+        "i": 9,
+        "quantity": "1.00",
+        "item": {
+          "name": "Initial delivery fee",
+          "price": "48.78"
+        },
+        "sum": "48.78",
+        "taxes": [
+          {
+            "cat": "VAT",
+            "key": "standard",
+            "rate": "general",
+            "percent": "23.0%",
+            "ext": {
+              "pl-favat-tax-category": "1"
+            }
+          }
+        ],
+        "total": "48.78",
+        "notes": [
+          {
+            "text": "Before correction (stan przed korektą)"
+          }
+        ]
+      }
+    ],
+    "totals": {
+      "sum": "313.08",
+      "total": "313.08",
+      "taxes": {
+        "categories": [
+          {
+            "code": "VAT",
+            "rates": [
+              {
+                "key": "standard",
+                "ext": {
+                  "pl-favat-tax-category": "1"
+                },
+                "base": "313.08",
+                "percent": "23.0%",
+                "amount": "72.01"
+              }
+            ],
+            "amount": "72.01"
+          }
+        ],
+        "sum": "72.01"
+      },
+      "tax": "72.01",
+      "total_with_tax": "385.09",
+      "payable": "385.09"
+    },
+    "notes": [
+      {
+        "code": "Uwagi",
+        "text": "Incorrect charge"
+      }
+    ]
+  }
+}

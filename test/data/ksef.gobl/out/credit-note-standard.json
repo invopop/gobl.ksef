@@ -23,12 +23,19 @@
         "issue_date": "2026-01-20",
         "code": "INVOICE-001",
         "reason": "Price correction",
+        "stamps": [
+          {
+            "prv": "favat-ksef-number",
+            "val": "8126178616-20260122-0100A0039876-89"
+          }
+        ],
         "ext": {
           "pl-favat-effective-date": "1"
         }
       }
     ],
     "tax": {
+      "rounding": "currency",
       "ext": {
         "pl-favat-invoice-type": "KOR"
       }
@@ -62,13 +69,13 @@
     "lines": [
       {
         "i": 1,
-        "quantity": "-10",
+        "quantity": "10",
         "item": {
           "name": "Software Development Services",
           "price": "10.00",
           "unit": "HUR"
         },
-        "sum": "-100.00",
+        "sum": "100.00",
         "taxes": [
           {
             "cat": "VAT",
@@ -80,12 +87,12 @@
             }
           }
         ],
-        "total": "-100.00"
+        "total": "100.00"
       }
     ],
     "totals": {
-      "sum": "-100.00",
-      "total": "-100.00",
+      "sum": "100.00",
+      "total": "100.00",
       "taxes": {
         "categories": [
           {
@@ -96,19 +103,19 @@
                 "ext": {
                   "pl-favat-tax-category": "1"
                 },
-                "base": "-100.00",
+                "base": "100.00",
                 "percent": "23.0%",
-                "amount": "-23.00"
+                "amount": "23.00"
               }
             ],
-            "amount": "-23.00"
+            "amount": "23.00"
           }
         ],
-        "sum": "-23.00"
+        "sum": "23.00"
       },
-      "tax": "-23.00",
-      "total_with_tax": "-123.00",
-      "payable": "-123.00"
+      "tax": "23.00",
+      "total_with_tax": "123.00",
+      "payable": "123.00"
     }
   }
 }

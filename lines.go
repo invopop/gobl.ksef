@@ -9,6 +9,7 @@ import (
 	"github.com/invopop/gobl/num"
 	"github.com/invopop/gobl/org"
 	"github.com/invopop/gobl/tax"
+	"github.com/invopop/gobl/uuid"
 )
 
 // Line defines the XML structure for KSeF item line (element type FaWiersz, for VAT and KOR type invoices)
@@ -54,6 +55,7 @@ func NewLines(lines []*bill.Line) []*Line {
 func newLine(line *bill.Line) *Line {
 	l := &Line{
 		LineNumber:    line.Index,
+		UniqueID:      string(line.UUID),
 		Name:          line.Item.Name,
 		Measure:       string(line.Item.Unit.UNECE()),
 		NetUnitPrice:  line.Item.Price.String(),
@@ -147,6 +149,7 @@ type OrderLine struct {
 func newOrderLine(line *bill.Line, cu uint32) *OrderLine {
 	l := &OrderLine{
 		LineNumber:    line.Index,
+		UniqueID:      string(line.UUID),
 		Name:          line.Item.Name,
 		Measure:       string(line.Item.Unit.UNECE()),
 		NetUnitPrice:  line.Item.Price.String(),
@@ -180,6 +183,12 @@ func (l *Line) ToGOBL() (*bill.Line, error) {
 		Item: &org.Item{
 			Name: l.Name,
 		},
+	}
+
+	if l.UniqueID != "" {
+		if id, err := uuid.Parse(l.UniqueID); err == nil {
+			line.UUID = id
+		}
 	}
 
 	// Parse quantity

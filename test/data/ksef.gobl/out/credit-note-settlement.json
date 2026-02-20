@@ -26,12 +26,19 @@
         "issue_date": "2026-01-20",
         "code": "ROZ-001",
         "reason": "Final settlement correction",
+        "stamps": [
+          {
+            "prv": "favat-ksef-number",
+            "val": "8126178616-20260122-0100A0039876-89"
+          }
+        ],
         "ext": {
           "pl-favat-effective-date": "1"
         }
       }
     ],
     "tax": {
+      "rounding": "currency",
       "ext": {
         "pl-favat-invoice-type": "KOR_ROZ"
       }
@@ -65,12 +72,12 @@
     "lines": [
       {
         "i": 1,
-        "quantity": "-1",
+        "quantity": "1",
         "item": {
           "name": "Settlement Invoice Correction",
           "price": "1000.00"
         },
-        "sum": "-1000.00",
+        "sum": "1000.00",
         "taxes": [
           {
             "cat": "VAT",
@@ -82,12 +89,12 @@
             }
           }
         ],
-        "total": "-1000.00"
+        "total": "1000.00"
       }
     ],
     "totals": {
-      "sum": "-1000.00",
-      "total": "-1000.00",
+      "sum": "1000.00",
+      "total": "1000.00",
       "taxes": {
         "categories": [
           {
@@ -98,19 +105,19 @@
                 "ext": {
                   "pl-favat-tax-category": "1"
                 },
-                "base": "-1000.00",
+                "base": "1000.00",
                 "percent": "23.0%",
-                "amount": "-230.00"
+                "amount": "230.00"
               }
             ],
-            "amount": "-230.00"
+            "amount": "230.00"
           }
         ],
-        "sum": "-230.00"
+        "sum": "230.00"
       },
-      "tax": "-230.00",
-      "total_with_tax": "-1230.00",
-      "payable": "-1230.00"
+      "tax": "230.00",
+      "total_with_tax": "1230.00",
+      "payable": "1230.00"
     }
   }
 }

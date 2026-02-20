@@ -233,7 +233,9 @@ func (inv *Inv) parsePayment(goblInv *bill.Invoice) error {
 		}
 	}
 
-	goblInv.Payment = payment
+	if payment.Instructions != nil || payment.Terms != nil || payment.Advances != nil {
+		goblInv.Payment = payment
+	}
 
 	return nil
 }

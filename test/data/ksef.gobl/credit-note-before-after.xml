@@ -1,0 +1,163 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Faktura xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns="http://crd.gov.pl/wzor/2025/06/25/13775/">
+  <Naglowek>
+    <KodFormularza kodSystemowy="FA (3)" wersjaSchemy="1-0E">FA</KodFormularza>
+    <WariantFormularza>3</WariantFormularza>
+    <DataWytworzeniaFa>2026-02-17T13:40:59Z</DataWytworzeniaFa>
+    <SystemInfo>Invopop</SystemInfo>
+  </Naglowek>
+  <Podmiot1>
+    <DaneIdentyfikacyjne>
+      <NIP>9876543210</NIP>
+      <Nazwa>Testowa Wypożyczalnia Sp. z o.o.</Nazwa>
+    </DaneIdentyfikacyjne>
+    <Adres>
+      <KodKraju>PL</KodKraju>
+      <AdresL1>ul. Główna 1, 00-001 Warszawa</AdresL1>
+    </Adres>
+  </Podmiot1>
+  <Podmiot2>
+    <DaneIdentyfikacyjne>
+      <NIP>9876543210</NIP>
+      <Nazwa>Klient Testowy Sp. z o.o.</Nazwa>
+    </DaneIdentyfikacyjne>
+    <Adres>
+      <KodKraju>PL</KodKraju>
+      <AdresL1>ul. Testowa 10, 30-001 Kraków</AdresL1>
+    </Adres>
+    <JST>2</JST>
+    <GV>2</GV>
+  </Podmiot2>
+  <Fa>
+    <KodWaluty>PLN</KodWaluty>
+    <P_1>2026-02-17</P_1>
+    <P_2>KOR-BA-001</P_2>
+    <P_6>2026-02-09</P_6>
+    <P_13_1>-313.08</P_13_1>
+    <P_14_1>-72.01</P_14_1>
+    <P_15>-385.09</P_15>
+    <Adnotacje>
+      <P_16>2</P_16>
+      <P_17>2</P_17>
+      <P_18>2</P_18>
+      <P_18A>2</P_18A>
+      <Zwolnienie>
+        <P_19N>1</P_19N>
+      </Zwolnienie>
+      <NoweSrodkiTransportu>
+        <P_22N>1</P_22N>
+      </NoweSrodkiTransportu>
+      <P_23>2</P_23>
+      <PMarzy>
+        <P_PMarzyN>1</P_PMarzyN>
+      </PMarzy>
+    </Adnotacje>
+    <RodzajFaktury>KOR</RodzajFaktury>
+    <PrzyczynaKorekty>Incorrect charge</PrzyczynaKorekty>
+    <DaneFaKorygowanej>
+      <DataWystFaKorygowanej>2026-02-10</DataWystFaKorygowanej>
+      <NrFaKorygowanej>INV-BA-001</NrFaKorygowanej>
+      <NrKSeF>1</NrKSeF>
+      <NrKSeFFaKorygowanej>9876543210-20260210-0100A0039876-89</NrKSeFFaKorygowanej>
+    </DaneFaKorygowanej>
+    <DodatkowyOpis>
+      <Klucz>Uwagi</Klucz>
+      <Wartosc>Incorrect charge</Wartosc>
+    </DodatkowyOpis>
+    <FaWiersz>
+      <NrWierszaFa>1</NrWierszaFa>
+      <P_7>Vehicle pickup within city limits</P_7>
+      <P_8A>szt</P_8A>
+      <P_8B>1.00</P_8B>
+      <P_9A>48.78</P_9A>
+      <P_11>48.78</P_11>
+      <P_11Vat>11.22</P_11Vat>
+      <P_12>23</P_12>
+    </FaWiersz>
+    <FaWiersz>
+      <NrWierszaFa>2</NrWierszaFa>
+      <P_7>Vehicle rental, class A, 2026-02-10 to 2026-02-16</P_7>
+      <P_8A>d</P_8A>
+      <P_8B>6.00</P_8B>
+      <P_9A>190.00</P_9A>
+      <P_11>1140.00</P_11>
+      <P_11Vat>262.20</P_11Vat>
+      <P_12>23</P_12>
+    </FaWiersz>
+    <FaWiersz>
+      <NrWierszaFa>2</NrWierszaFa>
+      <UU_ID>2a27c8fc-bc94-44b5-8b90-c51bf4057cb3</UU_ID>
+      <P_7>Vehicle rental, class A, 2026-02-10 to 2026-02-16</P_7>
+      <P_8A>d</P_8A>
+      <P_8B>6.00</P_8B>
+      <P_9A>190.00</P_9A>
+      <P_11>1140.00</P_11>
+      <P_11Vat>262.20</P_11Vat>
+      <P_12>23</P_12>
+      <StanPrzed>1</StanPrzed>
+    </FaWiersz>
+    <FaWiersz>
+      <NrWierszaFa>3</NrWierszaFa>
+      <P_7>Insurance package, 2026-02-10 to 2026-02-16</P_7>
+      <P_8A>d</P_8A>
+      <P_8B>6.00</P_8B>
+      <P_9A>36.59</P_9A>
+      <P_11>219.54</P_11>
+      <P_11Vat>50.49</P_11Vat>
+      <P_12>23</P_12>
+    </FaWiersz>
+    <FaWiersz>
+      <NrWierszaFa>3</NrWierszaFa>
+      <P_7>Insurance package, 2026-02-10 to 2026-02-16</P_7>
+      <P_8A>d</P_8A>
+      <P_8B>6.00</P_8B>
+      <P_9A>36.59</P_9A>
+      <P_11>219.54</P_11>
+      <P_11Vat>50.49</P_11Vat>
+      <P_12>23</P_12>
+      <StanPrzed>1</StanPrzed>
+    </FaWiersz>
+    <FaWiersz>
+      <NrWierszaFa>4</NrWierszaFa>
+      <P_7>Vehicle delivery outside city</P_7>
+      <P_8A>km</P_8A>
+      <P_8B>0.00</P_8B>
+      <P_9A>1.63</P_9A>
+      <P_11>0.00</P_11>
+      <P_11Vat>0.00</P_11Vat>
+      <P_12>23</P_12>
+    </FaWiersz>
+    <FaWiersz>
+      <NrWierszaFa>4</NrWierszaFa>
+      <P_7>Vehicle delivery outside city</P_7>
+      <P_8A>km</P_8A>
+      <P_8B>222.00</P_8B>
+      <P_9A>1.63</P_9A>
+      <P_11>361.86</P_11>
+      <P_11Vat>83.23</P_11Vat>
+      <P_12>23</P_12>
+      <StanPrzed>1</StanPrzed>
+    </FaWiersz>
+    <FaWiersz>
+      <NrWierszaFa>5</NrWierszaFa>
+      <P_7>Initial delivery fee</P_7>
+      <P_8A>szt</P_8A>
+      <P_8B>1.00</P_8B>
+      <P_9A>48.78</P_9A>
+      <P_11>48.78</P_11>
+      <P_11Vat>11.22</P_11Vat>
+      <P_12>23</P_12>
+    </FaWiersz>
+    <FaWiersz>
+      <NrWierszaFa>5</NrWierszaFa>
+      <P_7>Initial delivery fee</P_7>
+      <P_8A>szt</P_8A>
+      <P_8B>1.00</P_8B>
+      <P_9A>48.78</P_9A>
+      <P_11>48.78</P_11>
+      <P_11Vat>11.22</P_11Vat>
+      <P_12>23</P_12>
+      <StanPrzed>1</StanPrzed>
+    </FaWiersz>
+  </Fa>
+</Faktura>

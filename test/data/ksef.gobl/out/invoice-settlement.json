@@ -22,6 +22,7 @@
     "issue_date": "2026-01-20",
     "currency": "PLN",
     "tax": {
+      "rounding": "currency",
       "ext": {
         "pl-favat-invoice-type": "ROZ"
       }

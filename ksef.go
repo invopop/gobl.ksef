@@ -11,6 +11,7 @@ import (
 	"github.com/invopop/gobl/bill"
 	"github.com/invopop/gobl/cbc"
 	"github.com/invopop/gobl/currency"
+	"github.com/invopop/gobl/num"
 	"github.com/invopop/gobl/tax"
 )
 
@@ -128,8 +129,18 @@ func (d *Invoice) ToGOBL() (*bill.Invoice, error) {
 		return nil, err
 	}
 
-	// Calculate totals and adjust for rounding if needed
-	if err := AdjustRounding(inv, d.Inv.TotalAmountDue); err != nil {
+	// Calculate totals and adjust for rounding if needed.
+	// For credit notes, line totals are now positive (GOBL convention),
+	// so we must invert the KSeF P_15 total to match.
+	totalDue := d.Inv.TotalAmountDue
+	if inv.Type == bill.InvoiceTypeCreditNote {
+		amt, err := num.AmountFromString(totalDue)
+		if err != nil {
+			return nil, fmt.Errorf("parsing total amount due: %w", err)
+		}
+		totalDue = amt.Invert().String()
+	}
+	if err := AdjustRounding(inv, totalDue); err != nil {
 		return nil, err
 	}
 

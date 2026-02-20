@@ -8,6 +8,7 @@ import (
 	"github.com/invopop/gobl/bill"
 	"github.com/invopop/gobl/cal"
 	"github.com/invopop/gobl/cbc"
+	"github.com/invopop/gobl/head"
 	"github.com/invopop/gobl/org"
 	"github.com/invopop/gobl/tax"
 )
@@ -460,6 +461,12 @@ func (inv *Inv) parseInvoiceData(goblInv *bill.Invoice) error {
 		}
 	}
 
+	// Always set rounding to currency as per EN16931 standard
+	if goblInv.Tax == nil {
+		goblInv.Tax = &bill.Tax{}
+	}
+	goblInv.Tax.Rounding = tax.RoundingRuleCurrency
+
 	// Parse additional description as notes
 	if len(inv.AdditionalDescription) > 0 {
 		if goblInv.Notes == nil {
@@ -495,6 +502,14 @@ func (inv *Inv) parseInvoiceData(goblInv *bill.Invoice) error {
 			if inv.CorrectionType != "" {
 				preceding.Ext = tax.Extensions{
 					favat.ExtKeyEffectiveDate: cbc.Code(inv.CorrectionType),
+				}
+			}
+			if corr.KsefNumberPresent == 1 && corr.KsefNumber != "" {
+				preceding.Stamps = []*head.Stamp{
+					{
+						Provider: favat.StampKSEFNumber,
+						Value:    corr.KsefNumber,
+					},
 				}
 			}
 
@@ -568,12 +583,30 @@ func (inv *Inv) parseLines(goblInv *bill.Invoice) error {
 	// instead convert gross→net explicitly inside Line.ToGOBL() using the line's
 	// own VAT rate (P_12): net = gross / (1 + rate). This works uniformly for
 	// pure-net, pure-gross, and mixed invoices without any invoice-level flag.
+	isCreditNote := goblInv.Type == bill.InvoiceTypeCreditNote
 	hasGrossPricing := false
 	for _, ksefLine := range inv.Lines {
 		line, err := ksefLine.ToGOBL()
 		if err != nil {
 			return fmt.Errorf("parsing line %d: %w", ksefLine.LineNumber, err)
 		}
+
+		// For credit notes: invert non-StanPrzed lines to positive GOBL convention.
+		// StanPrzed lines represent the before-correction state and stay as-is
+		// (they are the amounts being credited back to the customer).
+		if isCreditNote {
+			if ksefLine.BeforeCorrectionMarker == 1 {
+				line.Notes = append(line.Notes, &org.Note{
+					Text: "Before correction (stan przed korektą)",
+				})
+			} else {
+				line.Quantity = line.Quantity.Invert()
+				for _, d := range line.Discounts {
+					d.Amount = d.Amount.Invert()
+				}
+			}
+		}
+
 		goblInv.Lines = append(goblInv.Lines, line)
 		if ksefLine.NetUnitPrice == "" && ksefLine.GrossUnitPrice != "" {
 			hasGrossPricing = true
