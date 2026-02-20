@@ -11,7 +11,6 @@ import (
 // The error contains the invoice with the rounding adjustment applied, allowing callers
 // to use the invoice despite the warning.
 type RoundingError struct {
-	Invoice    *bill.Invoice
 	Diff       num.Amount
 	MaxAllowed num.Amount
 }
@@ -60,7 +59,6 @@ func AdjustRounding(inv *bill.Invoice, ksefTotalDue string) error {
 		// Too much difference. Apply the adjustment anyway and return a warning
 		inv.Totals.Rounding = &diff
 		return &RoundingError{
-			Invoice:    inv,
 			Diff:       diff,
 			MaxAllowed: maxErr,
 		}
