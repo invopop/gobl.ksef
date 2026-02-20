@@ -101,7 +101,9 @@ func ParseKSeF(xmlData []byte) (*gobl.Envelope, error) {
 	return env, nil
 }
 
-// ToGOBL converts the KSeF Invoice to a GOBL invoice.
+// ToGOBL converts the KSeF Invoice to a GOBL invoice. If an error occurs
+// during parsing, the invoice is still returned with any successfully parsed
+// fields populated, allowing callers to access partial data.
 func (d *Invoice) ToGOBL() (*bill.Invoice, error) {
 	if d.Inv == nil {
 		return nil, fmt.Errorf("missing invoice data")
@@ -113,7 +115,7 @@ func (d *Invoice) ToGOBL() (*bill.Invoice, error) {
 
 	// Parse invoice data
 	if err := d.Inv.parseInvoiceData(inv); err != nil {
-		return nil, err
+		return inv, err
 	}
 
 	// Parse parties
@@ -121,12 +123,12 @@ func (d *Invoice) ToGOBL() (*bill.Invoice, error) {
 
 	// Parse lines
 	if err := d.Inv.parseLines(inv); err != nil {
-		return nil, err
+		return inv, err
 	}
 
 	// Parse payment
 	if err := d.Inv.parsePayment(inv); err != nil {
-		return nil, err
+		return inv, err
 	}
 
 	// Calculate totals and adjust for rounding if needed.
@@ -136,12 +138,12 @@ func (d *Invoice) ToGOBL() (*bill.Invoice, error) {
 	if inv.Type == bill.InvoiceTypeCreditNote {
 		amt, err := num.AmountFromString(totalDue)
 		if err != nil {
-			return nil, fmt.Errorf("parsing total amount due: %w", err)
+			return inv, fmt.Errorf("parsing total amount due: %w", err)
 		}
 		totalDue = amt.Invert().String()
 	}
 	if err := AdjustRounding(inv, totalDue); err != nil {
-		return nil, err
+		return inv, err
 	}
 
 	return inv, nil
