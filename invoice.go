@@ -112,6 +112,54 @@ type ChargeOrDeduction struct {
 	Reason string `xml:"Powod"`
 }
 
+// TransactionConditions defines the XML structure for transaction conditions
+type TransactionConditions struct {
+	Contracts         []*Contract  `xml:"Umowy,omitempty"`
+	Orders            []*OrderRef  `xml:"Zamowienia,omitempty"`
+	BatchNumbers      []string     `xml:"NrPartiiTowaru,omitempty"`
+	DeliveryTerms     string       `xml:"WarunkiDostawy,omitempty"`
+	ContractRate      string       `xml:"KursUmowny,omitempty"`
+	ContractCurrency  string       `xml:"WalutaUmowna,omitempty"`
+	Transport         []*Transport `xml:"Transport,omitempty"`
+	IntermediaryParty int          `xml:"PodmiotPosredniczacy,omitempty"`
+}
+
+// Contract defines the XML structure for contract reference
+type Contract struct {
+	Date   string `xml:"DataUmowy"`
+	Number string `xml:"NrUmowy"`
+}
+
+// OrderRef defines the XML structure for order reference
+type OrderRef struct {
+	Date   string `xml:"DataZamowienia"`
+	Number string `xml:"NrZamowienia"`
+}
+
+// Transport defines the XML structure for transport information
+type Transport struct {
+	TransportType        string     `xml:"RodzajTransportu,omitempty"`
+	OtherTransportType   int        `xml:"TransportInny,omitempty"`
+	OtherTransportDesc   string     `xml:"OpisInnegoTransportu,omitempty"`
+	Carrier              *Carrier   `xml:"Przewoznik,omitempty"`
+	TransportOrderNumber string     `xml:"NrZleceniaTransportu,omitempty"`
+	CargoType            string     `xml:"OpisLadunku,omitempty"`
+	OtherCargoType       int        `xml:"LadunekInny,omitempty"`
+	OtherCargoDesc       string     `xml:"OpisInnegoLadunku,omitempty"`
+	PackagingUnit        string     `xml:"JednostkaOpakowania,omitempty"`
+	TransportStartTime   string     `xml:"DataGodzRozpTransportu,omitempty"`
+	TransportEndTime     string     `xml:"DataGodzZakTransportu,omitempty"`
+	ShipFrom             *Address   `xml:"WysylkaZ,omitempty"`
+	ShipVia              []*Address `xml:"WysylkaPrzez,omitempty"`
+	ShipTo               *Address   `xml:"WysylkaDo,omitempty"`
+}
+
+// Carrier defines the XML structure for carrier information
+type Carrier struct {
+	IdentificationData *Buyer   `xml:"DaneIdentyfikacyjne"`
+	Address            *Address `xml:"AdresPrzewoznika"`
+}
+
 // NewFavatInv gets invoice data from GOBL invoice
 func NewFavatInv(invoice *bill.Invoice) *Inv {
 
@@ -146,9 +194,8 @@ func NewFavatInv(invoice *bill.Invoice) *Inv {
 		}
 	}
 
-	if invoice.Ordering != nil && len(invoice.Ordering.Purchases) > 0 {
-		inv.Order, inv.TransactionConditions = newOrder(invoice.Ordering)
-	}
+	inv.Order = newOrder(invoice.Ordering)
+	inv.TransactionConditions = newTransactionConditions(invoice.Ordering)
 
 	if len(invoice.Preceding) > 0 {
 		if invoice.Preceding[0].Reason != "" {
@@ -163,6 +210,34 @@ func NewFavatInv(invoice *bill.Invoice) *Inv {
 	}
 
 	return inv
+}
+
+// newTransactionConditions builds TransactionConditions from the invoice's
+// ordering data. Currently reads order references from purchases; in the
+// future this will also handle contracts and other document types.
+func newTransactionConditions(ordering *bill.Ordering) *TransactionConditions {
+	if ordering == nil {
+		return nil
+	}
+
+	var tc TransactionConditions
+
+	// Add order references from purchases
+	for _, ref := range ordering.Purchases {
+		or := &OrderRef{
+			Number: ref.Code.String(),
+		}
+		if ref.IssueDate != nil {
+			or.Date = ref.IssueDate.String()
+		}
+		tc.Orders = append(tc.Orders, or)
+	}
+
+	if len(tc.Orders) == 0 {
+		return nil
+	}
+
+	return &tc
 }
 
 func invoiceNumber(series cbc.Code, code cbc.Code) string {
@@ -558,5 +633,3 @@ func (inv *Inv) parsePrepaymentTotals(goblInv *bill.Invoice) error {
 	goblInv.Totals = totals
 	return nil
 }
-
-

@@ -41,54 +41,6 @@ type OrderLine struct {
 	BeforeCorrectionMarker  int    `xml:"StanPrzedZ,omitempty"`
 }
 
-// TransactionConditions defines the XML structure for transaction conditions
-type TransactionConditions struct {
-	Contracts         []*Contract  `xml:"Umowy,omitempty"`
-	Orders            []*OrderRef  `xml:"Zamowienia,omitempty"`
-	BatchNumbers      []string     `xml:"NrPartiiTowaru,omitempty"`
-	DeliveryTerms     string       `xml:"WarunkiDostawy,omitempty"`
-	ContractRate      string       `xml:"KursUmowny,omitempty"`
-	ContractCurrency  string       `xml:"WalutaUmowna,omitempty"`
-	Transport         []*Transport `xml:"Transport,omitempty"`
-	IntermediaryParty int          `xml:"PodmiotPosredniczacy,omitempty"`
-}
-
-// Contract defines the XML structure for contract reference
-type Contract struct {
-	Date   string `xml:"DataUmowy"`
-	Number string `xml:"NrUmowy"`
-}
-
-// OrderRef defines the XML structure for order reference
-type OrderRef struct {
-	Date   string `xml:"DataZamowienia"`
-	Number string `xml:"NrZamowienia"`
-}
-
-// Transport defines the XML structure for transport information
-type Transport struct {
-	TransportType        string     `xml:"RodzajTransportu,omitempty"`
-	OtherTransportType   int        `xml:"TransportInny,omitempty"`
-	OtherTransportDesc   string     `xml:"OpisInnegoTransportu,omitempty"`
-	Carrier              *Carrier   `xml:"Przewoznik,omitempty"`
-	TransportOrderNumber string     `xml:"NrZleceniaTransportu,omitempty"`
-	CargoType            string     `xml:"OpisLadunku,omitempty"`
-	OtherCargoType       int        `xml:"LadunekInny,omitempty"`
-	OtherCargoDesc       string     `xml:"OpisInnegoLadunku,omitempty"`
-	PackagingUnit        string     `xml:"JednostkaOpakowania,omitempty"`
-	TransportStartTime   string     `xml:"DataGodzRozpTransportu,omitempty"`
-	TransportEndTime     string     `xml:"DataGodzZakTransportu,omitempty"`
-	ShipFrom             *Address   `xml:"WysylkaZ,omitempty"`
-	ShipVia              []*Address `xml:"WysylkaPrzez,omitempty"`
-	ShipTo               *Address   `xml:"WysylkaDo,omitempty"`
-}
-
-// Carrier defines the XML structure for carrier information
-type Carrier struct {
-	IdentificationData *Buyer   `xml:"DaneIdentyfikacyjne"`
-	Address            *Address `xml:"AdresPrzewoznika"`
-}
-
 // newInvoicePeriod converts GOBL ordering period to KSeF InvoicePeriod.
 func newInvoicePeriod(ordering *bill.Ordering) *InvoicePeriod {
 	if ordering == nil || ordering.Period == nil {
@@ -101,26 +53,14 @@ func newInvoicePeriod(ordering *bill.Ordering) *InvoicePeriod {
 	}
 }
 
-// newOrder converts ordering purchases to KSeF Order and TransactionConditions.
+// newOrder converts ordering purchases to KSeF Order.
 // This is the inverse of parseOrderingLines().
-func newOrder(ordering *bill.Ordering) (*Order, *TransactionConditions) {
+func newOrder(ordering *bill.Ordering) *Order {
 	if ordering == nil || len(ordering.Purchases) == 0 {
-		return nil, nil
+		return nil
 	}
 
 	ref := ordering.Purchases[0]
-
-	// Build TransactionConditions with order reference
-	tc := &TransactionConditions{
-		Orders: []*OrderRef{
-			{
-				Number: ref.Code.String(),
-			},
-		},
-	}
-	if ref.IssueDate != nil {
-		tc.Orders[0].Date = ref.IssueDate.String()
-	}
 
 	// Build Order
 	order := &Order{}
@@ -151,7 +91,7 @@ func newOrder(ordering *bill.Ordering) (*Order, *TransactionConditions) {
 		}
 	}
 
-	return order, tc
+	return order
 }
 
 // parseOrderingLines maps Zamowienie (order) data into Ordering.Purchases.
