@@ -3,7 +3,6 @@ package ksef
 import (
 	"fmt"
 	"regexp"
-	"strconv"
 	"time"
 
 	"github.com/invopop/gobl/addons/pl/favat"
@@ -66,8 +65,8 @@ type Inv struct {
 	AdditionalDescription              []*AdditionalDescriptionLine `xml:"DodatkowyOpis,omitempty"`
 	Lines                              []*Line                      `xml:"FaWiersz,omitempty"` // empty for ZAL and KOR_ZAL, use Order instead
 	Settlement                         *Settlement                  `xml:"Rozliczenie,omitempty"`
-	TransactionConditions              *TransactionConditions       `xml:"WarunkiTransakcji,omitempty"`
 	Payment                            *Payment                     `xml:"Platnosc,omitempty"`
+	TransactionConditions              *TransactionConditions       `xml:"WarunkiTransakcji,omitempty"`
 	Order                              *Order                       `xml:"Zamowienie,omitempty"` // for ZAL and KOR_ZAL types
 }
 
@@ -81,12 +80,6 @@ type AdditionalDescriptionLine struct {
 	LineNumber string `xml:"NrWiersza,omitempty"`
 	Key        string `xml:"Klucz"`
 	Value      string `xml:"Wartosc"`
-}
-
-// Order defines the XML structure for KSeF "Zamowienie" (order) field, required for ZAL and KOR_ZAL types
-type Order struct {
-	OrderAmount string       `xml:"WartoscZamowienia"`
-	LineItems   []*OrderLine `xml:"ZamowienieWiersz,omitempty"`
 }
 
 // AdvanceInvoiceRef defines the XML structure for advance invoice reference
@@ -117,54 +110,6 @@ type Settlement struct {
 type ChargeOrDeduction struct {
 	Amount string `xml:"Kwota"`
 	Reason string `xml:"Powod"`
-}
-
-// TransactionConditions defines the XML structure for transaction conditions
-type TransactionConditions struct {
-	Contracts         []*Contract  `xml:"Umowy>Umowa,omitempty"`
-	Orders            []*OrderRef  `xml:"Zamowienia>Zamowienie,omitempty"`
-	BatchNumbers      []string     `xml:"NrPartiiTowaru,omitempty"`
-	DeliveryTerms     string       `xml:"WarunkiDostawy,omitempty"`
-	ContractRate      string       `xml:"KursUmowny,omitempty"`
-	ContractCurrency  string       `xml:"WalutaUmowna,omitempty"`
-	Transport         []*Transport `xml:"Transport,omitempty"`
-	IntermediaryParty int          `xml:"PodmiotPosredniczacy,omitempty"`
-}
-
-// Contract defines the XML structure for contract reference
-type Contract struct {
-	Date   string `xml:"DataUmowy"`
-	Number string `xml:"NrUmowy"`
-}
-
-// OrderRef defines the XML structure for order reference
-type OrderRef struct {
-	Date   string `xml:"DataZamowienia"`
-	Number string `xml:"NrZamowienia"`
-}
-
-// Transport defines the XML structure for transport information
-type Transport struct {
-	TransportType        string     `xml:"RodzajTransportu,omitempty"`
-	OtherTransportType   int        `xml:"TransportInny,omitempty"`
-	OtherTransportDesc   string     `xml:"OpisInnegoTransportu,omitempty"`
-	Carrier              *Carrier   `xml:"Przewoznik,omitempty"`
-	TransportOrderNumber string     `xml:"NrZleceniaTransportu,omitempty"`
-	CargoType            string     `xml:"OpisLadunku,omitempty"`
-	OtherCargoType       int        `xml:"LadunekInny,omitempty"`
-	OtherCargoDesc       string     `xml:"OpisInnegoLadunku,omitempty"`
-	PackagingUnit        string     `xml:"JednostkaOpakowania,omitempty"`
-	TransportStartTime   string     `xml:"DataGodzRozpTransportu,omitempty"`
-	TransportEndTime     string     `xml:"DataGodzZakTransportu,omitempty"`
-	ShipFrom             *Address   `xml:"WysylkaZ,omitempty"`
-	ShipVia              []*Address `xml:"WysylkaPrzez,omitempty"`
-	ShipTo               *Address   `xml:"WysylkaDo,omitempty"`
-}
-
-// Carrier defines the XML structure for carrier information
-type Carrier struct {
-	IdentificationData *Buyer   `xml:"DaneIdentyfikacyjne"`
-	Address            *Address `xml:"AdresPrzewoznika"`
 }
 
 // NewFavatInv gets invoice data from GOBL invoice
@@ -201,6 +146,10 @@ func NewFavatInv(invoice *bill.Invoice) *Inv {
 		}
 	}
 
+	if invoice.Ordering != nil && len(invoice.Ordering.Purchases) > 0 {
+		inv.Order, inv.TransactionConditions = newOrder(invoice.Ordering)
+	}
+
 	if len(invoice.Preceding) > 0 {
 		if invoice.Preceding[0].Reason != "" {
 			inv.CorrectionReason = invoice.Preceding[0].Reason
@@ -221,17 +170,6 @@ func invoiceNumber(series cbc.Code, code cbc.Code) string {
 		return code.String()
 	}
 	return fmt.Sprintf("%s-%s", series, code)
-}
-
-func newInvoicePeriod(ordering *bill.Ordering) *InvoicePeriod {
-	if ordering == nil || ordering.Period == nil {
-		return nil
-	}
-
-	return &InvoicePeriod{
-		StartDate: ordering.Period.Start.String(),
-		EndDate:   ordering.Period.End.String(),
-	}
 }
 
 func (inv *Inv) setTaxRates(taxes *tax.Total) {
@@ -621,113 +559,4 @@ func (inv *Inv) parsePrepaymentTotals(goblInv *bill.Invoice) error {
 	return nil
 }
 
-// parseOrderingLines maps Zamowienie (order) data into Ordering.Purchases.
-// Any invoice type can have Zamowienie and WarunkiTransakcji data.
-func (inv *Inv) parseOrderingLines(goblInv *bill.Invoice) error {
-	if inv.Order == nil {
-		return nil
-	}
-
-	ref := &org.DocumentRef{}
-
-	// Set order date and number from WarunkiTransakcji.Zamowienia
-	if inv.TransactionConditions != nil && len(inv.TransactionConditions.Orders) > 0 {
-		order := inv.TransactionConditions.Orders[0]
-		if order.Date != "" {
-			date, err := parseDate(order.Date)
-			if err != nil {
-				return fmt.Errorf("parsing order date: %w", err)
-			}
-			ref.IssueDate = &date
-		}
-		if order.Number != "" {
-			ref.Code = cbc.Code(order.Number)
-		}
-	}
-
-	// DocumentRef requires a non-empty code
-	if ref.Code == "" {
-		ref.Code = "unknown"
-	}
-
-	// Set payable from order total
-	if inv.Order.OrderAmount != "" {
-		payable, err := parseAmount(inv.Order.OrderAmount)
-		if err != nil {
-			return fmt.Errorf("parsing order amount: %w", err)
-		}
-		ref.Payable = &payable
-	}
-
-	// Build tax total and description from order lines (one rate per line)
-	if len(inv.Order.LineItems) > 0 {
-		var rates []*tax.RateTotal
-		var taxSum num.Amount
-		var descriptions []string
-
-		for _, ol := range inv.Order.LineItems {
-			if ol.Name != "" {
-				descriptions = append(descriptions, ol.Name)
-			}
-
-			rt := &tax.RateTotal{}
-
-			if ol.NetPriceTotal != "" {
-				netAmt, err := parseAmount(ol.NetPriceTotal)
-				if err != nil {
-					return fmt.Errorf("parsing order line net: %w", err)
-				}
-				rt.Base = netAmt
-			}
-
-			if ol.TaxValue != "" {
-				taxAmt, err := parseAmount(ol.TaxValue)
-				if err != nil {
-					return fmt.Errorf("parsing order line tax: %w", err)
-				}
-				rt.Amount = taxAmt
-				taxSum = taxSum.MatchPrecision(taxAmt)
-				taxSum = taxSum.Add(taxAmt)
-			}
-
-			if ol.VATRate != "" {
-				rateF, err := strconv.ParseFloat(ol.VATRate, 64)
-				if err == nil && rateF > 0 {
-					pct := num.MakePercentage(int64(rateF*10), 3)
-					rt.Percent = &pct
-				}
-			}
-
-			rates = append(rates, rt)
-		}
-
-		if len(descriptions) > 0 {
-			ref.Description = descriptions[0]
-			for _, d := range descriptions[1:] {
-				ref.Description += ", " + d
-			}
-		}
-
-		if len(rates) > 0 {
-			ref.Tax = &tax.Total{
-				Categories: []*tax.CategoryTotal{
-					{
-						Code:   tax.CategoryVAT,
-						Rates:  rates,
-						Amount: taxSum,
-					},
-				},
-				Sum: taxSum,
-			}
-		}
-	}
-
-	// Add to ordering purchases
-	if goblInv.Ordering == nil {
-		goblInv.Ordering = &bill.Ordering{}
-	}
-	goblInv.Ordering.Purchases = append(goblInv.Ordering.Purchases, ref)
-
-	return nil
-}
 

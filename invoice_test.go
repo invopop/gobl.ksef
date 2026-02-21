@@ -6,10 +6,12 @@ import (
 	ksef "github.com/invopop/gobl.ksef"
 	"github.com/invopop/gobl/addons/pl/favat"
 	"github.com/invopop/gobl/bill"
+	"github.com/invopop/gobl/cbc"
 	"github.com/invopop/gobl/currency"
 	"github.com/invopop/gobl/l10n"
 	"github.com/invopop/gobl/num"
 	"github.com/invopop/gobl/org"
+	"github.com/invopop/gobl/pay"
 	"github.com/invopop/gobl/tax"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
@@ -566,3 +568,531 @@ func TestCreditNoteLineInversion(t *testing.T) {
 		assert.Equal(t, "10", inv.Lines[0].Quantity.String())
 	})
 }
+
+// helper to build a minimal KSeF prepayment document for testing.
+func testPrepaymentDoc() *ksef.Invoice {
+	return &ksef.Invoice{
+		Seller: &ksef.Seller{
+			NIP:  "1234567890",
+			Name: "Test Supplier",
+			Address: &ksef.Address{
+				CountryCode: "PL",
+				AddressL1:   "ul. Testowa 1 00-001 Warszawa",
+			},
+		},
+		Buyer: &ksef.Buyer{
+			NIP:  "9876543210",
+			Name: "Test Buyer",
+			Address: &ksef.Address{
+				CountryCode: "PL",
+				AddressL1:   "ul. Testowa 2 00-002 Warszawa",
+			},
+			JST: "2",
+			GV:  "2",
+		},
+		Inv: &ksef.Inv{
+			CurrencyCode:       "PLN",
+			IssueDate:          "2026-01-15",
+			SequentialNumber:    "ZAL-001",
+			InvoiceType:        "ZAL",
+			StandardRateNetSale: "1000.00",
+			StandardRateTax:     "230.00",
+			TotalAmountDue:      "1230.00",
+			Annotations: &ksef.Annotations{
+				CashAccounting:                      "2",
+				SelfBilling:                         "2",
+				ReverseCharge:                       "2",
+				SplitPaymentMechanism:               "2",
+				SimplifiedProcedureBySecondTaxpayer: "2",
+				TaxExemption:                        &ksef.TaxExemption{NoExemption: "1"},
+				NewTransportMeans:                   &ksef.NewTransportMeans{NoNewTransportMeans: "1"},
+				MarginScheme:                        &ksef.MarginScheme{NoMarginScheme: "1"},
+			},
+			Order: &ksef.Order{
+				OrderAmount: "5000.00",
+				LineItems: []*ksef.OrderLine{
+					{
+						LineNumber:    1,
+						Name:          "Widget A",
+						NetPriceTotal: "3000.00",
+						TaxValue:      "690.00",
+						VATRate:       "23",
+					},
+					{
+						LineNumber:    2,
+						Name:          "Widget B",
+						NetPriceTotal: "2000.00",
+						TaxValue:      "460.00",
+						VATRate:       "23",
+					},
+				},
+			},
+			TransactionConditions: &ksef.TransactionConditions{
+				Orders: []*ksef.OrderRef{
+					{Date: "2026-01-10", Number: "PO-12345"},
+				},
+			},
+			Payment: &ksef.Payment{
+				PaidMarker:  "1",
+				PaymentDate: "2026-01-15",
+				PaymentMean: "6",
+				DueDates: []*ksef.DueDate{
+					{Date: "2026-01-15"},
+				},
+				BankAccounts: []*ksef.BankAccount{
+					{AccountNumber: "PL61109010140000071219812874", SWIFT: "WBKPPLPP"},
+				},
+			},
+		},
+	}
+}
+
+func TestPrepaymentBypass(t *testing.T) {
+	t.Run("sets bypass tag for ZAL without lines", func(t *testing.T) {
+		doc := testPrepaymentDoc()
+		inv, err := doc.ToGOBL()
+		require.NoError(t, err)
+
+		assert.True(t, inv.HasTags(tax.TagBypass))
+		assert.True(t, inv.HasTags(tax.TagPartial))
+		assert.Empty(t, inv.Lines)
+	})
+
+	t.Run("does not set bypass for ZAL with FaWiersz lines", func(t *testing.T) {
+		doc := testPrepaymentDoc()
+		doc.Inv.Lines = []*ksef.Line{
+			{
+				LineNumber:   1,
+				Name:         "Line item",
+				Quantity:     "1",
+				NetUnitPrice: "1000.00",
+				VATRate:      "23",
+			},
+		}
+
+		inv, err := doc.ToGOBL()
+		require.NoError(t, err)
+
+		assert.False(t, inv.HasTags(tax.TagBypass))
+		assert.Len(t, inv.Lines, 1)
+	})
+
+	t.Run("does not set bypass for standard VAT invoice with lines", func(t *testing.T) {
+		doc := testPrepaymentDoc()
+		doc.Inv.InvoiceType = "VAT"
+		doc.Inv.Order = nil
+		doc.Inv.Lines = []*ksef.Line{
+			{LineNumber: 1, Name: "Item", Quantity: "1", NetUnitPrice: "1000.00", VATRate: "23"},
+		}
+
+		inv, err := doc.ToGOBL()
+		require.NoError(t, err)
+
+		assert.False(t, inv.HasTags(tax.TagBypass))
+	})
+}
+
+func TestParsePrepaymentTotals(t *testing.T) {
+	t.Run("builds totals from standard rate fields", func(t *testing.T) {
+		doc := testPrepaymentDoc()
+		inv, err := doc.ToGOBL()
+		require.NoError(t, err)
+		require.NotNil(t, inv.Totals)
+
+		assert.Equal(t, "1000.00", inv.Totals.Sum.String())
+		assert.Equal(t, "1000.00", inv.Totals.Total.String())
+		assert.Equal(t, "230.00", inv.Totals.Tax.String())
+		assert.Equal(t, "1230.00", inv.Totals.TotalWithTax.String())
+		assert.Equal(t, "1230.00", inv.Totals.Payable.String())
+	})
+
+	t.Run("sets tax categories with correct rate", func(t *testing.T) {
+		doc := testPrepaymentDoc()
+		inv, err := doc.ToGOBL()
+		require.NoError(t, err)
+		require.NotNil(t, inv.Totals.Taxes)
+		require.Len(t, inv.Totals.Taxes.Categories, 1)
+
+		cat := inv.Totals.Taxes.Categories[0]
+		assert.Equal(t, tax.CategoryVAT, cat.Code)
+		require.Len(t, cat.Rates, 1)
+
+		rate := cat.Rates[0]
+		assert.Equal(t, "1000.00", rate.Base.String())
+		assert.Equal(t, "230.00", rate.Amount.String())
+		assert.Equal(t, cbc.Code("1"), rate.Ext[favat.ExtKeyTaxCategory])
+		require.NotNil(t, rate.Percent)
+		assert.Equal(t, "23.0%", rate.Percent.String())
+	})
+
+	t.Run("handles multiple tax categories", func(t *testing.T) {
+		doc := testPrepaymentDoc()
+		doc.Inv.ReducedRateNetSale = "500.00"
+		doc.Inv.ReducedRateTax = "40.00"
+		doc.Inv.TotalAmountDue = "1770.00"
+
+		inv, err := doc.ToGOBL()
+		require.NoError(t, err)
+		require.NotNil(t, inv.Totals.Taxes)
+
+		cat := inv.Totals.Taxes.Categories[0]
+		require.Len(t, cat.Rates, 2)
+
+		assert.Equal(t, "1500.00", inv.Totals.Sum.String())
+		assert.Equal(t, "270.00", inv.Totals.Tax.String())
+		assert.Equal(t, "1770.00", inv.Totals.TotalWithTax.String())
+		assert.Equal(t, "1770.00", inv.Totals.Payable.String())
+	})
+
+	t.Run("handles exempt category without percent", func(t *testing.T) {
+		doc := testPrepaymentDoc()
+		doc.Inv.StandardRateNetSale = ""
+		doc.Inv.StandardRateTax = ""
+		doc.Inv.TaxExemptNetSale = "1000.00"
+		doc.Inv.TotalAmountDue = "1000.00"
+
+		inv, err := doc.ToGOBL()
+		require.NoError(t, err)
+		require.NotNil(t, inv.Totals.Taxes)
+
+		cat := inv.Totals.Taxes.Categories[0]
+		require.Len(t, cat.Rates, 1)
+
+		rate := cat.Rates[0]
+		assert.Equal(t, tax.KeyExempt, rate.Key)
+		assert.Nil(t, rate.Percent)
+		assert.True(t, rate.Amount.IsZero())
+		assert.Equal(t, "1000.00", rate.Base.String())
+	})
+
+	t.Run("includes advances and due from payment", func(t *testing.T) {
+		doc := testPrepaymentDoc()
+		inv, err := doc.ToGOBL()
+		require.NoError(t, err)
+		require.NotNil(t, inv.Totals.Advances)
+		require.NotNil(t, inv.Totals.Due)
+
+		assert.Equal(t, "1230.00", inv.Totals.Advances.String())
+		assert.Equal(t, "0.00", inv.Totals.Due.String())
+	})
+
+	t.Run("no advances when no payment", func(t *testing.T) {
+		doc := testPrepaymentDoc()
+		doc.Inv.Payment = nil
+
+		inv, err := doc.ToGOBL()
+		require.NoError(t, err)
+
+		assert.Nil(t, inv.Totals.Advances)
+		assert.Nil(t, inv.Totals.Due)
+	})
+}
+
+func TestParseOrderingLines(t *testing.T) {
+	t.Run("skips when no order data", func(t *testing.T) {
+		doc := testPrepaymentDoc()
+		doc.Inv.Order = nil
+
+		inv, err := doc.ToGOBL()
+		require.NoError(t, err)
+
+		// Ordering may still exist from period parsing, but no purchases
+		if inv.Ordering != nil {
+			assert.Empty(t, inv.Ordering.Purchases)
+		}
+	})
+
+	t.Run("creates purchase ref with order number and date", func(t *testing.T) {
+		doc := testPrepaymentDoc()
+		inv, err := doc.ToGOBL()
+		require.NoError(t, err)
+		require.NotNil(t, inv.Ordering)
+		require.Len(t, inv.Ordering.Purchases, 1)
+
+		ref := inv.Ordering.Purchases[0]
+		assert.Equal(t, cbc.Code("PO-12345"), ref.Code)
+		require.NotNil(t, ref.IssueDate)
+		assert.Equal(t, "2026-01-10", ref.IssueDate.String())
+	})
+
+	t.Run("sets code to unknown when no order number", func(t *testing.T) {
+		doc := testPrepaymentDoc()
+		doc.Inv.TransactionConditions.Orders[0].Number = ""
+
+		inv, err := doc.ToGOBL()
+		require.NoError(t, err)
+
+		ref := inv.Ordering.Purchases[0]
+		assert.Equal(t, cbc.Code("unknown"), ref.Code)
+	})
+
+	t.Run("sets payable from order amount", func(t *testing.T) {
+		doc := testPrepaymentDoc()
+		inv, err := doc.ToGOBL()
+		require.NoError(t, err)
+
+		ref := inv.Ordering.Purchases[0]
+		require.NotNil(t, ref.Payable)
+		assert.Equal(t, "5000.00", ref.Payable.String())
+	})
+
+	t.Run("builds one tax rate per order line", func(t *testing.T) {
+		doc := testPrepaymentDoc()
+		inv, err := doc.ToGOBL()
+		require.NoError(t, err)
+
+		ref := inv.Ordering.Purchases[0]
+		require.NotNil(t, ref.Tax)
+		require.Len(t, ref.Tax.Categories, 1)
+		require.Len(t, ref.Tax.Categories[0].Rates, 2)
+
+		rate0 := ref.Tax.Categories[0].Rates[0]
+		assert.Equal(t, "3000.00", rate0.Base.String())
+		assert.Equal(t, "690.00", rate0.Amount.String())
+		require.NotNil(t, rate0.Percent)
+		assert.Equal(t, "23.0%", rate0.Percent.String())
+
+		rate1 := ref.Tax.Categories[0].Rates[1]
+		assert.Equal(t, "2000.00", rate1.Base.String())
+		assert.Equal(t, "460.00", rate1.Amount.String())
+
+		assert.Equal(t, "1150.00", ref.Tax.Sum.String())
+	})
+
+	t.Run("concatenates order line descriptions", func(t *testing.T) {
+		doc := testPrepaymentDoc()
+		inv, err := doc.ToGOBL()
+		require.NoError(t, err)
+
+		ref := inv.Ordering.Purchases[0]
+		assert.Equal(t, "Widget A, Widget B", ref.Description)
+	})
+
+	t.Run("handles order line without VAT rate", func(t *testing.T) {
+		doc := testPrepaymentDoc()
+		doc.Inv.Order.LineItems = []*ksef.OrderLine{
+			{
+				LineNumber:    1,
+				Name:          "Exempt Item",
+				NetPriceTotal: "100.00",
+				TaxValue:      "",
+				VATRate:       "",
+			},
+		}
+
+		inv, err := doc.ToGOBL()
+		require.NoError(t, err)
+
+		ref := inv.Ordering.Purchases[0]
+		require.NotNil(t, ref.Tax)
+
+		rate := ref.Tax.Categories[0].Rates[0]
+		assert.Equal(t, "100.00", rate.Base.String())
+		assert.Nil(t, rate.Percent)
+		assert.True(t, rate.Amount.IsZero())
+	})
+}
+
+func TestParsePaidInFull(t *testing.T) {
+	t.Run("creates advance when Zaplacono=1", func(t *testing.T) {
+		doc := testPrepaymentDoc()
+		inv, err := doc.ToGOBL()
+		require.NoError(t, err)
+		require.NotNil(t, inv.Payment)
+		require.Len(t, inv.Payment.Advances, 1)
+
+		adv := inv.Payment.Advances[0]
+		assert.Equal(t, "1230.00", adv.Amount.String())
+		assert.Equal(t, "Advance payment", adv.Description)
+		assert.Equal(t, pay.MeansKeyCreditTransfer, adv.Key)
+		require.NotNil(t, adv.Date)
+		assert.Equal(t, "2026-01-15", adv.Date.String())
+		assert.Equal(t, cbc.Code("6"), adv.Ext[favat.ExtKeyPaymentMeans])
+	})
+
+	t.Run("does not create advance when Zaplacono is not 1", func(t *testing.T) {
+		doc := testPrepaymentDoc()
+		doc.Inv.Payment.PaidMarker = ""
+
+		inv, err := doc.ToGOBL()
+		require.NoError(t, err)
+
+		// No advances since PaidMarker is empty and no AdvancePayments
+		if inv.Payment != nil {
+			assert.Empty(t, inv.Payment.Advances)
+		}
+	})
+
+	t.Run("skips Zaplacono advance when AdvancePayments exist", func(t *testing.T) {
+		doc := testPrepaymentDoc()
+		doc.Inv.Payment.AdvancePayments = []*ksef.AdvancePayment{
+			{PaymentAmount: "500.00", PaymentDate: "2026-01-10"},
+		}
+
+		inv, err := doc.ToGOBL()
+		require.NoError(t, err)
+
+		// Should use the AdvancePayments, not create from Zaplacono
+		require.Len(t, inv.Payment.Advances, 1)
+		assert.Equal(t, "500.00", inv.Payment.Advances[0].Amount.String())
+	})
+}
+
+func TestAdditionalDescriptionCodeValidation(t *testing.T) {
+	t.Run("valid code is used as note code", func(t *testing.T) {
+		doc := testPrepaymentDoc()
+		doc.Inv.AdditionalDescription = []*ksef.AdditionalDescriptionLine{
+			{Key: "general", Value: "Some note"},
+		}
+
+		inv, err := doc.ToGOBL()
+		require.NoError(t, err)
+		require.NotEmpty(t, inv.Notes)
+
+		assert.Equal(t, cbc.Code("general"), inv.Notes[0].Code)
+		assert.Equal(t, "Some note", inv.Notes[0].Text)
+	})
+
+	t.Run("invalid code is merged into text", func(t *testing.T) {
+		doc := testPrepaymentDoc()
+		doc.Inv.AdditionalDescription = []*ksef.AdditionalDescriptionLine{
+			{Key: "Numer wewnętrzny zamówienia", Value: "12345"},
+		}
+
+		inv, err := doc.ToGOBL()
+		require.NoError(t, err)
+		require.NotEmpty(t, inv.Notes)
+
+		assert.Equal(t, cbc.Code(""), inv.Notes[0].Code)
+		assert.Equal(t, "Numer wewnętrzny zamówienia: 12345", inv.Notes[0].Text)
+	})
+}
+
+func TestIsPrepaymentType(t *testing.T) {
+	// Prepayment types: test via ToGOBL that bypass is set
+	t.Run("ZAL sets bypass", func(t *testing.T) {
+		doc := testPrepaymentDoc()
+		doc.Inv.InvoiceType = "ZAL"
+		inv, err := doc.ToGOBL()
+		require.NoError(t, err)
+		assert.True(t, inv.HasTags(tax.TagBypass))
+	})
+
+	t.Run("KOR_ZAL sets bypass", func(t *testing.T) {
+		doc := testPrepaymentDoc()
+		doc.Inv.InvoiceType = "KOR_ZAL"
+		doc.Inv.CorrectedInv = []*ksef.CorrectedInv{
+			{SequentialNumber: "ZAL-001", IssueDate: "2026-01-15"},
+		}
+		inv, err := doc.ToGOBL()
+		require.NoError(t, err)
+		assert.True(t, inv.HasTags(tax.TagBypass))
+	})
+
+	// Non-prepayment types: test via ToGOBL with lines (so totals calculate)
+	nonPrepayment := []struct {
+		name    string
+		invType string
+	}{
+		{"VAT", "VAT"},
+		{"KOR", "KOR"},  // credit note needs matching TotalAmountDue
+		{"ROZ", "ROZ"},
+	}
+	for _, tt := range nonPrepayment {
+		t.Run(tt.name+" does not set bypass", func(t *testing.T) {
+			doc := testPrepaymentDoc()
+			doc.Inv.InvoiceType = tt.invType
+			doc.Inv.StandardRateNetSale = "1000.00"
+			doc.Inv.StandardRateTax = "230.00"
+			doc.Inv.TotalAmountDue = "1230.00"
+			doc.Inv.Order = nil
+			doc.Inv.Payment = nil
+			if tt.invType == "KOR" {
+				doc.Inv.Lines = []*ksef.Line{
+					{LineNumber: 1, Name: "Item", Quantity: "-1", NetUnitPrice: "1000.00", VATRate: "23"},
+				}
+				doc.Inv.TotalAmountDue = "-1230.00"
+				doc.Inv.CorrectedInv = []*ksef.CorrectedInv{
+					{SequentialNumber: "FV-001", IssueDate: "2026-01-01"},
+				}
+			} else {
+				doc.Inv.Lines = []*ksef.Line{
+					{LineNumber: 1, Name: "Item", Quantity: "1", NetUnitPrice: "1000.00", VATRate: "23"},
+				}
+			}
+			inv, err := doc.ToGOBL()
+			require.NoError(t, err)
+			assert.False(t, inv.HasTags(tax.TagBypass))
+		})
+	}
+}
+
+// Verify the full prepayment parse flow via ToGOBL.
+func TestPrepaymentEndToEnd(t *testing.T) {
+	t.Run("KOR_ZAL sets bypass and credit note type", func(t *testing.T) {
+		doc := testPrepaymentDoc()
+		doc.Inv.InvoiceType = "KOR_ZAL"
+		doc.Inv.CorrectedInv = []*ksef.CorrectedInv{
+			{SequentialNumber: "ZAL-001", IssueDate: "2026-01-15"},
+		}
+		doc.Inv.CorrectionReason = "Wrong amount"
+
+		inv, err := doc.ToGOBL()
+		require.NoError(t, err)
+
+		assert.True(t, inv.HasTags(tax.TagBypass))
+		assert.True(t, inv.HasTags(tax.TagPartial))
+		assert.Equal(t, bill.InvoiceTypeCreditNote, inv.Type)
+		require.Len(t, inv.Preceding, 1)
+		assert.Equal(t, cbc.Code("ZAL-001"), inv.Preceding[0].Code)
+	})
+
+	t.Run("zero rate prepayment sets correct totals", func(t *testing.T) {
+		doc := testPrepaymentDoc()
+		doc.Inv.StandardRateNetSale = ""
+		doc.Inv.StandardRateTax = ""
+		doc.Inv.ZeroTaxExceptIntraCommunityNetSale = "1000.00"
+		doc.Inv.TotalAmountDue = "1000.00"
+
+		inv, err := doc.ToGOBL()
+		require.NoError(t, err)
+
+		assert.Equal(t, "1000.00", inv.Totals.Sum.String())
+		assert.True(t, inv.Totals.Tax.IsZero())
+		assert.Equal(t, "1000.00", inv.Totals.Payable.String())
+
+		rate := inv.Totals.Taxes.Categories[0].Rates[0]
+		assert.Equal(t, tax.KeyZero, rate.Key)
+		require.NotNil(t, rate.Percent)
+		assert.Equal(t, "0.0%", rate.Percent.String())
+	})
+}
+
+// Ensure ordering is parsed for non-prepayment invoices too.
+func TestOrderingOnStandardInvoice(t *testing.T) {
+	doc := testPrepaymentDoc()
+	doc.Inv.InvoiceType = "VAT"
+	doc.Inv.Lines = []*ksef.Line{
+		{
+			LineNumber:   1,
+			Name:         "Item",
+			Quantity:     "1",
+			NetUnitPrice: "1000.00",
+			VATRate:      "23",
+		},
+	}
+
+	inv, err := doc.ToGOBL()
+	require.NoError(t, err)
+
+	// Should still have ordering from Zamowienie
+	require.NotNil(t, inv.Ordering)
+	require.Len(t, inv.Ordering.Purchases, 1)
+	assert.Equal(t, cbc.Code("PO-12345"), inv.Ordering.Purchases[0].Code)
+
+	// But should NOT have bypass tag
+	assert.False(t, inv.HasTags(tax.TagBypass))
+	// And should have lines
+	require.Len(t, inv.Lines, 1)
+}
+

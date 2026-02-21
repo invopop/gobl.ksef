@@ -13,11 +13,11 @@ import (
 func main() {
 	// ===== CONFIGURATION - EDIT THIS SECTION =====
 	// XML file to send (in the same folder as this script)
-	xmlFile := "invoice-standard.xml"
+	xmlFile := "invoice-prepayment.xml"
 
 	// KSeF authentication details
 	nip := "8126178616"
-	certPath := "../../../api/test/cert-20260102-131809.pfx"
+	certPath := "../../../../api/test/cert-20260102-131809.pfx"
 	// =============================================
 
 	fmt.Printf("Testing FAVAT XML sending to KSeF\n")

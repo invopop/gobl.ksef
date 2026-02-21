@@ -57,6 +57,7 @@
     "ordering": {
       "purchases": [
         {
+          "issue_date": "2026-02-20",
           "code": "unknown",
           "description": "Test Product",
           "tax": {

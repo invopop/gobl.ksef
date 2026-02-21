@@ -57,6 +57,32 @@
 				}
 			]
 		},
+		"ordering": {
+			"purchases": [
+				{
+					"code": "ZAM-2026-001",
+					"issue_date": "2026-01-15",
+					"description": "Advance Payment for Project",
+					"tax": {
+						"categories": [
+							{
+								"code": "VAT",
+								"rates": [
+									{
+										"base": "5000.00",
+										"percent": "23.0%",
+										"amount": "1150.00"
+									}
+								],
+								"amount": "1150.00"
+							}
+						],
+						"sum": "1150.00"
+					},
+					"payable": "6150.00"
+				}
+			]
+		},
 		"lines": [
 			{
 				"i": 1,

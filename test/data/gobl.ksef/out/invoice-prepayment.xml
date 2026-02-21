@@ -69,5 +69,23 @@
         <FormaPlatnosci>6</FormaPlatnosci>
       </ZaplataCzesciowa>
     </Platnosc>
+    <WarunkiTransakcji>
+      <Zamowienia>
+        <DataZamowienia>2026-01-15</DataZamowienia>
+        <NrZamowienia>ZAM-2026-001</NrZamowienia>
+      </Zamowienia>
+    </WarunkiTransakcji>
+    <Zamowienie>
+      <WartoscZamowienia>6150.00</WartoscZamowienia>
+      <ZamowienieWiersz>
+        <NrWierszaZam>1</NrWierszaZam>
+        <P_7Z>Advance Payment for Project</P_7Z>
+        <P_8BZ>1</P_8BZ>
+        <P_9AZ>5000.00</P_9AZ>
+        <P_11NettoZ>5000.00</P_11NettoZ>
+        <P_11VatZ>1150.00</P_11VatZ>
+        <P_12Z>23</P_12Z>
+      </ZamowienieWiersz>
+    </Zamowienie>
   </Fa>
 </Faktura>
