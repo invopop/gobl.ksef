@@ -1047,6 +1047,36 @@ func TestPrepaymentEndToEnd(t *testing.T) {
 		assert.Equal(t, cbc.Code("ZAL-001"), inv.Preceding[0].Code)
 	})
 
+	t.Run("KOR_ZAL inverts negative totals for credit note", func(t *testing.T) {
+		doc := testPrepaymentDoc()
+		doc.Inv.InvoiceType = "KOR_ZAL"
+		doc.Inv.CorrectedInv = []*ksef.CorrectedInv{
+			{SequentialNumber: "ZAL-001", IssueDate: "2026-01-15"},
+		}
+		// KSeF credit notes have negative P_13/P_14/P_15 values
+		doc.Inv.StandardRateNetSale = "-1000.00"
+		doc.Inv.StandardRateTax = "-230.00"
+		doc.Inv.TotalAmountDue = "-1230.00"
+
+		inv, err := doc.ToGOBL()
+		require.NoError(t, err)
+
+		assert.True(t, inv.HasTags(tax.TagBypass))
+		assert.Equal(t, bill.InvoiceTypeCreditNote, inv.Type)
+
+		// Totals should be positive (GOBL convention)
+		assert.Equal(t, "1000.00", inv.Totals.Sum.String())
+		assert.Equal(t, "230.00", inv.Totals.Tax.String())
+		assert.Equal(t, "1230.00", inv.Totals.TotalWithTax.String())
+		assert.Equal(t, "1230.00", inv.Totals.Payable.String())
+
+		// Tax rate amounts should also be positive
+		require.NotNil(t, inv.Totals.Taxes)
+		rate := inv.Totals.Taxes.Categories[0].Rates[0]
+		assert.Equal(t, "1000.00", rate.Base.String())
+		assert.Equal(t, "230.00", rate.Amount.String())
+	})
+
 	t.Run("zero rate prepayment sets correct totals", func(t *testing.T) {
 		doc := testPrepaymentDoc()
 		doc.Inv.StandardRateNetSale = ""

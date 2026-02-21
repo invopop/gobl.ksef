@@ -550,6 +550,11 @@ func (inv *Inv) parsePrepaymentTotals(goblInv *bill.Invoice) error {
 		{inv.DomesticReverseChargeNetSale, "", "10", tax.KeyReverseCharge, nil},
 	}
 
+	// For credit notes (e.g. KOR_ZAL), KSeF P_13/P_14/P_15 values are negative.
+	// GOBL expects positive totals, so we invert them. Invoice.Invert() cannot
+	// be used with the bypass tag, so we invert each amount individually.
+	isCreditNote := goblInv.Type == bill.InvoiceTypeCreditNote
+
 	var rates []*tax.RateTotal
 	var netSum, taxSum num.Amount
 
@@ -561,6 +566,9 @@ func (inv *Inv) parsePrepaymentTotals(goblInv *bill.Invoice) error {
 		netAmt, err := parseAmount(e.net)
 		if err != nil {
 			return fmt.Errorf("parsing prepayment net for category %s: %w", e.category, err)
+		}
+		if isCreditNote {
+			netAmt = netAmt.Invert()
 		}
 
 		rt := &tax.RateTotal{
@@ -576,6 +584,9 @@ func (inv *Inv) parsePrepaymentTotals(goblInv *bill.Invoice) error {
 			taxAmt, err := parseAmount(e.tax)
 			if err != nil {
 				return fmt.Errorf("parsing prepayment tax for category %s: %w", e.category, err)
+			}
+			if isCreditNote {
+				taxAmt = taxAmt.Invert()
 			}
 			rt.Amount = taxAmt
 			taxSum = taxSum.MatchPrecision(taxAmt)
@@ -612,6 +623,9 @@ func (inv *Inv) parsePrepaymentTotals(goblInv *bill.Invoice) error {
 		payable, err := parseAmount(inv.TotalAmountDue)
 		if err != nil {
 			return fmt.Errorf("parsing total amount due: %w", err)
+		}
+		if isCreditNote {
+			payable = payable.Invert()
 		}
 		totals.Payable = payable
 	} else {
