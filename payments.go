@@ -204,6 +204,32 @@ func (inv *Inv) parsePayment(goblInv *bill.Invoice) error {
 		}
 	}
 
+	// Handle paid in full (Zaplacono=1) with no partial advance payments
+	if inv.Payment.PaidMarker == "1" && len(inv.Payment.AdvancePayments) == 0 {
+		amt, err := parseAmount(inv.TotalAmountDue)
+		if err != nil {
+			return fmt.Errorf("parsing total amount for advance: %w", err)
+		}
+		advance := &pay.Advance{
+			Description: "Advance payment",
+			Amount:      amt,
+		}
+		if inv.Payment.PaymentDate != "" {
+			date, err := parseDate(inv.Payment.PaymentDate)
+			if err != nil {
+				return fmt.Errorf("parsing advance payment date: %w", err)
+			}
+			advance.Date = &date
+		}
+		if inv.Payment.PaymentMean != "" {
+			advance.Key = ParsePaymentMeansCode(inv.Payment.PaymentMean)
+			advance.Ext = tax.Extensions{
+				favat.ExtKeyPaymentMeans: cbc.Code(inv.Payment.PaymentMean),
+			}
+		}
+		payment.Advances = []*pay.Advance{advance}
+	}
+
 	// Parse advance payments
 	if len(inv.Payment.AdvancePayments) > 0 {
 		payment.Advances = make([]*pay.Advance, 0, len(inv.Payment.AdvancePayments))

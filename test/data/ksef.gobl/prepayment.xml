@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Faktura xmlns="http://crd.gov.pl/wzor/2025/06/25/13775/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:etd="http://crd.gov.pl/xml/schematy/dziedzinowe/mf/2022/01/05/eD/DefinicjeTypy/">
+  <Naglowek>
+    <KodFormularza kodSystemowy="FA (3)" wersjaSchemy="1-0E">FA</KodFormularza>
+    <WariantFormularza>3</WariantFormularza>
+    <DataWytworzeniaFa>2026-02-20T14:36:45Z</DataWytworzeniaFa>
+    <SystemInfo>Aplikacja Podatnika KSeF</SystemInfo>
+  </Naglowek>
+  <Podmiot1>
+    <DaneIdentyfikacyjne>
+      <NIP>1234567788</NIP>
+      <Nazwa>Test Supplier Sp. z o.o.</Nazwa>
+    </DaneIdentyfikacyjne>
+    <Adres>
+      <KodKraju>PL</KodKraju>
+      <AdresL1>ul. Testowa 1, 00-001 Warszawa</AdresL1>
+    </Adres>
+  </Podmiot1>
+  <Podmiot2>
+    <DaneIdentyfikacyjne>
+      <NIP>9876543210</NIP>
+      <Nazwa>Test Customer Sp. z o.o.</Nazwa>
+    </DaneIdentyfikacyjne>
+    <Adres>
+      <KodKraju>PL</KodKraju>
+      <AdresL1>ul. Przykladowa 10, 90-001 Warszawa</AdresL1>
+    </Adres>
+  </Podmiot2>
+  <Fa>
+    <KodWaluty>PLN</KodWaluty>
+    <P_1>2026-02-20</P_1>
+    <P_2>ZAL-001</P_2>
+    <P_6>2026-02-20</P_6>
+    <P_13_1>1869.92</P_13_1>
+    <P_14_1>430.08</P_14_1>
+    <P_15>2300.00</P_15>
+    <Adnotacje>
+      <P_16>2</P_16>
+      <P_17>2</P_17>
+      <P_18>2</P_18>
+      <P_18A>2</P_18A>
+      <Zwolnienie>
+        <P_19N>1</P_19N>
+      </Zwolnienie>
+      <NoweSrodkiTransportu>
+        <P_22N>1</P_22N>
+      </NoweSrodkiTransportu>
+      <P_23>2</P_23>
+      <PMarzy>
+        <P_PMarzyN>1</P_PMarzyN>
+      </PMarzy>
+    </Adnotacje>
+    <RodzajFaktury>ZAL</RodzajFaktury>
+    <DodatkowyOpis>
+      <Klucz>general</Klucz>
+      <Wartosc>Advance payment for order</Wartosc>
+    </DodatkowyOpis>
+    <Platnosc>
+      <Zaplacono>1</Zaplacono>
+      <DataZaplaty>2026-02-20</DataZaplaty>
+      <TerminPlatnosci>
+        <Termin>2026-02-20</Termin>
+      </TerminPlatnosci>
+      <FormaPlatnosci>6</FormaPlatnosci>
+      <RachunekBankowy>
+        <NrRB>PL61109010140000071219812874</NrRB>
+        <SWIFT>WBKPPLPP</SWIFT>
+        <NazwaBanku>Test Bank S.A.</NazwaBanku>
+      </RachunekBankowy>
+    </Platnosc>
+    <WarunkiTransakcji>
+      <Zamowienia>
+        <DataZamowienia>2026-02-20</DataZamowienia>
+      </Zamowienia>
+    </WarunkiTransakcji>
+    <Zamowienie>
+      <WartoscZamowienia>2300.00</WartoscZamowienia>
+      <ZamowienieWiersz>
+        <NrWierszaZam>1</NrWierszaZam>
+        <P_7Z>Test Product</P_7Z>
+        <P_8AZ>EA</P_8AZ>
+        <P_8BZ>1.0000</P_8BZ>
+        <P_9AZ>2500.0000</P_9AZ>
+        <P_11NettoZ>2500.00</P_11NettoZ>
+        <P_11VatZ>575.00</P_11VatZ>
+        <P_12Z>23</P_12Z>
+      </ZamowienieWiersz>
+    </Zamowienie>
+  </Fa>
+</Faktura>

@@ -126,24 +126,37 @@ func (d *Invoice) ToGOBL() (*bill.Invoice, error) {
 		return inv, err
 	}
 
+	// Parse ordering lines (Zamowienie → Ordering.Purchases)
+	if err := d.Inv.parseOrderingLines(inv); err != nil {
+		return inv, err
+	}
+
 	// Parse payment
 	if err := d.Inv.parsePayment(inv); err != nil {
 		return inv, err
 	}
 
-	// Calculate totals and adjust for rounding if needed.
-	// For credit notes, line totals are now positive (GOBL convention),
-	// so we must invert the KSeF P_15 total to match.
-	totalDue := d.Inv.TotalAmountDue
-	if inv.Type == bill.InvoiceTypeCreditNote {
-		amt, err := num.AmountFromString(totalDue)
-		if err != nil {
-			return inv, fmt.Errorf("parsing total amount due: %w", err)
+	// For bypass invoices (prepayment without lines), set totals directly
+	// from the invoice-level tax fields. Otherwise calculate and adjust rounding.
+	if inv.HasTags(tax.TagBypass) {
+		if err := d.Inv.parsePrepaymentTotals(inv); err != nil {
+			return inv, err
 		}
-		totalDue = amt.Invert().String()
-	}
-	if err := AdjustRounding(inv, totalDue); err != nil {
-		return inv, err
+	} else {
+		// Calculate totals and adjust for rounding if needed.
+		// For credit notes, line totals are now positive (GOBL convention),
+		// so we must invert the KSeF P_15 total to match.
+		totalDue := d.Inv.TotalAmountDue
+		if inv.Type == bill.InvoiceTypeCreditNote {
+			amt, err := num.AmountFromString(totalDue)
+			if err != nil {
+				return inv, fmt.Errorf("parsing total amount due: %w", err)
+			}
+			totalDue = amt.Invert().String()
+		}
+		if err := AdjustRounding(inv, totalDue); err != nil {
+			return inv, err
+		}
 	}
 
 	return inv, nil

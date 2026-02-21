@@ -2,6 +2,8 @@ package ksef
 
 import (
 	"fmt"
+	"regexp"
+	"strconv"
 	"time"
 
 	"github.com/invopop/gobl/addons/pl/favat"
@@ -9,9 +11,13 @@ import (
 	"github.com/invopop/gobl/cal"
 	"github.com/invopop/gobl/cbc"
 	"github.com/invopop/gobl/head"
+	"github.com/invopop/gobl/num"
 	"github.com/invopop/gobl/org"
 	"github.com/invopop/gobl/tax"
 )
+
+// validCodeRe matches valid cbc.Code values (alphanumeric, hyphens, dots, underscores).
+var validCodeRe = regexp.MustCompile(`^[A-Za-z0-9][A-Za-z0-9._-]*$`)
 
 // Inv defines the XML structure for KSeF invoice
 type Inv struct {
@@ -68,69 +74,6 @@ type Inv struct {
 type InvoicePeriod struct {
 	StartDate string `xml:"P_6_Od,omitempty"`
 	EndDate   string `xml:"P_6_Do,omitempty"`
-}
-
-// Annotations defines the XML structure for KSeF annotations
-type Annotations struct {
-	CashAccounting                      string             `xml:"P_16"`
-	SelfBilling                         string             `xml:"P_17"`
-	ReverseCharge                       string             `xml:"P_18"`
-	SplitPaymentMechanism               string             `xml:"P_18A"`
-	TaxExemption                        *TaxExemption      `xml:"Zwolnienie,omitempty"`
-	NewTransportMeans                   *NewTransportMeans `xml:"NoweSrodkiTransportu,omitempty"`
-	SimplifiedProcedureBySecondTaxpayer string             `xml:"P_23"`
-	MarginScheme                        *MarginScheme      `xml:"PMarzy,omitempty"`
-}
-
-// TaxExemption defines the XML structure for tax exemption details
-type TaxExemption struct {
-	Marker           string `xml:"P_19,omitempty"`
-	PolishLawBasis   string `xml:"P_19A,omitempty"`
-	EUDirectiveBasis string `xml:"P_19B,omitempty"`
-	OtherLegalBasis  string `xml:"P_19C,omitempty"`
-	NoExemption      string `xml:"P_19N,omitempty"`
-}
-
-// NewTransportMeans defines the XML structure for new means of transport
-type NewTransportMeans struct {
-	Marker                 int                      `xml:"P_22,omitempty"`
-	Art42Obligation        string                   `xml:"P_42_5,omitempty"`
-	NewTransportMeansItems []*NewTransportMeansItem `xml:"NowySrodekTransportu,omitempty"`
-	NoNewTransportMeans    string                   `xml:"P_22N,omitempty"`
-}
-
-// NewTransportMeansItem defines details for a single new transport means item
-type NewTransportMeansItem struct {
-	FirstUseDate       string `xml:"P_22A"`
-	LineNumber         int    `xml:"P_NrWierszaNST"`
-	Brand              string `xml:"P_22BMK,omitempty"`
-	Model              string `xml:"P_22BMD,omitempty"`
-	Color              string `xml:"P_22BK,omitempty"`
-	RegistrationNumber string `xml:"P_22BNR,omitempty"`
-	ProductionYear     string `xml:"P_22BRP,omitempty"`
-	// For land vehicles
-	Mileage       string `xml:"P_22B,omitempty"`
-	VIN           string `xml:"P_22B1,omitempty"`
-	BodyNumber    string `xml:"P_22B2,omitempty"`
-	ChassisNumber string `xml:"P_22B3,omitempty"`
-	FrameNumber   string `xml:"P_22B4,omitempty"`
-	VehicleType   string `xml:"P_22BT,omitempty"`
-	// For watercraft
-	OperatingHoursWater string `xml:"P_22C,omitempty"`
-	HullNumber          string `xml:"P_22C1,omitempty"`
-	// For aircraft
-	OperatingHoursAir string `xml:"P_22D,omitempty"`
-	FactoryNumber     string `xml:"P_22D1,omitempty"`
-}
-
-// MarginScheme defines the XML structure for margin scheme
-type MarginScheme struct {
-	Marker                        string `xml:"P_PMarzy,omitempty"`
-	TravelAgencyMargin            string `xml:"P_PMarzy_2,omitempty"`
-	UsedGoodsMargin               string `xml:"P_PMarzy_3_1,omitempty"`
-	ArtWorksMargin                string `xml:"P_PMarzy_3_2,omitempty"`
-	CollectiblesAndAntiquesMargin string `xml:"P_PMarzy_3_3,omitempty"`
-	NoMarginScheme                string `xml:"P_PMarzyN,omitempty"`
 }
 
 // AdditionalDescriptionLine defines the XML structure for KSeF additional description line (`DodatkowyOpis`)
@@ -377,89 +320,7 @@ func (inv *Inv) parseInvoiceData(goblInv *bill.Invoice) error {
 	}
 
 	// Parse annotations to tax extensions
-	if inv.Annotations != nil {
-		goblInv.Tax = &bill.Tax{
-			Ext: make(tax.Extensions),
-		}
-
-		// Set invoice type extension
-		if inv.InvoiceType != "" {
-			goblInv.Tax.Ext[favat.ExtKeyInvoiceType] = cbc.Code(inv.InvoiceType)
-		}
-
-		// Cash accounting
-		if inv.Annotations.CashAccounting == "1" {
-			goblInv.Tax.Ext[favat.ExtKeyCashAccounting] = "1"
-		}
-
-		// Self billing
-		if inv.Annotations.SelfBilling == "1" {
-			goblInv.Tax.Ext[favat.ExtKeySelfBilling] = "1"
-			goblInv.Tags.List = append(goblInv.Tags.List, tax.TagSelfBilled)
-		}
-
-		// Reverse charge
-		if inv.Annotations.ReverseCharge == "1" {
-			goblInv.Tax.Ext[favat.ExtKeyReverseCharge] = "1"
-			goblInv.Tags.List = append(goblInv.Tags.List, tax.TagReverseCharge)
-		}
-
-		// Split payment
-		if inv.Annotations.SplitPaymentMechanism == "1" {
-			goblInv.Tax.Ext[favat.ExtKeySplitPayment] = "1"
-		}
-
-		// Tax exemption
-		if inv.Annotations.TaxExemption != nil && inv.Annotations.TaxExemption.Marker == "1" {
-			// Determine exemption code
-			var exemptionCode string
-			var exemptionText string
-
-			if inv.Annotations.TaxExemption.PolishLawBasis != "" {
-				exemptionCode = "A"
-				exemptionText = inv.Annotations.TaxExemption.PolishLawBasis
-			} else if inv.Annotations.TaxExemption.EUDirectiveBasis != "" {
-				exemptionCode = "B"
-				exemptionText = inv.Annotations.TaxExemption.EUDirectiveBasis
-			} else if inv.Annotations.TaxExemption.OtherLegalBasis != "" {
-				exemptionCode = "C"
-				exemptionText = inv.Annotations.TaxExemption.OtherLegalBasis
-			}
-
-			if exemptionCode != "" {
-				goblInv.Tax.Ext[favat.ExtKeyExemption] = cbc.Code(exemptionCode)
-
-				// Add note with exemption text
-				if goblInv.Notes == nil {
-					goblInv.Notes = []*org.Note{}
-				}
-				goblInv.Notes = append(goblInv.Notes, &org.Note{
-					Key:  org.NoteKeyLegal,
-					Code: cbc.Code(exemptionCode),
-					Src:  favat.ExtKeyExemption,
-					Text: exemptionText,
-				})
-			}
-		}
-
-		// Margin scheme
-		if inv.Annotations.MarginScheme != nil && inv.Annotations.MarginScheme.Marker == "1" {
-			var marginCode string
-			if inv.Annotations.MarginScheme.TravelAgencyMargin == "1" {
-				marginCode = "2"
-			} else if inv.Annotations.MarginScheme.UsedGoodsMargin == "1" {
-				marginCode = "3.1"
-			} else if inv.Annotations.MarginScheme.ArtWorksMargin == "1" {
-				marginCode = "3.2"
-			} else if inv.Annotations.MarginScheme.CollectiblesAndAntiquesMargin == "1" {
-				marginCode = "3.3"
-			}
-
-			if marginCode != "" {
-				goblInv.Tax.Ext[favat.ExtKeyMarginScheme] = cbc.Code(marginCode)
-			}
-		}
-	}
+	inv.parseAnnotations(goblInv)
 
 	// Always set rounding to currency as per EN16931 standard
 	if goblInv.Tax == nil {
@@ -473,10 +334,16 @@ func (inv *Inv) parseInvoiceData(goblInv *bill.Invoice) error {
 			goblInv.Notes = []*org.Note{}
 		}
 		for _, desc := range inv.AdditionalDescription {
-			goblInv.Notes = append(goblInv.Notes, &org.Note{
-				Code: cbc.Code(desc.Key),
-				Text: desc.Value,
-			})
+			note := &org.Note{}
+			if validCodeRe.MatchString(desc.Key) {
+				note.Code = cbc.Code(desc.Key)
+				note.Text = desc.Value
+			} else {
+				// Key contains characters not valid for cbc.Code;
+				// combine key and value into the text field.
+				note.Text = desc.Key + ": " + desc.Value
+			}
+			goblInv.Notes = append(goblInv.Notes, note)
 		}
 	}
 
@@ -558,9 +425,19 @@ func parseInvoiceType(invType string) (cbc.Key, []cbc.Key) {
 	}
 }
 
+// isPrepaymentType returns true for advance invoice types (ZAL or KOR_ZAL).
+func (inv *Inv) isPrepaymentType() bool {
+	return inv.InvoiceType == "ZAL" || inv.InvoiceType == "KOR_ZAL"
+}
+
 // parseLines converts KSEF lines to GOBL lines.
 func (inv *Inv) parseLines(goblInv *bill.Invoice) error {
 	if len(inv.Lines) == 0 {
+		if inv.isPrepaymentType() {
+			// Prepayment invoices without FaWiersz lines use bypass mode:
+			// totals are set directly from tax summary fields (P_13_X/P_14_X).
+			goblInv.Tags.List = append(goblInv.Tags.List, tax.TagBypass)
+		}
 		return nil
 	}
 
@@ -623,83 +500,234 @@ func (inv *Inv) parseLines(goblInv *bill.Invoice) error {
 	return nil
 }
 
-// newAnnotations sets annotations data
-func newAnnotations(invoice *bill.Invoice) *Annotations {
-	// default values for the most common case,
-	// For fields P_16 to P_18 and field P_23 2 means "no", 1 means "yes".
-	// for others 1 means "yes", no value means "no"
-	Annotations := &Annotations{
-		CashAccounting:        "2",
-		SelfBilling:           "2",
-		ReverseCharge:         "2",
-		SplitPaymentMechanism: "2",
-		TaxExemption: &TaxExemption{
-			NoExemption: "1",
-		},
-		NewTransportMeans: &NewTransportMeans{
-			NoNewTransportMeans: "1",
-		},
-		SimplifiedProcedureBySecondTaxpayer: "2",
-		MarginScheme: &MarginScheme{
-			NoMarginScheme: "1",
-		},
+// parsePrepaymentTotals builds bill.Totals directly from the invoice-level
+// tax summary fields (P_13_X / P_14_X / P_15). The invoice must have the
+// bypass tag set so that Calculate() does not overwrite these totals.
+// The resulting invoice will not pass GOBL validation (no lines), which
+// is acceptable for this edge case.
+func (inv *Inv) parsePrepaymentTotals(goblInv *bill.Invoice) error {
+	// Each entry maps a P_13_X / P_14_X pair to a tax category.
+	// Well-known percentages are set when the rate is unambiguous;
+	// otherwise only the amounts are included.
+	type taxEntry struct {
+		net      string
+		tax      string
+		category cbc.Code
+		key      cbc.Key
+		percent  *num.Percentage // nil when rate is unknown or exempt
 	}
 
-	if invoice.Tax == nil {
-		return Annotations
+	pct23 := num.MakePercentage(230, 3)
+	pct8 := num.MakePercentage(80, 3)
+	pct5 := num.MakePercentage(50, 3)
+	pct0 := num.MakePercentage(0, 3)
+
+	entries := []taxEntry{
+		{inv.StandardRateNetSale, inv.StandardRateTax, "1", tax.KeyStandard, &pct23},
+		{inv.ReducedRateNetSale, inv.ReducedRateTax, "2", tax.KeyStandard, &pct8},
+		{inv.SuperReducedRateNetSale, inv.SuperReducedRateTax, "3", tax.KeyStandard, &pct5},
+		{inv.TaxiRateNetSale, inv.TaxiRateTax, "4", tax.KeyStandard, nil},
+		{inv.OSSNetSale, inv.OSSTax, "5", tax.KeyStandard, nil},
+		{inv.ZeroTaxExceptIntraCommunityNetSale, "", "6.1", tax.KeyZero, &pct0},
+		{inv.IntraCommunityNetSale, "", "6.2", tax.KeyIntraCommunity, &pct0},
+		{inv.ExportNetSale, "", "6.3", tax.KeyExport, &pct0},
+		{inv.TaxExemptNetSale, "", "7", tax.KeyExempt, nil},
+		{inv.OutsideScopeNetSale, "", "8", tax.KeyOutsideScope, nil},
+		{inv.ReverseChargeNetSale, "", "9", tax.KeyReverseCharge, nil},
+		{inv.DomesticReverseChargeNetSale, "", "10", tax.KeyReverseCharge, nil},
 	}
 
-	if invoice.Tax.Ext.Get(favat.ExtKeyCashAccounting) == "1" {
-		Annotations.CashAccounting = "1"
-	}
+	var rates []*tax.RateTotal
+	var netSum, taxSum num.Amount
 
-	if invoice.Tax.Ext.Get(favat.ExtKeySelfBilling) == "1" {
-		Annotations.SelfBilling = "1"
-	}
-
-	if invoice.Tax.Ext.Get(favat.ExtKeyReverseCharge) == "1" {
-		Annotations.ReverseCharge = "1"
-	}
-
-	if invoice.Tax.Ext.Get(favat.ExtKeySplitPayment) == "1" {
-		Annotations.SplitPaymentMechanism = "1"
-	}
-
-	if invoice.Tax.Ext.Get(favat.ExtKeyExemption) != "" {
-		// Find the note in notes with key legal
-		Annotations.TaxExemption = &TaxExemption{
-			Marker: "1",
+	for _, e := range entries {
+		if e.net == "" {
+			continue
 		}
-		for _, note := range invoice.Notes {
-			if note.Key == org.NoteKeyLegal && note.Src == favat.ExtKeyExemption {
-				switch invoice.Tax.Ext.Get(favat.ExtKeyExemption) {
-				case "A": // polish law basis
-					Annotations.TaxExemption.PolishLawBasis = note.Text
-				case "B": // EU directive basis
-					Annotations.TaxExemption.EUDirectiveBasis = note.Text
-				case "C": // other legal basis
-					Annotations.TaxExemption.OtherLegalBasis = note.Text
+
+		netAmt, err := parseAmount(e.net)
+		if err != nil {
+			return fmt.Errorf("parsing prepayment net for category %s: %w", e.category, err)
+		}
+
+		rt := &tax.RateTotal{
+			Key:     e.key,
+			Base:    netAmt,
+			Percent: e.percent,
+			Ext: tax.Extensions{
+				favat.ExtKeyTaxCategory: e.category,
+			},
+		}
+
+		if e.tax != "" {
+			taxAmt, err := parseAmount(e.tax)
+			if err != nil {
+				return fmt.Errorf("parsing prepayment tax for category %s: %w", e.category, err)
+			}
+			rt.Amount = taxAmt
+			taxSum = taxSum.MatchPrecision(taxAmt)
+			taxSum = taxSum.Add(taxAmt)
+		}
+
+		netSum = netSum.MatchPrecision(netAmt)
+		netSum = netSum.Add(netAmt)
+		rates = append(rates, rt)
+	}
+
+	totals := &bill.Totals{
+		Sum:   netSum,
+		Total: netSum,
+		Tax:   taxSum,
+	}
+
+	if len(rates) > 0 {
+		totals.Taxes = &tax.Total{
+			Categories: []*tax.CategoryTotal{
+				{
+					Code:   tax.CategoryVAT,
+					Rates:  rates,
+					Amount: taxSum,
+				},
+			},
+			Sum: taxSum,
+		}
+	}
+
+	totals.TotalWithTax = netSum.Add(taxSum)
+
+	if inv.TotalAmountDue != "" {
+		payable, err := parseAmount(inv.TotalAmountDue)
+		if err != nil {
+			return fmt.Errorf("parsing total amount due: %w", err)
+		}
+		totals.Payable = payable
+	} else {
+		totals.Payable = totals.TotalWithTax
+	}
+
+	// Sum advances from payment details
+	if goblInv.Payment != nil && len(goblInv.Payment.Advances) > 0 {
+		var advanceSum num.Amount
+		for _, adv := range goblInv.Payment.Advances {
+			advanceSum = advanceSum.MatchPrecision(adv.Amount)
+			advanceSum = advanceSum.Add(adv.Amount)
+		}
+		totals.Advances = &advanceSum
+		due := totals.Payable.Subtract(advanceSum)
+		totals.Due = &due
+	}
+
+	goblInv.Totals = totals
+	return nil
+}
+
+// parseOrderingLines maps Zamowienie (order) data into Ordering.Purchases.
+// Any invoice type can have Zamowienie and WarunkiTransakcji data.
+func (inv *Inv) parseOrderingLines(goblInv *bill.Invoice) error {
+	if inv.Order == nil {
+		return nil
+	}
+
+	ref := &org.DocumentRef{}
+
+	// Set order date and number from WarunkiTransakcji.Zamowienia
+	if inv.TransactionConditions != nil && len(inv.TransactionConditions.Orders) > 0 {
+		order := inv.TransactionConditions.Orders[0]
+		if order.Date != "" {
+			date, err := parseDate(order.Date)
+			if err != nil {
+				return fmt.Errorf("parsing order date: %w", err)
+			}
+			ref.IssueDate = &date
+		}
+		if order.Number != "" {
+			ref.Code = cbc.Code(order.Number)
+		}
+	}
+
+	// DocumentRef requires a non-empty code
+	if ref.Code == "" {
+		ref.Code = "unknown"
+	}
+
+	// Set payable from order total
+	if inv.Order.OrderAmount != "" {
+		payable, err := parseAmount(inv.Order.OrderAmount)
+		if err != nil {
+			return fmt.Errorf("parsing order amount: %w", err)
+		}
+		ref.Payable = &payable
+	}
+
+	// Build tax total and description from order lines (one rate per line)
+	if len(inv.Order.LineItems) > 0 {
+		var rates []*tax.RateTotal
+		var taxSum num.Amount
+		var descriptions []string
+
+		for _, ol := range inv.Order.LineItems {
+			if ol.Name != "" {
+				descriptions = append(descriptions, ol.Name)
+			}
+
+			rt := &tax.RateTotal{}
+
+			if ol.NetPriceTotal != "" {
+				netAmt, err := parseAmount(ol.NetPriceTotal)
+				if err != nil {
+					return fmt.Errorf("parsing order line net: %w", err)
 				}
-				break
+				rt.Base = netAmt
+			}
+
+			if ol.TaxValue != "" {
+				taxAmt, err := parseAmount(ol.TaxValue)
+				if err != nil {
+					return fmt.Errorf("parsing order line tax: %w", err)
+				}
+				rt.Amount = taxAmt
+				taxSum = taxSum.MatchPrecision(taxAmt)
+				taxSum = taxSum.Add(taxAmt)
+			}
+
+			if ol.VATRate != "" {
+				rateF, err := strconv.ParseFloat(ol.VATRate, 64)
+				if err == nil && rateF > 0 {
+					pct := num.MakePercentage(int64(rateF*10), 3)
+					rt.Percent = &pct
+				}
+			}
+
+			rates = append(rates, rt)
+		}
+
+		if len(descriptions) > 0 {
+			ref.Description = descriptions[0]
+			for _, d := range descriptions[1:] {
+				ref.Description += ", " + d
+			}
+		}
+
+		if len(rates) > 0 {
+			ref.Tax = &tax.Total{
+				Categories: []*tax.CategoryTotal{
+					{
+						Code:   tax.CategoryVAT,
+						Rates:  rates,
+						Amount: taxSum,
+					},
+				},
+				Sum: taxSum,
 			}
 		}
 	}
 
-	if invoice.Tax.Ext.Get(favat.ExtKeyMarginScheme) != "" {
-		Annotations.MarginScheme = &MarginScheme{
-			Marker: "1",
-		}
-		switch invoice.Tax.Ext.Get(favat.ExtKeyMarginScheme) {
-		case "2": // travel agency margin scheme
-			Annotations.MarginScheme.TravelAgencyMargin = "1"
-		case "3.1": // used goods margin scheme
-			Annotations.MarginScheme.UsedGoodsMargin = "1"
-		case "3.2": // art works margin scheme
-			Annotations.MarginScheme.ArtWorksMargin = "1"
-		case "3.3": // collectibles and antiques margin scheme
-			Annotations.MarginScheme.CollectiblesAndAntiquesMargin = "1"
-		}
+	// Add to ordering purchases
+	if goblInv.Ordering == nil {
+		goblInv.Ordering = &bill.Ordering{}
 	}
+	goblInv.Ordering.Purchases = append(goblInv.Ordering.Purchases, ref)
 
-	return Annotations
+	return nil
 }
+
