@@ -10,16 +10,9 @@ Here are features not supported by the converter.
 | `KodFormularza@kodSystemowy` (attribute) | `FormCode.SystemCode` | `FA (3)` | |
 | `KodFormularza@wersjaSchemy` (attribute) | `FormCode.SchemaVersion` | `1-0E` | |
 | `WariantFormularza` | `FormVariant` | `3` | |
-| `SystemInfo` | `SystemInfo` | `GOBL.KSEF` | |
-| `Podmiot2>JST` | `JST` | `2` | Jednostka Samorządu Terytorialnego = local government unit, special case where the buyer is a local government unit |
-| `Podmiot2>GV` | `GV` | `2` | Grupa VAT = VAT group, special case |
-| `Fa>P_16` | `CashAccounting` | `2` | |
-| `Fa>P_18` | `ReverseCharge` | `2` | |
-| `Fa>P_18A` | `SplitPaymentMechanism` | `2` | |
-| `Fa>Adnotacje>Zwolnienie>P_19N` | `NoTaxExemptGoods` | `1` | For tax exempt goods, set `P_19` to 1, otherwise set `P_19N` to 1 |
+| `SystemInfo` | `SystemInfo` | `Invopop` | |
 | `Fa>NoweSrodkiTransportu>P_22N` | `NoNewTransportIntraCommunitySupply` | `1` | For new transport intra-community supply, set `P_22` to 1 (rare special case), otherwise set `P_22N` to 1 |
 | `Fa>P_23` | `SimplifiedProcedureBySecondTaxpayer` | `2` | For simplified procedure by second taxpayer (for three-party transactions inside the European Union), set `P_23` to 1, otherwise set `P_23` to 2 |
-| `Fa>PMarzy>P_PMarzyN` | `NoMarginProcedures` | `1` | For margin procedure (applies to specific types of goods and services), set `P_PMarzy` to 1, otherwise set `P_PMarzyN` to 1 |
 | `Fa>Platnosc>RachunekBankowyFaktora` | `FactorBankAccounts` | `[]` | Bank account of the factor (third party) |
 
 ## Not mapped
@@ -67,8 +60,7 @@ The following fields are now present in the structs but are not currently being 
 ### Invoice (Fa)
 | XML field | Struct field | Notes |
 | --------- | ------------ | ----- |
-| `Fa>P1_M` | `Issue Place` | | 
-| `Fa>P_6` | `Completion date` | The date of delivery or completion of the delivery of goods or services or the date of receipt of payment, referred to in Art. 106b sec. 1(4) of the Act, if such date is specified and differs from the date of issue of the invoice.|
+| `Fa>P_6` | `CompletionDate` | The date of delivery or completion of the delivery of goods or services or the date of receipt of payment, referred to in Art. 106b sec. 1(4) of the Act, if such date is specified and differs from the date of issue of the invoice.|
 | `Fa>WZ` | `WarehouseDocuments` | Warehouse document numbers (0-1000) |
 | `Fa>KursWalutyZ` | `CurrencyRateForTax` | Exchange rate for tax calculation |
 | `Fa>P_15ZK` | `AmountBeforeCorrection` | Amount before correction (for KOR_ZAL and other corrections) |
@@ -99,18 +91,18 @@ The following fields are now present in the structs but are not currently being 
 | `Fa>Rozliczenie>DoZaplaty` | `AmountToPay` | Final amount to pay |
 | `Fa>Rozliczenie>DoRozliczenia` | `AmountToSettle` | Overpaid amount to settle/refund |
 
-### Transaction Conditions (WarunkiTransakcji) - COMPLETE STRUCTURE NOT MAPPED
+### Transaction Conditions (WarunkiTransakcji) - PARTIALLY MAPPED
 | XML field | Struct field | Notes |
 | --------- | ------------ | ----- |
-| `Fa>WarunkiTransakcji` | `TransactionConditions` | Complete transaction conditions structure |
 | `Fa>WarunkiTransakcji>Umowy` | `Contracts` | Contract references (date & number, 0-100) |
-| `Fa>WarunkiTransakcji>Zamowienia` | `Orders` | Order references (date & number, 0-100) |
 | `Fa>WarunkiTransakcji>NrPartiiTowaru` | `BatchNumbers` | Product batch numbers (0-1000) |
 | `Fa>WarunkiTransakcji>WarunkiDostawy` | `DeliveryTerms` | Incoterms delivery conditions |
 | `Fa>WarunkiTransakcji>KursUmowny` | `ContractRate` | Contract exchange rate |
 | `Fa>WarunkiTransakcji>WalutaUmowna` | `ContractCurrency` | Contract currency |
 | `Fa>WarunkiTransakcji>Transport` | `Transport` | Transport/shipping details (0-20) |
 | `Fa>WarunkiTransakcji>PodmiotPosredniczacy` | `IntermediaryParty` | Intermediary entity marker |
+
+**Note**: `Fa>WarunkiTransakcji>Zamowienia` (order references) is now mapped bidirectionally via `Ordering.Purchases`. The first order reference date and number are converted. Other WarunkiTransakcji fields remain unmapped.
 
 ### Transport - COMPLETE STRUCTURE NOT MAPPED
 | XML field | Struct field | Notes |
@@ -130,13 +122,6 @@ The following fields are now present in the structs but are not currently being 
 | `Transport>WysylkaPrzez` | `ShipVia` | Intermediate shipping addresses (0-20) |
 | `Transport>WysylkaDo` | `ShipTo` | Shipping to address |
 
-### Order (Zamowienie) - STRUCTURE PRESENT BUT NOT FULLY MAPPED
-| XML field | Struct field | Notes |
-| --------- | ------------ | ----- |
-| `Fa>Zamowienie` | `Order` | Order information for ZAL/KOR_ZAL type invoices |
-| `Fa>Zamowienie>WartoscZamowienia` | `OrderAmount` | Total order value including tax |
-| `Fa>Zamowienie>ZamowienieWiersz` | `LineItems` | Order line items (1-10000) |
-
 ### Annotations - Extended Fields
 | XML field | Struct field | Notes |
 | --------- | ------------ | ----- |
@@ -148,17 +133,14 @@ The following fields are now present in the structs but are not currently being 
 ### Line Items (FaWiersz) - Extended Fields
 | XML field | Struct field | Notes |
 | --------- | ------------ | ----- |
-| `FaWiersz>UU_ID` | `UniqueID` | Universal unique line ID (max 50 chars) |
 | `FaWiersz>P_6A` | `CompletionDate` | Completion date for this specific line |
 | `FaWiersz>Indeks` | `InternalCode` | Internal product code (max 50 chars) |
 | `FaWiersz>GTIN` | `GTIN` | Global Trade Item Number (max 20 chars) |
 | `FaWiersz>PKWiU` | `PKWiU` | Polish Classification of Products and Services |
 | `FaWiersz>CN` | `CN` | Combined Nomenclature code |
 | `FaWiersz>PKOB` | `PKOB` | Polish Classification of Construction Objects |
-| `FaWiersz>P_9B` | `GrossUnitPrice` | Gross unit price (for art. 106e ust. 7-8) |
 | `FaWiersz>P_11A` | `GrossPriceTotal` | Gross total price (for art. 106e ust. 7-8) |
 | `FaWiersz>P_11Vat` | `VATAmount` | VAT amount (for art. 106e ust. 10) |
-| `FaWiersz>P_12_XII` | `OSSTaxRate` | OSS (One Stop Shop) VAT rate percentage |
 | `FaWiersz>P_12_Zal_15` | `Attachment15GoodsMarker` | Split payment marker (value: 1) |
 | `FaWiersz>KursWaluty` | `CurrencyRate` | Currency exchange rate for this line |
 
@@ -187,36 +169,23 @@ The following fields are now present in the structs but are not currently being 
 | `Stopka` | Footer information - not required in schema, identifies parties in national databases |
 | `Zalacznik` | Attachment structure for custom data (key-value pairs or tables) - not required |
 
-`WarunkiTransakcji` (transaction conditions) may contain (taken from example 4):
-- `Umowy` - contract(s) date and number
-- `Zamowienia` - order(s) date and number
-- `NrPartiiTowaru` - product batch number
-- `WarunkiDostawy` - conditions of delivery
-- `Transport` - how the goods will be transported (contains many nested fields specifying e.g. transport company, destination address, etc.)
-
 ## Unset fields
 
-The following fields are present in the struct to be converted to XML, but are not set anywhere in our code:
+The following fields are present in the struct to be converted to XML, but are not set anywhere in the GOBL → KSeF direction:
 
 | XML field | Struct field | Notes |
 | --------- | ------------ | ----- |
-| `Fa>P_2` | `IssuePlace` | issue place - not required in schema |
-| `Fa>P_14_1W` | `StandardRateTaxConvertedToPln` |
-| `Fa>P_14_2W` | `ReducedRateTaxConvertedToPln` |
-| `Fa>P_14_3W` | `SuperReducedRateTaxConvertedToPln` |
+| `Fa>P_1M` | `IssuePlace` | issue place - not required in schema |
+| `Fa>P_14_1W` | `StandardRateTaxConvertedToPln` | for foreign currency invoices |
+| `Fa>P_14_2W` | `ReducedRateTaxConvertedToPln` | for foreign currency invoices |
+| `Fa>P_14_3W` | `SuperReducedRateTaxConvertedToPln` | for foreign currency invoices |
 | `Fa>FP` | `FP` | indicates a case where an invoice is issued in addition to a regular receipt - not required in schema |
-| `Fa>FaWiersz>StanPrzed` | `BeforeCorrectionMarker` | in a correction invoice, indicates that the line describes the state before the correction |
-| `Fa>P_13_11` | `MarginNetSale` |
-| `Fa>FaWiersz>GTU` | `SpecialGoodsCode` | Code identifying certain classes of goods and services (01 = alcoholic beverages, 02 = vehicle fuels...), values GTU_01 to GTU_13
-| `Fa>P_6_Od` | Start of the invoice period |
-| `Fa>P_6_Do` | End of the invoice period |
-| `Fa>P_13_6_1` | `ZeroTaxExceptIntraCommunityNetSale` | Tax-exempt sale amount other than intra-EU supply and export |
-| `Fa>P_13_6_2` | `IntraCommunityNetSale` | Intra-EU supply, tax-exempt sale amount |
-| `Fa>P_13_6_3` | `ExportNetSale` | Export tax-exempt sale amount |
+| `Fa>FaWiersz>StanPrzed` | `BeforeCorrectionMarker` | in a correction invoice, indicates that the line describes the state before the correction. Used during KSeF → GOBL parsing but not set during GOBL → KSeF building. |
+| `Fa>FaWiersz>GTU` | `SpecialGoodsCode` | Code identifying certain classes of goods and services (01 = alcoholic beverages, 02 = vehicle fuels...), values GTU_01 to GTU_13 |
 
-## Other cases 
+## Other cases
 
-- `P_12` in our code always contains a number, but in the examples 22 and 23 the field contains text `0 WDT` and `0 EX` respectively.
+- `P_12` now handles both numeric rates (e.g. `23`, `8`) and text values (`0 WDT`, `0 EX`, `zw`, `np I`, `np II`, `oo`, `0 KR`) for zero-rated, exempt, and special tax categories.
 
 ## How the listing is done
 
