@@ -122,61 +122,6 @@ func unitDiscount(line *bill.Line) string {
 	return discount.String()
 }
 
-// OrderLine defines the XML structure for KSeF item line (element type ZamowienieWiersz, for ZAL and KOR_ZAL type invoices)
-type OrderLine struct {
-	LineNumber              int    `xml:"NrWierszaZam"`
-	UniqueID                string `xml:"UU_IDZ,omitempty"`
-	Name                    string `xml:"P_7Z,omitempty"`
-	InternalCode            string `xml:"IndeksZ,omitempty"`
-	GTIN                    string `xml:"GTINZ,omitempty"`
-	PKWiU                   string `xml:"PKWiUZ,omitempty"`
-	CN                      string `xml:"CNZ,omitempty"`
-	PKOB                    string `xml:"PKOBZ,omitempty"`
-	Measure                 string `xml:"P_8AZ,omitempty"`
-	Quantity                string `xml:"P_8BZ,omitempty"`
-	NetUnitPrice            string `xml:"P_9AZ,omitempty"`
-	NetPriceTotal           string `xml:"P_11NettoZ,omitempty"`
-	TaxValue                string `xml:"P_11VatZ,omitempty"`
-	VATRate                 string `xml:"P_12Z,omitempty"`
-	OSSTaxRate              string `xml:"P_12Z_XII,omitempty"` // one stop shop
-	Attachment15GoodsMarker int    `xml:"P_12Z_Zal_15,omitempty"`
-	SpecialGoodsCode        string `xml:"GTUZ,omitempty"` // values GTU_01 to GTU_13
-	Procedure               string `xml:"ProceduraZ,omitempty"`
-	ExciseDuty              string `xml:"KwotaAkcyzyZ,omitempty"`
-	BeforeCorrectionMarker  int    `xml:"StanPrzedZ,omitempty"`
-}
-
-func newOrderLine(line *bill.Line, cu uint32) *OrderLine {
-	l := &OrderLine{
-		LineNumber:    line.Index,
-		UniqueID:      string(line.UUID),
-		Name:          line.Item.Name,
-		Measure:       string(line.Item.Unit.UNECE()),
-		NetUnitPrice:  line.Item.Price.String(),
-		Quantity:      line.Quantity.String(),
-		NetPriceTotal: line.Total.String(),
-	}
-	if tc := line.Taxes.Get(tax.CategoryVAT); tc != nil {
-		if tc.Percent != nil {
-			l.VATRate = tc.Percent.Rescale(cu).StringWithoutSymbol()
-			l.TaxValue = tc.Percent.Amount().Multiply(*line.Total).Rescale(cu).String() // TODO this is not correct
-		}
-	}
-
-	return l
-}
-
-// NewOrderLines generates order lines for the KSeF invoice - TODO use in the future
-func NewOrderLines(lines []*bill.Line, cu uint32) []*OrderLine {
-	var orderLines []*OrderLine
-
-	for _, line := range lines {
-		orderLines = append(orderLines, newOrderLine(line, cu))
-	}
-
-	return orderLines
-}
-
 // ToGOBL converts a KSEF Line to a GOBL Line.
 func (l *Line) ToGOBL() (*bill.Line, error) {
 	line := &bill.Line{

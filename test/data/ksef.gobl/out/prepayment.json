@@ -1,0 +1,154 @@
+{
+  "$schema": "https://gobl.org/draft-0/envelope",
+  "head": {
+    "uuid": "00000000-0000-0000-0000-000000000000",
+    "dig": {
+      "alg": "sha256",
+      "val": "0000000000000000000000000000000000000000000000000000000000000000"
+    }
+  },
+  "doc": {
+    "$schema": "https://gobl.org/draft-0/bill/invoice",
+    "$regime": "PL",
+    "$addons": [
+      "pl-favat-v3"
+    ],
+    "$tags": [
+      "partial",
+      "bypass"
+    ],
+    "uuid": "00000000-0000-0000-0000-000000000000",
+    "type": "standard",
+    "code": "ZAL-001",
+    "issue_date": "2026-02-20",
+    "currency": "PLN",
+    "tax": {
+      "rounding": "currency",
+      "ext": {
+        "pl-favat-invoice-type": "ZAL"
+      }
+    },
+    "supplier": {
+      "name": "Test Supplier Sp. z o.o.",
+      "tax_id": {
+        "country": "PL",
+        "code": "1234567788"
+      },
+      "addresses": [
+        {
+          "street": "ul. Testowa 1, 00-001 Warszawa",
+          "country": "PL"
+        }
+      ]
+    },
+    "customer": {
+      "name": "Test Customer Sp. z o.o.",
+      "tax_id": {
+        "country": "PL",
+        "code": "9876543210"
+      },
+      "addresses": [
+        {
+          "street": "ul. Przykladowa 10, 90-001 Warszawa",
+          "country": "PL"
+        }
+      ]
+    },
+    "ordering": {
+      "purchases": [
+        {
+          "issue_date": "2026-02-20",
+          "code": "unknown",
+          "description": "Test Product",
+          "tax": {
+            "categories": [
+              {
+                "code": "VAT",
+                "rates": [
+                  {
+                    "base": "2500.00",
+                    "percent": "23.0%",
+                    "amount": "575.00"
+                  }
+                ],
+                "amount": "575.00"
+              }
+            ],
+            "sum": "575.00"
+          },
+          "payable": "2300.00"
+        }
+      ]
+    },
+    "payment": {
+      "terms": {
+        "due_dates": [
+          {
+            "date": "2026-02-20",
+            "amount": "0",
+            "percent": "100%"
+          }
+        ]
+      },
+      "advances": [
+        {
+          "date": "2026-02-20",
+          "key": "credit-transfer",
+          "description": "Advance payment",
+          "amount": "2300.00",
+          "ext": {
+            "pl-favat-payment-means": "6"
+          }
+        }
+      ],
+      "instructions": {
+        "key": "credit-transfer",
+        "credit_transfer": [
+          {
+            "bic": "WBKPPLPP",
+            "number": "PL61109010140000071219812874",
+            "name": "Test Bank S.A."
+          }
+        ],
+        "ext": {
+          "pl-favat-payment-means": "6"
+        }
+      }
+    },
+    "totals": {
+      "sum": "1869.92",
+      "total": "1869.92",
+      "taxes": {
+        "categories": [
+          {
+            "code": "VAT",
+            "rates": [
+              {
+                "key": "standard",
+                "ext": {
+                  "pl-favat-tax-category": "1"
+                },
+                "base": "1869.92",
+                "percent": "23.0%",
+                "amount": "430.08"
+              }
+            ],
+            "amount": "430.08"
+          }
+        ],
+        "sum": "430.08"
+      },
+      "tax": "430.08",
+      "total_with_tax": "2300.00",
+      "payable": "2300.00",
+      "advance": "2300.00",
+      "due": "0.00"
+    },
+    "notes": [
+      {
+        "code": "general",
+        "text": "Advance payment for order"
+      }
+    ]
+  }
+}

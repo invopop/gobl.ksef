@@ -5,6 +5,7 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"time"
 
 	"github.com/go-resty/resty/v2"
 	"github.com/invopop/xmldsig"
@@ -87,6 +88,12 @@ func NewClient(contextIdentifier *ContextIdentifier, certificate *xmldsig.Certif
 	return &Client{
 		clientOpts: o,
 	}
+}
+
+// IsAuthenticated returns true if the client has a valid refresh token
+// and can therefore obtain access tokens for API calls.
+func (c *Client) IsAuthenticated() bool {
+	return c.refeshToken != nil && !c.refeshToken.isExpired(time.Now())
 }
 
 // Authenticate performs the full authorization exchange and stores the resulting tokens on the client.

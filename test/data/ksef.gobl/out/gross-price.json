@@ -120,6 +120,17 @@
       }
     ],
     "payment": {
+      "advances": [
+        {
+          "date": "2024-06-15",
+          "key": "credit-transfer",
+          "description": "Advance payment",
+          "amount": "321.97",
+          "ext": {
+            "pl-favat-payment-means": "6"
+          }
+        }
+      ],
       "instructions": {
         "key": "credit-transfer",
         "ext": {
@@ -153,7 +164,9 @@
       },
       "tax": "60.20",
       "total_with_tax": "321.97",
-      "payable": "321.97"
+      "payable": "321.97",
+      "advance": "321.97",
+      "due": "0.00"
     }
   }
 }

@@ -13,19 +13,61 @@ Bidirectional conversion between GOBL and the Polish FA_VAT XML format (KSeF).
 
 Copyright [Invopop Ltd.](https://invopop.com) 2023. Released publicly under the [Apache License Version 2.0](LICENSE). For commercial licenses please contact the [dev team at invopop](mailto:dev@invopop.com). In order to accept contributions to this library we will require transferring copyrights to Invopop Ltd.
 
-## Project Development Objectives
+## Supported Features
 
-The following list the steps to follow through on in order to accomplish the goal of using GOBL to submit electronic invoices to the Polish authorities:
+The converter handles the following invoice types and features:
 
-1. Add the PL (`pl`) tax regime to [GOBL](https://github.com/invopop/gobl). Figure out local taxes, tax ID validation rules, and any "extensions" that may be required to be defined in GOBL, and send in a PR. For examples of existing regimes, see the [regimes](https://github.com/invopop/gobl/tree/main/regimes) directory. Key Concerns:
-   - Basic B2B invoices support.
-   - Tax ID validation as per local rules.
-   - Support for "simplified" invoices.
-   - Requirements for credit-notes or "rectified" invoices and the correction options definition for the tax regime.
-   - Any additional fields that need to be validated, like payment terms.
-2. Convert GOBL into FA_VAT format in library. A couple of good examples: [gobl.cfdi for Mexico](https://github.com/invopop/gobl.cfdi) and [gobl.verifactu for Spain](https://github.com/invopop/gobl.verifactu). Library would just be able to run tests in the first version.
-3. Build a CLI (copy from gobl.cfdi and gobl.verifactu projects) to convert GOBL JSON documents into FA_VAT XML.
-4. Build a second part of this project that allows documents to be sent directly to the KSeF. A partial example of this can be found in the [gobl.ticketbai project](https://github.com/invopop/gobl.ticketbai/tree/refactor/internal/gateways). It'd probably be useful to be able to upload via the CLI too.
+**Invoice types (GOBL → KSeF):**
+- `VAT` - Standard invoices
+- `ZAL` - Advance/prepayment invoices (tag: `partial`)
+- `ROZ` - Settlement invoices (tag: `settlement`)
+- `UPR` - Simplified invoices (tag: `simplified`)
+- `KOR` - Correction invoices (credit notes)
+- `KOR_ZAL` - Correction of advance invoices
+- `KOR_ROZ` - Correction of settlement invoices
+
+**Parties:**
+- Seller (Podmiot1) with Polish NIP, address, contact details, and EU VAT prefix
+- Buyer (Podmiot2) with Polish NIP, EU VAT number, or non-EU tax ID
+- Third parties (Podmiot3) for JST (local government units) and Group VAT scenarios
+
+**Tax rates:**
+- Standard (23%), reduced (8%), super-reduced (5%), and other percentage rates
+- Zero-rated (0 KR), intra-community (0 WDT), export (0 EX)
+- Tax exempt (zw), outside scope (np I), reverse charge (np II), domestic reverse charge (oo)
+- OSS (One Stop Shop) rates
+- Margin scheme rates
+
+**Annotations:**
+- Cash accounting, self-billing, reverse charge, split payment mechanism
+- Tax exemption with legal basis (Polish law, EU directive, or other)
+- Margin scheme (travel agency, used goods, art works, collectibles/antiques)
+
+**Other features:**
+- Line item discounts
+- Invoice periods (P_6_Od / P_6_Do)
+- Correction/credit note references with KSeF numbers
+- Payment details: means of payment, bank accounts, due dates, advance payments
+- Additional description lines (DodatkowyOpis)
+- Ordering data with order references and order lines (Zamowienie / WarunkiTransakcji)
+- Rounding adjustments to reconcile KSeF and GOBL totals
+- Gross pricing (P_9B) support in KSeF → GOBL direction
+- Credit notes with before/after correction lines (StanPrzed)
+- Prepayment invoices without line items (bypass mode with totals from tax summaries)
+
+## CLI
+
+The `gobl.ksef` CLI provides two commands:
+
+- **`convert`** - Convert a GOBL JSON envelope into a FA_VAT XML document:
+  ```bash
+  gobl.ksef convert input.json output.xml
+  ```
+
+- **`send`** - Convert and send a GOBL JSON envelope to the KSeF API:
+  ```bash
+  gobl.ksef send input.json [nip] [token] [keyPath]
+  ```
 
 ## Testing
 
@@ -80,40 +122,37 @@ FA_VAT is the Polish electronic invoice format. The format uses XML.
 
 ## Parsing (KSeF → GOBL)
 
-The parsing functionality converts KSeF FA_VAT XML documents back into GOBL format. The current implementation includes:
+The parsing functionality converts KSeF FA_VAT XML documents back into GOBL format. The implementation includes:
 
 - **Party conversion**: Converts seller (Podmiot1), buyer (Podmiot2), and third parties (Podmiot3) to GOBL parties
-- **Invoice data**: Parses invoice metadata including codes, dates, and currency
-- **Line items**: Converts FA_VAT line items to GOBL invoice lines
-- **Payment terms**: Extracts payment information and terms
-- **Rounding adjustments**: Handles rounding differences to ensure totals match
-- **Round-trip validation**: All conversions are validated through round-trip tests (GOBL → KSeF → GOBL)
-
-**Note**: The parsing is functional but may not handle all edge cases. Some complex scenarios from the tax agency might require special handling, particularly invoices without line items, which would need synthetic lines created.
+- **Invoice data**: Parses invoice metadata including type, codes, dates, currency, and annotations
+- **Line items**: Converts FA_VAT line items (FaWiersz) to GOBL invoice lines, including discounts and tax combos
+- **Credit notes**: Handles line inversion for correction invoices, including before/after correction lines (StanPrzed)
+- **Gross pricing**: Supports invoices using gross unit prices (P_9B) by setting `PricesInclude = VAT`
+- **Ordering data**: Maps Zamowienie (order) and WarunkiTransakcji (transaction conditions) to GOBL ordering purchases
+- **Payment details**: Extracts payment means, bank accounts, due dates, and advance payments
+- **Prepayment invoices**: Handles advance invoices without line items (ZAL/KOR_ZAL) using bypass mode with totals from tax summary fields
+- **Rounding adjustments**: Handles rounding differences between KSeF and GOBL calculation methods
+- **Round-trip validation**: All GOBL → KSeF conversions are validated through round-trip tests (GOBL → KSeF → GOBL)
 
 ## KSeF API
 
-KSeF is the Polish system for submitting electronic invoices to the Polish authorities.
+KSeF is the Polish system for submitting electronic invoices to the Polish authorities. The system uses API version 2.0, which introduced JWT-based authentication, mandatory invoice encryption, and a unified session model.
 
 Useful links:
 
 - [National e-Invoice System](https://ksef.mf.gov.pl/) - for details on system in general (English translation available - language picker is in the top right corner)
-- [KSeF Test Zone](https://ksef-test.mf.gov.pl/) - as above, but for testing
-- [API documentation](https://ksef-test.mf.gov.pl/docs/v2/index.html) for the test environment (in Polish)
+- [KSeF 2.0 Integrator's Guide](./docs/ksef-docs-en/README.md) - translated documentation with detailed integration instructions
 
-KSeF provide three environments:
+KSeF provides three environments:
 
-1.  [Test Environment](https://ksef-test.mf.gov.pl/) for application development with fictitious data.
-2.  [Pre-production "demo"](https://ksef-demo.mf.gov.pl/) area with production data, but not officially declared.
-3.  [Production](https://ksef.mf.gov.pl)
+| Environment | Description | API Documentation |
+| ----------- | ----------- | ----------------- |
+| **Test** (Release Candidate) | For testing integration, contains RC versions | [api-test.ksef.mf.gov.pl](https://api-test.ksef.mf.gov.pl/docs/v2) |
+| **Demo** (Pre-production) | Matches production configuration, for final validation | [api-demo.ksef.mf.gov.pl](https://api-demo.ksef.mf.gov.pl/docs/v2) |
+| **Production** | Full legal validity, production data | [api.ksef.mf.gov.pl](https://api.ksef.mf.gov.pl/docs/v2) |
 
-A translation of the Interface Specification 1.5 is available in the [docs](./docs) folder.
-
-OpenAPI documentation is available for three specific interfaces:
-
-1. Batches ([test openapi 'batch' spec](https://ksef-test.mf.gov.pl/openapi/gtw/svc/api/KSeF-batch.yaml)) - for sending multiple documents at the same time.
-2. Common ([test openapi 'common' spec](https://ksef-test.mf.gov.pl/openapi/gtw/svc/api/KSeF-common.yaml)) - general operations that don't require authentication.
-3. Interactive ([test openapi 'online' spec](https://ksef-test.mf.gov.pl/openapi/gtw/svc/api/KSeF-online.yaml)) - sending a single document in each request.
+The OpenAPI specification is available at each environment's `/docs/v2/openapi.json` endpoint.
 
 ## Authentication
 
