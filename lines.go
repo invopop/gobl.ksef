@@ -185,7 +185,7 @@ func (l *Line) ToGOBL() (*bill.Line, error) {
 
 	// Parse unit of measure
 	if l.Measure != "" {
-		line.Item.Unit = parseUnit(l.Measure)
+		line.Item.Unit = org.Unit(l.Measure)
 	}
 
 	// Parse discount
@@ -238,16 +238,6 @@ func parseAmount(s string) (num.Amount, error) {
 		return num.Amount{}, err
 	}
 	return amt, nil
-}
-
-// parseUnit converts KSEF unit code (UNECE) to GOBL unit.
-// Returns empty if the code is not a valid GOBL or UN/ECE unit.
-func parseUnit(code string) org.Unit {
-	u := org.Unit(code)
-	if err := u.Validate(); err != nil {
-		return ""
-	}
-	return u
 }
 
 // TaxRateInfo contains the parsed tax rate information

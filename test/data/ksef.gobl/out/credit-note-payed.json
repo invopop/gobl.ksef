@@ -74,7 +74,8 @@
         "quantity": "1",
         "item": {
           "name": "Usługa transportowa Bilet Nr: 000001",
-          "price": "87.00"
+          "price": "87.00",
+          "unit": "szt"
         },
         "sum": "87.00",
         "taxes": [
@@ -101,7 +102,8 @@
         "quantity": "-1",
         "item": {
           "name": "Usługa transportowa Bilet Nr: 000001",
-          "price": "0.00"
+          "price": "0.00",
+          "unit": "szt"
         },
         "sum": "0.00",
         "taxes": [
