@@ -1,0 +1,102 @@
+<Faktura
+	xmlns:etd="http://crd.gov.pl/xml/schematy/dziedzinowe/mf/2022/01/05/eD/DefinicjeTypy/"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns="http://crd.gov.pl/wzor/2025/06/25/13775/">
+	<Naglowek>
+		<KodFormularza kodSystemowy="FA (3)" wersjaSchemy="1-0E">FA</KodFormularza>
+		<WariantFormularza>3</WariantFormularza>
+		<DataWytworzeniaFa>2026-02-23T00:00:00</DataWytworzeniaFa>
+		<SystemInfo>USS_API</SystemInfo>
+	</Naglowek>
+	<Podmiot1>
+		<PrefiksPodatnika>PL</PrefiksPodatnika>
+		<NrEORI>PL111111111100000</NrEORI>
+		<DaneIdentyfikacyjne>
+			<NIP>1111111111</NIP>
+			<Nazwa>Przykładowy Przewoźnik S.A.</Nazwa>
+		</DaneIdentyfikacyjne>
+		<Adres>
+			<KodKraju>PL</KodKraju>
+			<AdresL1>ul. Testowa 10, 00-001 Warszawa</AdresL1>
+		</Adres>
+	</Podmiot1>
+	<Podmiot2>
+		<DaneIdentyfikacyjne>
+			<NIP>9876543210</NIP>
+			<Nazwa>Odbiorca Testowy Sp. z o.o.</Nazwa>
+		</DaneIdentyfikacyjne>
+		<Adres>
+			<KodKraju>PL</KodKraju>
+			<AdresL1>ul. Odbiorcza 5, 00-002 Warszawa</AdresL1>
+		</Adres>
+		<JST>2</JST>
+		<GV>2</GV>
+	</Podmiot2>
+	<Fa>
+		<KodWaluty>PLN</KodWaluty>
+		<P_1>2026-02-23</P_1>
+		<P_1M>Warszawa</P_1M>
+		<P_2>KOR/001/2026</P_2>
+		<P_6>2026-02-09</P_6>
+		<P_13_2>-80.56</P_13_2>
+		<P_14_2>-6.44</P_14_2>
+		<P_15>-87.00</P_15>
+		<Adnotacje>
+			<P_16>2</P_16>
+			<P_17>2</P_17>
+			<P_18>2</P_18>
+			<P_18A>2</P_18A>
+			<Zwolnienie>
+				<P_19N>1</P_19N>
+			</Zwolnienie>
+			<NoweSrodkiTransportu>
+				<P_22N>1</P_22N>
+			</NoweSrodkiTransportu>
+			<P_23>2</P_23>
+			<PMarzy>
+				<P_PMarzyN>1</P_PMarzyN>
+			</PMarzy>
+		</Adnotacje>
+		<RodzajFaktury>KOR</RodzajFaktury>
+		<PrzyczynaKorekty>Zwrot biletu</PrzyczynaKorekty>
+		<TypKorekty>3</TypKorekty>
+		<DaneFaKorygowanej>
+			<DataWystFaKorygowanej>2026-02-09</DataWystFaKorygowanej>
+			<NrFaKorygowanej>FV/100/2026</NrFaKorygowanej>
+			<NrKSeF>1</NrKSeF>
+			<NrKSeFFaKorygowanej>1111111111-20260209-AAAAAAAAAA00-01</NrKSeFFaKorygowanej>
+		</DaneFaKorygowanej>
+		<FaWiersz>
+			<NrWierszaFa>1</NrWierszaFa>
+			<UU_ID>AA000000000000000000000000000001</UU_ID>
+			<P_7>Usługa transportowa Bilet Nr: 000001</P_7>
+			<Indeks>000001</Indeks>
+			<P_8A>szt</P_8A>
+			<P_8B>1</P_8B>
+			<P_9B>87</P_9B>
+			<P_11>80.56</P_11>
+			<P_11A>87.00</P_11A>
+			<P_11Vat>6.44</P_11Vat>
+			<P_12>8</P_12>
+			<StanPrzed>1</StanPrzed>
+		</FaWiersz>
+		<FaWiersz>
+			<NrWierszaFa>1</NrWierszaFa>
+			<UU_ID>AA000000000000000000000000000002</UU_ID>
+			<P_7>Usługa transportowa Bilet Nr: 000001</P_7>
+			<Indeks>000001</Indeks>
+			<P_8A>szt</P_8A>
+			<P_8B>1</P_8B>
+			<P_9B>0</P_9B>
+			<P_11>0.00</P_11>
+			<P_11A>0.00</P_11A>
+			<P_11Vat>0.00</P_11Vat>
+			<P_12>8</P_12>
+		</FaWiersz>
+		<Platnosc>
+			<Zaplacono>1</Zaplacono>
+			<DataZaplaty>2026-02-09</DataZaplaty>
+			<FormaPlatnosci>7</FormaPlatnosci>
+		</Platnosc>
+	</Fa>
+</Faktura>

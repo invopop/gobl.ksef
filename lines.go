@@ -160,6 +160,29 @@ func (l *Line) ToGOBL() (*bill.Line, error) {
 		line.Item.Price = &price
 	}
 
+	// If no unit price was provided, calculate from total price and quantity.
+	// Rescale the total to at least 4 decimal places before dividing to
+	// avoid precision loss (num.Amount.Divide preserves the numerator's scale).
+	if line.Item.Price == nil && !line.Quantity.IsZero() {
+		if l.NetPriceTotal != "" {
+			total, err := parseAmount(l.NetPriceTotal)
+			if err != nil {
+				return nil, err
+			}
+			total = total.RescaleUp(4)
+			price := total.Divide(line.Quantity)
+			line.Item.Price = &price
+		} else if l.GrossPriceTotal != "" {
+			total, err := parseAmount(l.GrossPriceTotal)
+			if err != nil {
+				return nil, err
+			}
+			total = total.RescaleUp(4)
+			price := total.Divide(line.Quantity)
+			line.Item.Price = &price
+		}
+	}
+
 	// Parse unit of measure
 	if l.Measure != "" {
 		line.Item.Unit = parseUnit(l.Measure)
