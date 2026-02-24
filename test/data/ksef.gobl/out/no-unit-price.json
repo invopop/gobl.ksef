@@ -1,0 +1,574 @@
+{
+  "$schema": "https://gobl.org/draft-0/envelope",
+  "head": {
+    "uuid": "00000000-0000-0000-0000-000000000000",
+    "dig": {
+      "alg": "sha256",
+      "val": "0000000000000000000000000000000000000000000000000000000000000000"
+    }
+  },
+  "doc": {
+    "$schema": "https://gobl.org/draft-0/bill/invoice",
+    "$regime": "PL",
+    "$addons": [
+      "pl-favat-v3"
+    ],
+    "uuid": "00000000-0000-0000-0000-000000000000",
+    "type": "standard",
+    "code": "FV-2026-001",
+    "issue_date": "2026-02-19",
+    "currency": "PLN",
+    "tax": {
+      "rounding": "currency",
+      "ext": {
+        "pl-favat-invoice-type": "VAT"
+      }
+    },
+    "supplier": {
+      "name": "Przykładowa Firma Sp. z o.o.",
+      "tax_id": {
+        "country": "PL",
+        "code": "1234567788"
+      },
+      "addresses": [
+        {
+          "street": "ul. Testowa 10 00-001 Warszawa",
+          "country": "PL"
+        }
+      ]
+    },
+    "customer": {
+      "name": "Odbiorca Testowy Sp. z o.o.",
+      "tax_id": {
+        "country": "PL",
+        "code": "9876543210"
+      },
+      "addresses": [
+        {
+          "street": "ul. Odbiorcza 5 00-002 Warszawa",
+          "country": "PL"
+        }
+      ],
+      "emails": [
+        {
+          "addr": "kontakt@example.com"
+        }
+      ]
+    },
+    "lines": [
+      {
+        "i": 1,
+        "quantity": "10.0",
+        "item": {
+          "name": "Connector L-type M5-4",
+          "price": "8.6300",
+          "unit": "SZT"
+        },
+        "sum": "86.30",
+        "taxes": [
+          {
+            "cat": "VAT",
+            "key": "standard",
+            "rate": "general",
+            "percent": "23.0%",
+            "ext": {
+              "pl-favat-tax-category": "1"
+            }
+          }
+        ],
+        "total": "86.30"
+      },
+      {
+        "i": 2,
+        "quantity": "2.0",
+        "item": {
+          "name": "Solenoid valve type A",
+          "price": "132.8300",
+          "unit": "SZT"
+        },
+        "sum": "265.66",
+        "taxes": [
+          {
+            "cat": "VAT",
+            "key": "standard",
+            "rate": "general",
+            "percent": "23.0%",
+            "ext": {
+              "pl-favat-tax-category": "1"
+            }
+          }
+        ],
+        "total": "265.66"
+      },
+      {
+        "i": 3,
+        "quantity": "4.0",
+        "item": {
+          "name": "Solenoid valve type B",
+          "price": "201.1100",
+          "unit": "SZT"
+        },
+        "sum": "804.44",
+        "taxes": [
+          {
+            "cat": "VAT",
+            "key": "standard",
+            "rate": "general",
+            "percent": "23.0%",
+            "ext": {
+              "pl-favat-tax-category": "1"
+            }
+          }
+        ],
+        "total": "804.44"
+      },
+      {
+        "i": 4,
+        "quantity": "10.0",
+        "item": {
+          "name": "Connector L-type G3/8-12",
+          "price": "16.3100",
+          "unit": "SZT"
+        },
+        "sum": "163.10",
+        "taxes": [
+          {
+            "cat": "VAT",
+            "key": "standard",
+            "rate": "general",
+            "percent": "23.0%",
+            "ext": {
+              "pl-favat-tax-category": "1"
+            }
+          }
+        ],
+        "total": "163.10"
+      },
+      {
+        "i": 5,
+        "quantity": "10.0",
+        "item": {
+          "name": "Connector L-type G1/4-12",
+          "price": "14.5900",
+          "unit": "SZT"
+        },
+        "sum": "145.90",
+        "taxes": [
+          {
+            "cat": "VAT",
+            "key": "standard",
+            "rate": "general",
+            "percent": "23.0%",
+            "ext": {
+              "pl-favat-tax-category": "1"
+            }
+          }
+        ],
+        "total": "145.90"
+      },
+      {
+        "i": 6,
+        "quantity": "10.0",
+        "item": {
+          "name": "Plug B-1/4",
+          "price": "3.7100",
+          "unit": "SZT"
+        },
+        "sum": "37.10",
+        "taxes": [
+          {
+            "cat": "VAT",
+            "key": "standard",
+            "rate": "general",
+            "percent": "23.0%",
+            "ext": {
+              "pl-favat-tax-category": "1"
+            }
+          }
+        ],
+        "total": "37.10"
+      },
+      {
+        "i": 7,
+        "quantity": "10.0",
+        "item": {
+          "name": "Plug B-3/8",
+          "price": "5.2500",
+          "unit": "SZT"
+        },
+        "sum": "52.50",
+        "taxes": [
+          {
+            "cat": "VAT",
+            "key": "standard",
+            "rate": "general",
+            "percent": "23.0%",
+            "ext": {
+              "pl-favat-tax-category": "1"
+            }
+          }
+        ],
+        "total": "52.50"
+      },
+      {
+        "i": 8,
+        "quantity": "10.0",
+        "item": {
+          "name": "Push-in connector G1/8-4",
+          "price": "5.0300",
+          "unit": "SZT"
+        },
+        "sum": "50.30",
+        "taxes": [
+          {
+            "cat": "VAT",
+            "key": "standard",
+            "rate": "general",
+            "percent": "23.0%",
+            "ext": {
+              "pl-favat-tax-category": "1"
+            }
+          }
+        ],
+        "total": "50.30"
+      },
+      {
+        "i": 9,
+        "quantity": "30.0",
+        "item": {
+          "name": "Push-in connector M5-4-I",
+          "price": "5.7600",
+          "unit": "SZT"
+        },
+        "sum": "172.80",
+        "taxes": [
+          {
+            "cat": "VAT",
+            "key": "standard",
+            "rate": "general",
+            "percent": "23.0%",
+            "ext": {
+              "pl-favat-tax-category": "1"
+            }
+          }
+        ],
+        "total": "172.80"
+      },
+      {
+        "i": 10,
+        "quantity": "10.0",
+        "item": {
+          "name": "Push-in connector G3/8-12",
+          "price": "10.7500",
+          "unit": "SZT"
+        },
+        "sum": "107.50",
+        "taxes": [
+          {
+            "cat": "VAT",
+            "key": "standard",
+            "rate": "general",
+            "percent": "23.0%",
+            "ext": {
+              "pl-favat-tax-category": "1"
+            }
+          }
+        ],
+        "total": "107.50"
+      },
+      {
+        "i": 11,
+        "quantity": "10.0",
+        "item": {
+          "name": "Push-in connector G1/4-12",
+          "price": "9.6300",
+          "unit": "SZT"
+        },
+        "sum": "96.30",
+        "taxes": [
+          {
+            "cat": "VAT",
+            "key": "standard",
+            "rate": "general",
+            "percent": "23.0%",
+            "ext": {
+              "pl-favat-tax-category": "1"
+            }
+          }
+        ],
+        "total": "96.30"
+      },
+      {
+        "i": 12,
+        "quantity": "50.0",
+        "item": {
+          "name": "Tubing 12x2 black",
+          "price": "10.8000",
+          "unit": "M"
+        },
+        "sum": "540.00",
+        "taxes": [
+          {
+            "cat": "VAT",
+            "key": "standard",
+            "rate": "general",
+            "percent": "23.0%",
+            "ext": {
+              "pl-favat-tax-category": "1"
+            }
+          }
+        ],
+        "total": "540.00"
+      },
+      {
+        "i": 13,
+        "quantity": "10.0",
+        "item": {
+          "name": "Plug B-M5",
+          "price": "3.0700",
+          "unit": "SZT"
+        },
+        "sum": "30.70",
+        "taxes": [
+          {
+            "cat": "VAT",
+            "key": "standard",
+            "rate": "general",
+            "percent": "23.0%",
+            "ext": {
+              "pl-favat-tax-category": "1"
+            }
+          }
+        ],
+        "total": "30.70"
+      },
+      {
+        "i": 14,
+        "quantity": "20.0",
+        "item": {
+          "name": "Noise silencer M-H-M5",
+          "price": "3.5900",
+          "unit": "SZT"
+        },
+        "sum": "71.80",
+        "taxes": [
+          {
+            "cat": "VAT",
+            "key": "standard",
+            "rate": "general",
+            "percent": "23.0%",
+            "ext": {
+              "pl-favat-tax-category": "1"
+            }
+          }
+        ],
+        "total": "71.80"
+      },
+      {
+        "i": 15,
+        "quantity": "50.0",
+        "item": {
+          "name": "Tubing 4x0.75 red",
+          "price": "1.7800",
+          "unit": "M"
+        },
+        "sum": "89.00",
+        "taxes": [
+          {
+            "cat": "VAT",
+            "key": "standard",
+            "rate": "general",
+            "percent": "23.0%",
+            "ext": {
+              "pl-favat-tax-category": "1"
+            }
+          }
+        ],
+        "total": "89.00"
+      },
+      {
+        "i": 16,
+        "quantity": "50.0",
+        "item": {
+          "name": "Tubing 4x0.75 blue",
+          "price": "1.7800",
+          "unit": "M"
+        },
+        "sum": "89.00",
+        "taxes": [
+          {
+            "cat": "VAT",
+            "key": "standard",
+            "rate": "general",
+            "percent": "23.0%",
+            "ext": {
+              "pl-favat-tax-category": "1"
+            }
+          }
+        ],
+        "total": "89.00"
+      },
+      {
+        "i": 17,
+        "quantity": "50.0",
+        "item": {
+          "name": "Tubing 4x0.75 yellow",
+          "price": "1.7800",
+          "unit": "M"
+        },
+        "sum": "89.00",
+        "taxes": [
+          {
+            "cat": "VAT",
+            "key": "standard",
+            "rate": "general",
+            "percent": "23.0%",
+            "ext": {
+              "pl-favat-tax-category": "1"
+            }
+          }
+        ],
+        "total": "89.00"
+      },
+      {
+        "i": 18,
+        "quantity": "50.0",
+        "item": {
+          "name": "Tubing 4x0.75 green",
+          "price": "1.7800",
+          "unit": "M"
+        },
+        "sum": "89.00",
+        "taxes": [
+          {
+            "cat": "VAT",
+            "key": "standard",
+            "rate": "general",
+            "percent": "23.0%",
+            "ext": {
+              "pl-favat-tax-category": "1"
+            }
+          }
+        ],
+        "total": "89.00"
+      },
+      {
+        "i": 19,
+        "quantity": "50.0",
+        "item": {
+          "name": "Tubing 4x0.75 black",
+          "price": "1.7800",
+          "unit": "M"
+        },
+        "sum": "89.00",
+        "taxes": [
+          {
+            "cat": "VAT",
+            "key": "standard",
+            "rate": "general",
+            "percent": "23.0%",
+            "ext": {
+              "pl-favat-tax-category": "1"
+            }
+          }
+        ],
+        "total": "89.00"
+      },
+      {
+        "i": 20,
+        "quantity": "50.0",
+        "item": {
+          "name": "Tubing 4x0.75 silver",
+          "price": "1.7800",
+          "unit": "M"
+        },
+        "sum": "89.00",
+        "taxes": [
+          {
+            "cat": "VAT",
+            "key": "standard",
+            "rate": "general",
+            "percent": "23.0%",
+            "ext": {
+              "pl-favat-tax-category": "1"
+            }
+          }
+        ],
+        "total": "89.00"
+      },
+      {
+        "i": 21,
+        "quantity": "10.0",
+        "item": {
+          "name": "Connector L-type M5-4",
+          "price": "8.6300",
+          "unit": "SZT"
+        },
+        "sum": "86.30",
+        "taxes": [
+          {
+            "cat": "VAT",
+            "key": "standard",
+            "rate": "general",
+            "percent": "23.0%",
+            "ext": {
+              "pl-favat-tax-category": "1"
+            }
+          }
+        ],
+        "total": "86.30"
+      }
+    ],
+    "payment": {
+      "terms": {
+        "due_dates": [
+          {
+            "date": "2026-03-12",
+            "amount": "3990.98",
+            "percent": "100%"
+          }
+        ]
+      },
+      "instructions": {
+        "key": "credit-transfer",
+        "credit_transfer": [
+          {
+            "bic": "WBKPPLPP",
+            "number": "PL61109010140000071219812874",
+            "name": "Bank Testowy"
+          }
+        ],
+        "ext": {
+          "pl-favat-payment-means": "6"
+        }
+      }
+    },
+    "totals": {
+      "sum": "3244.70",
+      "total": "3244.70",
+      "taxes": {
+        "categories": [
+          {
+            "code": "VAT",
+            "rates": [
+              {
+                "key": "standard",
+                "ext": {
+                  "pl-favat-tax-category": "1"
+                },
+                "base": "3244.70",
+                "percent": "23.0%",
+                "amount": "746.28"
+              }
+            ],
+            "amount": "746.28"
+          }
+        ],
+        "sum": "746.28"
+      },
+      "tax": "746.28",
+      "total_with_tax": "3990.98",
+      "payable": "3990.98"
+    }
+  }
+}

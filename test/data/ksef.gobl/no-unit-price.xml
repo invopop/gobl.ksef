@@ -1,0 +1,298 @@
+<n0:Faktura
+	xmlns:n0="http://crd.gov.pl/wzor/2025/06/25/13775/">
+	<n0:Naglowek>
+		<n0:KodFormularza kodSystemowy="FA (3)" wersjaSchemy="1-0E">FA</n0:KodFormularza>
+		<n0:WariantFormularza>3</n0:WariantFormularza>
+		<n0:DataWytworzeniaFa>2026-02-19T20:47:50Z</n0:DataWytworzeniaFa>
+		<n0:SystemInfo>ERP System</n0:SystemInfo>
+	</n0:Naglowek>
+	<n0:Podmiot1>
+		<n0:PrefiksPodatnika>PL</n0:PrefiksPodatnika>
+		<n0:DaneIdentyfikacyjne>
+			<n0:NIP>1234567788</n0:NIP>
+			<n0:Nazwa>Przykładowa Firma Sp. z o.o.</n0:Nazwa>
+		</n0:DaneIdentyfikacyjne>
+		<n0:Adres>
+			<n0:KodKraju>PL</n0:KodKraju>
+			<n0:AdresL1>ul. Testowa 10 00-001 Warszawa</n0:AdresL1>
+		</n0:Adres>
+	</n0:Podmiot1>
+	<n0:Podmiot2>
+		<n0:DaneIdentyfikacyjne>
+			<n0:NIP>9876543210</n0:NIP>
+			<n0:Nazwa>Odbiorca Testowy Sp. z o.o.</n0:Nazwa>
+		</n0:DaneIdentyfikacyjne>
+		<n0:Adres>
+			<n0:KodKraju>PL</n0:KodKraju>
+			<n0:AdresL1>ul. Odbiorcza 5 00-002 Warszawa</n0:AdresL1>
+		</n0:Adres>
+		<n0:DaneKontaktowe>
+			<n0:Email>kontakt@example.com</n0:Email>
+		</n0:DaneKontaktowe>
+		<n0:NrKlienta>0000012345</n0:NrKlienta>
+		<n0:JST>2</n0:JST>
+		<n0:GV>2</n0:GV>
+	</n0:Podmiot2>
+	<n0:Fa>
+		<n0:KodWaluty>PLN</n0:KodWaluty>
+		<n0:P_1>2026-02-19</n0:P_1>
+		<n0:P_1M>Warszawa</n0:P_1M>
+		<n0:P_2>FV-2026-001</n0:P_2>
+		<n0:WZ>WZ-2026-001</n0:WZ>
+		<n0:P_6>2026-02-19</n0:P_6>
+		<n0:P_13_1>3244.7</n0:P_13_1>
+		<n0:P_14_1>746.28</n0:P_14_1>
+		<n0:P_15>3990.98</n0:P_15>
+		<n0:Adnotacje>
+			<n0:P_16>2</n0:P_16>
+			<n0:P_17>2</n0:P_17>
+			<n0:P_18>2</n0:P_18>
+			<n0:P_18A>2</n0:P_18A>
+			<n0:Zwolnienie>
+				<n0:P_19N>1</n0:P_19N>
+			</n0:Zwolnienie>
+			<n0:NoweSrodkiTransportu>
+				<n0:P_22N>1</n0:P_22N>
+			</n0:NoweSrodkiTransportu>
+			<n0:P_23>2</n0:P_23>
+			<n0:PMarzy>
+				<n0:P_PMarzyN>1</n0:P_PMarzyN>
+			</n0:PMarzy>
+		</n0:Adnotacje>
+		<n0:RodzajFaktury>VAT</n0:RodzajFaktury>
+		<n0:FaWiersz>
+			<n0:NrWierszaFa>1</n0:NrWierszaFa>
+			<n0:P_7>Connector L-type M5-4</n0:P_7>
+			<n0:Indeks>000000000000000001</n0:Indeks>
+			<n0:CN>74122000</n0:CN>
+			<n0:P_8A>SZT</n0:P_8A>
+			<n0:P_8B>10.0</n0:P_8B>
+			<n0:P_11>86.3</n0:P_11>
+			<n0:P_12>23</n0:P_12>
+		</n0:FaWiersz>
+		<n0:FaWiersz>
+			<n0:NrWierszaFa>2</n0:NrWierszaFa>
+			<n0:P_7>Solenoid valve type A</n0:P_7>
+			<n0:Indeks>000000000000000002</n0:Indeks>
+			<n0:CN>84812090</n0:CN>
+			<n0:P_8A>SZT</n0:P_8A>
+			<n0:P_8B>2.0</n0:P_8B>
+			<n0:P_11>265.66</n0:P_11>
+			<n0:P_12>23</n0:P_12>
+		</n0:FaWiersz>
+		<n0:FaWiersz>
+			<n0:NrWierszaFa>3</n0:NrWierszaFa>
+			<n0:P_7>Solenoid valve type B</n0:P_7>
+			<n0:Indeks>000000000000000003</n0:Indeks>
+			<n0:CN>84812090</n0:CN>
+			<n0:P_8A>SZT</n0:P_8A>
+			<n0:P_8B>4.0</n0:P_8B>
+			<n0:P_11>804.44</n0:P_11>
+			<n0:P_12>23</n0:P_12>
+		</n0:FaWiersz>
+		<n0:FaWiersz>
+			<n0:NrWierszaFa>4</n0:NrWierszaFa>
+			<n0:P_7>Connector L-type G3/8-12</n0:P_7>
+			<n0:Indeks>000000000000000004</n0:Indeks>
+			<n0:CN>74122000</n0:CN>
+			<n0:P_8A>SZT</n0:P_8A>
+			<n0:P_8B>10.0</n0:P_8B>
+			<n0:P_11>163.1</n0:P_11>
+			<n0:P_12>23</n0:P_12>
+		</n0:FaWiersz>
+		<n0:FaWiersz>
+			<n0:NrWierszaFa>5</n0:NrWierszaFa>
+			<n0:P_7>Connector L-type G1/4-12</n0:P_7>
+			<n0:Indeks>000000000000000005</n0:Indeks>
+			<n0:CN>74122000</n0:CN>
+			<n0:P_8A>SZT</n0:P_8A>
+			<n0:P_8B>10.0</n0:P_8B>
+			<n0:P_11>145.9</n0:P_11>
+			<n0:P_12>23</n0:P_12>
+		</n0:FaWiersz>
+		<n0:FaWiersz>
+			<n0:NrWierszaFa>6</n0:NrWierszaFa>
+			<n0:P_7>Plug B-1/4</n0:P_7>
+			<n0:Indeks>000000000000000006</n0:Indeks>
+			<n0:CN>73079910</n0:CN>
+			<n0:P_8A>SZT</n0:P_8A>
+			<n0:P_8B>10.0</n0:P_8B>
+			<n0:P_11>37.1</n0:P_11>
+			<n0:P_12>23</n0:P_12>
+			<n0:P_12_Zal_15>1</n0:P_12_Zal_15>
+		</n0:FaWiersz>
+		<n0:FaWiersz>
+			<n0:NrWierszaFa>7</n0:NrWierszaFa>
+			<n0:P_7>Plug B-3/8</n0:P_7>
+			<n0:Indeks>000000000000000007</n0:Indeks>
+			<n0:CN>73079910</n0:CN>
+			<n0:P_8A>SZT</n0:P_8A>
+			<n0:P_8B>10.0</n0:P_8B>
+			<n0:P_11>52.5</n0:P_11>
+			<n0:P_12>23</n0:P_12>
+			<n0:P_12_Zal_15>1</n0:P_12_Zal_15>
+		</n0:FaWiersz>
+		<n0:FaWiersz>
+			<n0:NrWierszaFa>8</n0:NrWierszaFa>
+			<n0:P_7>Push-in connector G1/8-4</n0:P_7>
+			<n0:Indeks>000000000000000008</n0:Indeks>
+			<n0:CN>74122000</n0:CN>
+			<n0:P_8A>SZT</n0:P_8A>
+			<n0:P_8B>10.0</n0:P_8B>
+			<n0:P_11>50.3</n0:P_11>
+			<n0:P_12>23</n0:P_12>
+		</n0:FaWiersz>
+		<n0:FaWiersz>
+			<n0:NrWierszaFa>9</n0:NrWierszaFa>
+			<n0:P_7>Push-in connector M5-4-I</n0:P_7>
+			<n0:Indeks>000000000000000009</n0:Indeks>
+			<n0:CN>74122000</n0:CN>
+			<n0:P_8A>SZT</n0:P_8A>
+			<n0:P_8B>30.0</n0:P_8B>
+			<n0:P_11>172.8</n0:P_11>
+			<n0:P_12>23</n0:P_12>
+		</n0:FaWiersz>
+		<n0:FaWiersz>
+			<n0:NrWierszaFa>10</n0:NrWierszaFa>
+			<n0:P_7>Push-in connector G3/8-12</n0:P_7>
+			<n0:Indeks>000000000000000010</n0:Indeks>
+			<n0:CN>74122000</n0:CN>
+			<n0:P_8A>SZT</n0:P_8A>
+			<n0:P_8B>10.0</n0:P_8B>
+			<n0:P_11>107.5</n0:P_11>
+			<n0:P_12>23</n0:P_12>
+		</n0:FaWiersz>
+		<n0:FaWiersz>
+			<n0:NrWierszaFa>11</n0:NrWierszaFa>
+			<n0:P_7>Push-in connector G1/4-12</n0:P_7>
+			<n0:Indeks>000000000000000011</n0:Indeks>
+			<n0:CN>74122000</n0:CN>
+			<n0:P_8A>SZT</n0:P_8A>
+			<n0:P_8B>10.0</n0:P_8B>
+			<n0:P_11>96.3</n0:P_11>
+			<n0:P_12>23</n0:P_12>
+		</n0:FaWiersz>
+		<n0:FaWiersz>
+			<n0:NrWierszaFa>12</n0:NrWierszaFa>
+			<n0:P_7>Tubing 12x2 black</n0:P_7>
+			<n0:Indeks>000000000000000012</n0:Indeks>
+			<n0:CN>39173200</n0:CN>
+			<n0:P_8A>M</n0:P_8A>
+			<n0:P_8B>50.0</n0:P_8B>
+			<n0:P_11>540.0</n0:P_11>
+			<n0:P_12>23</n0:P_12>
+		</n0:FaWiersz>
+		<n0:FaWiersz>
+			<n0:NrWierszaFa>13</n0:NrWierszaFa>
+			<n0:P_7>Plug B-M5</n0:P_7>
+			<n0:Indeks>000000000000000013</n0:Indeks>
+			<n0:CN>76090000</n0:CN>
+			<n0:P_8A>SZT</n0:P_8A>
+			<n0:P_8B>10.0</n0:P_8B>
+			<n0:P_11>30.7</n0:P_11>
+			<n0:P_12>23</n0:P_12>
+		</n0:FaWiersz>
+		<n0:FaWiersz>
+			<n0:NrWierszaFa>14</n0:NrWierszaFa>
+			<n0:P_7>Noise silencer M-H-M5</n0:P_7>
+			<n0:Indeks>000000000000000014</n0:Indeks>
+			<n0:CN>84879090</n0:CN>
+			<n0:P_8A>SZT</n0:P_8A>
+			<n0:P_8B>20.0</n0:P_8B>
+			<n0:P_11>71.8</n0:P_11>
+			<n0:P_12>23</n0:P_12>
+		</n0:FaWiersz>
+		<n0:FaWiersz>
+			<n0:NrWierszaFa>15</n0:NrWierszaFa>
+			<n0:P_7>Tubing 4x0.75 red</n0:P_7>
+			<n0:Indeks>000000000000000015</n0:Indeks>
+			<n0:CN>39173200</n0:CN>
+			<n0:P_8A>M</n0:P_8A>
+			<n0:P_8B>50.0</n0:P_8B>
+			<n0:P_11>89.0</n0:P_11>
+			<n0:P_12>23</n0:P_12>
+		</n0:FaWiersz>
+		<n0:FaWiersz>
+			<n0:NrWierszaFa>16</n0:NrWierszaFa>
+			<n0:P_7>Tubing 4x0.75 blue</n0:P_7>
+			<n0:Indeks>000000000000000016</n0:Indeks>
+			<n0:CN>39173200</n0:CN>
+			<n0:P_8A>M</n0:P_8A>
+			<n0:P_8B>50.0</n0:P_8B>
+			<n0:P_11>89.0</n0:P_11>
+			<n0:P_12>23</n0:P_12>
+		</n0:FaWiersz>
+		<n0:FaWiersz>
+			<n0:NrWierszaFa>17</n0:NrWierszaFa>
+			<n0:P_7>Tubing 4x0.75 yellow</n0:P_7>
+			<n0:Indeks>000000000000000017</n0:Indeks>
+			<n0:CN>39173200</n0:CN>
+			<n0:P_8A>M</n0:P_8A>
+			<n0:P_8B>50.0</n0:P_8B>
+			<n0:P_11>89.0</n0:P_11>
+			<n0:P_12>23</n0:P_12>
+		</n0:FaWiersz>
+		<n0:FaWiersz>
+			<n0:NrWierszaFa>18</n0:NrWierszaFa>
+			<n0:P_7>Tubing 4x0.75 green</n0:P_7>
+			<n0:Indeks>000000000000000018</n0:Indeks>
+			<n0:CN>39173200</n0:CN>
+			<n0:P_8A>M</n0:P_8A>
+			<n0:P_8B>50.0</n0:P_8B>
+			<n0:P_11>89.0</n0:P_11>
+			<n0:P_12>23</n0:P_12>
+		</n0:FaWiersz>
+		<n0:FaWiersz>
+			<n0:NrWierszaFa>19</n0:NrWierszaFa>
+			<n0:P_7>Tubing 4x0.75 black</n0:P_7>
+			<n0:Indeks>000000000000000019</n0:Indeks>
+			<n0:CN>39173200</n0:CN>
+			<n0:P_8A>M</n0:P_8A>
+			<n0:P_8B>50.0</n0:P_8B>
+			<n0:P_11>89.0</n0:P_11>
+			<n0:P_12>23</n0:P_12>
+		</n0:FaWiersz>
+		<n0:FaWiersz>
+			<n0:NrWierszaFa>20</n0:NrWierszaFa>
+			<n0:P_7>Tubing 4x0.75 silver</n0:P_7>
+			<n0:Indeks>000000000000000020</n0:Indeks>
+			<n0:CN>39173200</n0:CN>
+			<n0:P_8A>M</n0:P_8A>
+			<n0:P_8B>50.0</n0:P_8B>
+			<n0:P_11>89.0</n0:P_11>
+			<n0:P_12>23</n0:P_12>
+		</n0:FaWiersz>
+		<n0:FaWiersz>
+			<n0:NrWierszaFa>1</n0:NrWierszaFa>
+			<n0:P_7>Connector L-type M5-4</n0:P_7>
+			<n0:Indeks>000000000000000001</n0:Indeks>
+			<n0:CN>74122000</n0:CN>
+			<n0:P_8A>SZT</n0:P_8A>
+			<n0:P_8B>10.0</n0:P_8B>
+			<n0:P_11>86.3</n0:P_11>
+			<n0:P_12>23</n0:P_12>
+		</n0:FaWiersz>
+		<n0:Platnosc>
+			<n0:TerminPlatnosci>
+				<n0:Termin>2026-03-12</n0:Termin>
+			</n0:TerminPlatnosci>
+			<n0:RachunekBankowy>
+				<n0:NrRB>PL61109010140000071219812874</n0:NrRB>
+				<n0:SWIFT>WBKPPLPP</n0:SWIFT>
+				<n0:NazwaBanku>Bank Testowy</n0:NazwaBanku>
+				<n0:OpisRachunku>PLN current account</n0:OpisRachunku>
+			</n0:RachunekBankowy>
+		</n0:Platnosc>
+		<n0:WarunkiTransakcji>
+			<n0:Umowy>
+				<n0:DataUmowy>2026-02-12</n0:DataUmowy>
+				<n0:NrUmowy>CONTRACT-001</n0:NrUmowy>
+			</n0:Umowy>
+			<n0:Zamowienia>
+				<n0:DataZamowienia>2026-02-12</n0:DataZamowienia>
+				<n0:NrZamowienia>ORDER-001</n0:NrZamowienia>
+			</n0:Zamowienia>
+			<n0:WarunkiDostawy>DDP destination</n0:WarunkiDostawy>
+		</n0:WarunkiTransakcji>
+	</n0:Fa>
+</n0:Faktura>

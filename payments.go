@@ -172,6 +172,10 @@ func (inv *Inv) parsePayment(goblInv *bill.Invoice) error {
 			payment.Instructions.Ext[favat.ExtKeyPaymentMeans] = cbc.Code(inv.Payment.PaymentMean)
 		} else if inv.Payment.OtherPaymentMeanMarker == "1" {
 			payment.Instructions.Key = cbc.Key(inv.Payment.OtherPaymentMean)
+		} else if len(inv.Payment.BankAccounts) > 0 {
+			// When bank accounts are present without an explicit payment method,
+			// default to credit transfer.
+			payment.Instructions.Key = pay.MeansKeyCreditTransfer
 		}
 
 		// Parse bank accounts
@@ -204,11 +208,17 @@ func (inv *Inv) parsePayment(goblInv *bill.Invoice) error {
 		}
 	}
 
+	// For credit notes, KSeF amounts are negative but GOBL expects positive values.
+	isCreditNote := goblInv.Type == bill.InvoiceTypeCreditNote
+
 	// Handle paid in full (Zaplacono=1) with no partial advance payments
 	if inv.Payment.PaidMarker == "1" && len(inv.Payment.AdvancePayments) == 0 {
 		amt, err := parseAmount(inv.TotalAmountDue)
 		if err != nil {
 			return fmt.Errorf("parsing total amount for advance: %w", err)
+		}
+		if isCreditNote {
+			amt = amt.Invert()
 		}
 		advance := &pay.Advance{
 			Description: "Advance payment",
@@ -242,6 +252,9 @@ func (inv *Inv) parsePayment(goblInv *bill.Invoice) error {
 				amt, err := parseAmount(adv.PaymentAmount)
 				if err != nil {
 					return fmt.Errorf("parsing advance amount: %w", err)
+				}
+				if isCreditNote {
+					amt = amt.Invert()
 				}
 				advance.Amount = amt
 			}

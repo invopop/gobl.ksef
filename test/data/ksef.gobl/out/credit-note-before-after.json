@@ -69,7 +69,8 @@
         "quantity": "-1.00",
         "item": {
           "name": "Vehicle pickup within city limits",
-          "price": "48.78"
+          "price": "48.78",
+          "unit": "szt"
         },
         "sum": "-48.78",
         "taxes": [
@@ -90,7 +91,8 @@
         "quantity": "-6.00",
         "item": {
           "name": "Vehicle rental, class A, 2026-02-10 to 2026-02-16",
-          "price": "190.00"
+          "price": "190.00",
+          "unit": "d"
         },
         "sum": "-1140.00",
         "taxes": [
@@ -112,7 +114,8 @@
         "quantity": "6.00",
         "item": {
           "name": "Vehicle rental, class A, 2026-02-10 to 2026-02-16",
-          "price": "190.00"
+          "price": "190.00",
+          "unit": "d"
         },
         "sum": "1140.00",
         "taxes": [
@@ -138,7 +141,8 @@
         "quantity": "-6.00",
         "item": {
           "name": "Insurance package, 2026-02-10 to 2026-02-16",
-          "price": "36.59"
+          "price": "36.59",
+          "unit": "d"
         },
         "sum": "-219.54",
         "taxes": [
@@ -159,7 +163,8 @@
         "quantity": "6.00",
         "item": {
           "name": "Insurance package, 2026-02-10 to 2026-02-16",
-          "price": "36.59"
+          "price": "36.59",
+          "unit": "d"
         },
         "sum": "219.54",
         "taxes": [
@@ -234,7 +239,8 @@
         "quantity": "-1.00",
         "item": {
           "name": "Initial delivery fee",
-          "price": "48.78"
+          "price": "48.78",
+          "unit": "szt"
         },
         "sum": "-48.78",
         "taxes": [
@@ -255,7 +261,8 @@
         "quantity": "1.00",
         "item": {
           "name": "Initial delivery fee",
-          "price": "48.78"
+          "price": "48.78",
+          "unit": "szt"
         },
         "sum": "48.78",
         "taxes": [

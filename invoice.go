@@ -501,6 +501,11 @@ func (inv *Inv) parseLines(goblInv *bill.Invoice) error {
 		if ksefLine.NetUnitPrice == "" && ksefLine.GrossUnitPrice != "" {
 			hasGrossPricing = true
 		}
+		// Also detect gross pricing when no unit prices exist but gross total is present
+		if ksefLine.NetUnitPrice == "" && ksefLine.GrossUnitPrice == "" &&
+			ksefLine.NetPriceTotal == "" && ksefLine.GrossPriceTotal != "" {
+			hasGrossPricing = true
+		}
 	}
 
 	if hasGrossPricing {
