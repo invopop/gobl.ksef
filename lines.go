@@ -177,7 +177,7 @@ func (l *Line) ToGOBL() (*bill.Line, error) {
 
 	// Parse unit of measure
 	if l.Measure != "" {
-		line.Item.Unit = parseUnit(l.Measure)
+		line.Item.Unit = org.Unit(l.Measure)
 	}
 
 	// Parse discount

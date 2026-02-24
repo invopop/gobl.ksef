@@ -206,11 +206,11 @@ func TestNewLines(t *testing.T) {
 func TestLineToGOBL(t *testing.T) {
 	t.Run("converts basic KSEF line to GOBL", func(t *testing.T) {
 		ksefLine := &ksef.Line{
-			Name:         "Test Item",
-			Quantity:     "2",
-			NetUnitPrice: "100.00",
-			Measure:      "HUR",
-			VATRate:      "23",
+			Name:          "Test Item",
+			Quantity:      "2",
+			NetUnitPrice:  "100.00",
+			Measure:       "HUR",
+			VATRate:       "23",
 			NetPriceTotal: "200.00",
 		}
 
@@ -460,21 +460,6 @@ func TestLineToGOBL(t *testing.T) {
 		require.NoError(t, err)
 		require.NotNil(t, line.Item.Price)
 		assert.Equal(t, "100.00", line.Item.Price.String())
-	})
-
-	t.Run("handles invalid unit codes gracefully", func(t *testing.T) {
-		ksefLine := &ksef.Line{
-			Name:         "Item with Polish unit",
-			Quantity:     "1",
-			NetUnitPrice: "100.00",
-			Measure:      "szt",
-			VATRate:      "23",
-		}
-
-		line, err := ksefLine.ToGOBL()
-
-		require.NoError(t, err)
-		assert.Equal(t, org.Unit(""), line.Item.Unit)
 	})
 
 	t.Run("handles valid UNECE unit codes", func(t *testing.T) {

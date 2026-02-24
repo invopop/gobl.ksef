@@ -1,0 +1,173 @@
+{
+  "$schema": "https://gobl.org/draft-0/envelope",
+  "head": {
+    "uuid": "00000000-0000-0000-0000-000000000000",
+    "dig": {
+      "alg": "sha256",
+      "val": "0000000000000000000000000000000000000000000000000000000000000000"
+    }
+  },
+  "doc": {
+    "$schema": "https://gobl.org/draft-0/bill/invoice",
+    "$regime": "PL",
+    "$addons": [
+      "pl-favat-v3"
+    ],
+    "$tags": [
+      "bypass"
+    ],
+    "uuid": "00000000-0000-0000-0000-000000000000",
+    "type": "credit-note",
+    "code": "KOR/001/2026",
+    "issue_date": "2026-02-23",
+    "currency": "PLN",
+    "preceding": [
+      {
+        "issue_date": "2026-02-09",
+        "code": "FV/100/2026",
+        "reason": "Zwrot biletu",
+        "stamps": [
+          {
+            "prv": "favat-ksef-number",
+            "val": "1111111111-20260209-AAAAAAAAAA00-01"
+          }
+        ],
+        "ext": {
+          "pl-favat-effective-date": "3"
+        }
+      }
+    ],
+    "tax": {
+      "prices_include": "VAT",
+      "rounding": "currency",
+      "ext": {
+        "pl-favat-invoice-type": "KOR"
+      }
+    },
+    "supplier": {
+      "name": "Przykładowy Przewoźnik S.A.",
+      "tax_id": {
+        "country": "PL",
+        "code": "1111111111"
+      },
+      "addresses": [
+        {
+          "street": "ul. Testowa 10, 00-001 Warszawa",
+          "country": "PL"
+        }
+      ]
+    },
+    "customer": {
+      "name": "Odbiorca Testowy Sp. z o.o.",
+      "tax_id": {
+        "country": "PL",
+        "code": "9876543210"
+      },
+      "addresses": [
+        {
+          "street": "ul. Odbiorcza 5, 00-002 Warszawa",
+          "country": "PL"
+        }
+      ]
+    },
+    "lines": [
+      {
+        "uuid": "00000000-0000-0000-0000-000000000000",
+        "i": 1,
+        "quantity": "1",
+        "item": {
+          "name": "Usługa transportowa Bilet Nr: 000001",
+          "price": "87",
+          "unit": "szt"
+        },
+        "taxes": [
+          {
+            "cat": "VAT",
+            "key": "standard",
+            "rate": "reduced",
+            "percent": "8.0%",
+            "ext": {
+              "pl-favat-tax-category": "2"
+            }
+          }
+        ],
+        "total": "80.56",
+        "notes": [
+          {
+            "text": "Before correction (stan przed korektą)"
+          }
+        ]
+      },
+      {
+        "uuid": "00000000-0000-0000-0000-000000000000",
+        "i": 2,
+        "quantity": "-1",
+        "item": {
+          "name": "Usługa transportowa Bilet Nr: 000001",
+          "price": "0",
+          "unit": "szt"
+        },
+        "taxes": [
+          {
+            "cat": "VAT",
+            "key": "standard",
+            "rate": "reduced",
+            "percent": "8.0%",
+            "ext": {
+              "pl-favat-tax-category": "2"
+            }
+          }
+        ],
+        "total": "0.00"
+      }
+    ],
+    "payment": {
+      "advances": [
+        {
+          "date": "2026-02-09",
+          "key": "online",
+          "description": "Advance payment",
+          "amount": "-87.00",
+          "ext": {
+            "pl-favat-payment-means": "7"
+          }
+        }
+      ],
+      "instructions": {
+        "key": "online",
+        "ext": {
+          "pl-favat-payment-means": "7"
+        }
+      }
+    },
+    "totals": {
+      "sum": "80.56",
+      "total": "80.56",
+      "taxes": {
+        "categories": [
+          {
+            "code": "VAT",
+            "rates": [
+              {
+                "key": "standard",
+                "ext": {
+                  "pl-favat-tax-category": "2"
+                },
+                "base": "80.56",
+                "percent": "8.0%",
+                "amount": "6.44"
+              }
+            ],
+            "amount": "6.44"
+          }
+        ],
+        "sum": "6.44"
+      },
+      "tax": "6.44",
+      "total_with_tax": "87.00",
+      "payable": "87.00",
+      "advance": "-87.00",
+      "due": "174.00"
+    }
+  }
+}

@@ -283,7 +283,8 @@
         "i": 12,
         "quantity": "50.0",
         "item": {
-          "name": "Tubing 12x2 black"
+          "name": "Tubing 12x2 black",
+          "unit": "M"
         },
         "taxes": [
           {
@@ -342,7 +343,8 @@
         "i": 15,
         "quantity": "50.0",
         "item": {
-          "name": "Tubing 4x0.75 red"
+          "name": "Tubing 4x0.75 red",
+          "unit": "M"
         },
         "taxes": [
           {
@@ -361,7 +363,8 @@
         "i": 16,
         "quantity": "50.0",
         "item": {
-          "name": "Tubing 4x0.75 blue"
+          "name": "Tubing 4x0.75 blue",
+          "unit": "M"
         },
         "taxes": [
           {
@@ -380,7 +383,8 @@
         "i": 17,
         "quantity": "50.0",
         "item": {
-          "name": "Tubing 4x0.75 yellow"
+          "name": "Tubing 4x0.75 yellow",
+          "unit": "M"
         },
         "taxes": [
           {
@@ -399,7 +403,8 @@
         "i": 18,
         "quantity": "50.0",
         "item": {
-          "name": "Tubing 4x0.75 green"
+          "name": "Tubing 4x0.75 green",
+          "unit": "M"
         },
         "taxes": [
           {
@@ -418,7 +423,8 @@
         "i": 19,
         "quantity": "50.0",
         "item": {
-          "name": "Tubing 4x0.75 black"
+          "name": "Tubing 4x0.75 black",
+          "unit": "M"
         },
         "taxes": [
           {
@@ -437,7 +443,8 @@
         "i": 20,
         "quantity": "50.0",
         "item": {
-          "name": "Tubing 4x0.75 silver"
+          "name": "Tubing 4x0.75 silver",
+          "unit": "M"
         },
         "taxes": [
           {
