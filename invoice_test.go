@@ -792,6 +792,7 @@ func TestParseOrderingLines(t *testing.T) {
 	t.Run("skips when no order data", func(t *testing.T) {
 		doc := testPrepaymentDoc()
 		doc.Inv.Order = nil
+		doc.Inv.TransactionConditions = nil
 
 		inv, err := doc.ToGOBL()
 		require.NoError(t, err)
@@ -800,6 +801,24 @@ func TestParseOrderingLines(t *testing.T) {
 		if inv.Ordering != nil {
 			assert.Empty(t, inv.Ordering.Purchases)
 		}
+	})
+
+	t.Run("parses Zamowienia without Zamowienie", func(t *testing.T) {
+		doc := testPrepaymentDoc()
+		doc.Inv.Order = nil // no Zamowienie block
+
+		inv, err := doc.ToGOBL()
+		require.NoError(t, err)
+		require.NotNil(t, inv.Ordering)
+		require.Len(t, inv.Ordering.Purchases, 1)
+
+		ref := inv.Ordering.Purchases[0]
+		assert.Equal(t, cbc.Code("PO-12345"), ref.Code)
+		require.NotNil(t, ref.IssueDate)
+		assert.Equal(t, "2026-01-10", ref.IssueDate.String())
+		// No payable or tax since there's no Zamowienie order block
+		assert.Nil(t, ref.Payable)
+		assert.Nil(t, ref.Tax)
 	})
 
 	t.Run("creates purchase ref with order number and date", func(t *testing.T) {

@@ -94,112 +94,147 @@ func newOrder(ordering *bill.Ordering) *Order {
 	return order
 }
 
-// parseOrderingLines maps Zamowienie (order) data into Ordering.Purchases.
-// Any invoice type can have Zamowienie and WarunkiTransakcji data.
+// parseOrderingLines maps Zamowienie (order) and WarunkiTransakcji data into
+// Ordering fields. Zamowienia references are parsed into Purchases, Umowy
+// references into Contracts. When a Zamowienie (Order) block is present its
+// amount and line-item tax data are merged into the first purchase ref.
 func (inv *Inv) parseOrderingLines(goblInv *bill.Invoice) error {
-	if inv.Order == nil {
+	hasOrder := inv.Order != nil
+	hasOrders := inv.TransactionConditions != nil && len(inv.TransactionConditions.Orders) > 0
+	hasContracts := inv.TransactionConditions != nil && len(inv.TransactionConditions.Contracts) > 0
+
+	if !hasOrder && !hasOrders && !hasContracts {
 		return nil
 	}
 
-	ref := &org.DocumentRef{}
-
-	// Set order date and number from WarunkiTransakcji.Zamowienia
-	if inv.TransactionConditions != nil && len(inv.TransactionConditions.Orders) > 0 {
-		order := inv.TransactionConditions.Orders[0]
-		if order.Date != "" {
-			date, err := parseDate(order.Date)
-			if err != nil {
-				return fmt.Errorf("parsing order date: %w", err)
-			}
-			ref.IssueDate = &date
-		}
-		if order.Number != "" {
-			ref.Code = cbc.Code(order.Number)
-		}
-	}
-
-	// DocumentRef requires a non-empty code
-	if ref.Code == "" {
-		ref.Code = "unknown"
-	}
-
-	// Set payable from order total
-	if inv.Order.OrderAmount != "" {
-		payable, err := parseAmount(inv.Order.OrderAmount)
-		if err != nil {
-			return fmt.Errorf("parsing order amount: %w", err)
-		}
-		ref.Payable = &payable
-	}
-
-	// Build tax total and description from order lines (one rate per line)
-	if len(inv.Order.LineItems) > 0 {
-		var rates []*tax.RateTotal
-		var taxSum num.Amount
-		var descriptions []string
-
-		for _, ol := range inv.Order.LineItems {
-			if ol.Name != "" {
-				descriptions = append(descriptions, ol.Name)
-			}
-
-			rt := &tax.RateTotal{}
-
-			if ol.NetPriceTotal != "" {
-				netAmt, err := parseAmount(ol.NetPriceTotal)
-				if err != nil {
-					return fmt.Errorf("parsing order line net: %w", err)
-				}
-				rt.Base = netAmt
-			}
-
-			if ol.TaxValue != "" {
-				taxAmt, err := parseAmount(ol.TaxValue)
-				if err != nil {
-					return fmt.Errorf("parsing order line tax: %w", err)
-				}
-				rt.Amount = taxAmt
-				taxSum = taxSum.MatchPrecision(taxAmt)
-				taxSum = taxSum.Add(taxAmt)
-			}
-
-			if ol.VATRate != "" {
-				rateF, err := strconv.ParseFloat(ol.VATRate, 64)
-				if err == nil && rateF > 0 {
-					pct := num.MakePercentage(int64(rateF*10), 3)
-					rt.Percent = &pct
-				}
-			}
-
-			rates = append(rates, rt)
-		}
-
-		if len(descriptions) > 0 {
-			ref.Description = descriptions[0]
-			for _, d := range descriptions[1:] {
-				ref.Description += ", " + d
-			}
-		}
-
-		if len(rates) > 0 {
-			ref.Tax = &tax.Total{
-				Categories: []*tax.CategoryTotal{
-					{
-						Code:   tax.CategoryVAT,
-						Rates:  rates,
-						Amount: taxSum,
-					},
-				},
-				Sum: taxSum,
-			}
-		}
-	}
-
-	// Add to ordering purchases
 	if goblInv.Ordering == nil {
 		goblInv.Ordering = &bill.Ordering{}
 	}
-	goblInv.Ordering.Purchases = append(goblInv.Ordering.Purchases, ref)
+
+	// Parse Zamowienia (order references) from TransactionConditions
+	if hasOrders {
+		for _, or := range inv.TransactionConditions.Orders {
+			ref := &org.DocumentRef{}
+			if or.Date != "" {
+				date, err := parseDate(or.Date)
+				if err != nil {
+					return fmt.Errorf("parsing order date: %w", err)
+				}
+				ref.IssueDate = &date
+			}
+			if or.Number != "" {
+				ref.Code = cbc.Code(or.Number)
+			}
+			if ref.Code == "" {
+				ref.Code = "unknown"
+			}
+			goblInv.Ordering.Purchases = append(goblInv.Ordering.Purchases, ref)
+		}
+	}
+
+	// Parse Umowy (contract references) from TransactionConditions
+	if hasContracts {
+		for _, c := range inv.TransactionConditions.Contracts {
+			ref := &org.DocumentRef{}
+			if c.Date != "" {
+				date, err := parseDate(c.Date)
+				if err != nil {
+					return fmt.Errorf("parsing contract date: %w", err)
+				}
+				ref.IssueDate = &date
+			}
+			if c.Number != "" {
+				ref.Code = cbc.Code(c.Number)
+			}
+			if ref.Code == "" {
+				ref.Code = "unknown"
+			}
+			goblInv.Ordering.Contracts = append(goblInv.Ordering.Contracts, ref)
+		}
+	}
+
+	// Parse Zamowienie (Order) data - merge into the first purchase ref
+	if hasOrder {
+		var ref *org.DocumentRef
+		if len(goblInv.Ordering.Purchases) > 0 {
+			ref = goblInv.Ordering.Purchases[0]
+		} else {
+			ref = &org.DocumentRef{Code: "unknown"}
+			goblInv.Ordering.Purchases = append(goblInv.Ordering.Purchases, ref)
+		}
+
+		// Set payable from order total
+		if inv.Order.OrderAmount != "" {
+			payable, err := parseAmount(inv.Order.OrderAmount)
+			if err != nil {
+				return fmt.Errorf("parsing order amount: %w", err)
+			}
+			ref.Payable = &payable
+		}
+
+		// Build tax total and description from order lines (one rate per line)
+		if len(inv.Order.LineItems) > 0 {
+			var rates []*tax.RateTotal
+			var taxSum num.Amount
+			var descriptions []string
+
+			for _, ol := range inv.Order.LineItems {
+				if ol.Name != "" {
+					descriptions = append(descriptions, ol.Name)
+				}
+
+				rt := &tax.RateTotal{}
+
+				if ol.NetPriceTotal != "" {
+					netAmt, err := parseAmount(ol.NetPriceTotal)
+					if err != nil {
+						return fmt.Errorf("parsing order line net: %w", err)
+					}
+					rt.Base = netAmt
+				}
+
+				if ol.TaxValue != "" {
+					taxAmt, err := parseAmount(ol.TaxValue)
+					if err != nil {
+						return fmt.Errorf("parsing order line tax: %w", err)
+					}
+					rt.Amount = taxAmt
+					taxSum = taxSum.MatchPrecision(taxAmt)
+					taxSum = taxSum.Add(taxAmt)
+				}
+
+				if ol.VATRate != "" {
+					rateF, err := strconv.ParseFloat(ol.VATRate, 64)
+					if err == nil && rateF > 0 {
+						pct := num.MakePercentage(int64(rateF*10), 3)
+						rt.Percent = &pct
+					}
+				}
+
+				rates = append(rates, rt)
+			}
+
+			if len(descriptions) > 0 {
+				ref.Description = descriptions[0]
+				for _, d := range descriptions[1:] {
+					ref.Description += ", " + d
+				}
+			}
+
+			if len(rates) > 0 {
+				ref.Tax = &tax.Total{
+					Categories: []*tax.CategoryTotal{
+						{
+							Code:   tax.CategoryVAT,
+							Rates:  rates,
+							Amount: taxSum,
+						},
+					},
+					Sum: taxSum,
+				}
+			}
+		}
+	}
 
 	return nil
 }

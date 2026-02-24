@@ -519,6 +519,20 @@
         "total": "86.30"
       }
     ],
+    "ordering": {
+      "contracts": [
+        {
+          "issue_date": "2026-02-12",
+          "code": "CONTRACT-001"
+        }
+      ],
+      "purchases": [
+        {
+          "issue_date": "2026-02-12",
+          "code": "ORDER-001"
+        }
+      ]
+    },
     "payment": {
       "terms": {
         "due_dates": [
