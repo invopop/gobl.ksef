@@ -160,6 +160,21 @@ func (l *Line) ToGOBL() (*bill.Line, error) {
 		line.Item.Price = &price
 	}
 
+	// Parse line total (P_11 / P_11A)
+	if l.NetPriceTotal != "" {
+		total, err := parseAmount(l.NetPriceTotal)
+		if err != nil {
+			return nil, err
+		}
+		line.Total = &total
+	} else if l.GrossPriceTotal != "" {
+		total, err := parseAmount(l.GrossPriceTotal)
+		if err != nil {
+			return nil, err
+		}
+		line.Total = &total
+	}
+
 	// Parse unit of measure
 	if l.Measure != "" {
 		line.Item.Unit = parseUnit(l.Measure)

@@ -14,7 +14,8 @@
       "pl-favat-v3"
     ],
     "$tags": [
-      "reverse-charge"
+      "reverse-charge",
+      "bypass"
     ],
     "uuid": "00000000-0000-0000-0000-000000000000",
     "type": "standard",
@@ -62,7 +63,6 @@
           "name": "IT Services - EU Reverse Charge",
           "price": "5000.00"
         },
-        "sum": "5000.00",
         "taxes": [
           {
             "cat": "VAT",
@@ -89,15 +89,15 @@
                   "pl-favat-tax-category": "9"
                 },
                 "base": "5000.00",
-                "amount": "0.00"
+                "amount": "0"
               }
             ],
-            "amount": "0.00"
+            "amount": "0"
           }
         ],
-        "sum": "0.00"
+        "sum": "0"
       },
-      "tax": "0.00",
+      "tax": "0",
       "total_with_tax": "5000.00",
       "payable": "5000.00"
     },

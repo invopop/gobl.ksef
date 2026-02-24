@@ -13,6 +13,9 @@
     "$addons": [
       "pl-favat-v3"
     ],
+    "$tags": [
+      "bypass"
+    ],
     "uuid": "00000000-0000-0000-0000-000000000000",
     "type": "standard",
     "code": "JST-001",
@@ -69,7 +72,6 @@
           "name": "IT System Development for Local Government",
           "price": "50000.00"
         },
-        "sum": "50000.00",
         "taxes": [
           {
             "cat": "VAT",

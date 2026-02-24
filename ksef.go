@@ -11,7 +11,6 @@ import (
 	"github.com/invopop/gobl/bill"
 	"github.com/invopop/gobl/cbc"
 	"github.com/invopop/gobl/currency"
-	"github.com/invopop/gobl/num"
 	"github.com/invopop/gobl/tax"
 )
 
@@ -136,27 +135,9 @@ func (d *Invoice) ToGOBL() (*bill.Invoice, error) {
 		return inv, err
 	}
 
-	// For bypass invoices (prepayment without lines), set totals directly
-	// from the invoice-level tax fields. Otherwise calculate and adjust rounding.
-	if inv.HasTags(tax.TagBypass) {
-		if err := d.Inv.parsePrepaymentTotals(inv); err != nil {
-			return inv, err
-		}
-	} else {
-		// Calculate totals and adjust for rounding if needed.
-		// For credit notes, line totals are now positive (GOBL convention),
-		// so we must invert the KSeF P_15 total to match.
-		totalDue := d.Inv.TotalAmountDue
-		if inv.Type == bill.InvoiceTypeCreditNote {
-			amt, err := num.AmountFromString(totalDue)
-			if err != nil {
-				return inv, fmt.Errorf("parsing total amount due: %w", err)
-			}
-			totalDue = amt.Invert().String()
-		}
-		if err := AdjustRounding(inv, totalDue); err != nil {
-			return inv, err
-		}
+	// Set totals directly from the invoice-level tax fields (bypass mode).
+	if err := d.Inv.parseTotals(inv); err != nil {
+		return inv, err
 	}
 
 	return inv, nil

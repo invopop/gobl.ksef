@@ -13,6 +13,9 @@
     "$addons": [
       "pl-favat-v3"
     ],
+    "$tags": [
+      "bypass"
+    ],
     "uuid": "00000000-0000-0000-0000-000000000000",
     "type": "standard",
     "code": "GV-001",
@@ -70,7 +73,6 @@
           "price": "500.00",
           "unit": "HUR"
         },
-        "sum": "5000.00",
         "taxes": [
           {
             "cat": "VAT",

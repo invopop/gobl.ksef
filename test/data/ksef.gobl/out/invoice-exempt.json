@@ -13,6 +13,9 @@
     "$addons": [
       "pl-favat-v3"
     ],
+    "$tags": [
+      "bypass"
+    ],
     "uuid": "00000000-0000-0000-0000-000000000000",
     "type": "standard",
     "code": "EX-001",
@@ -59,7 +62,6 @@
           "name": "Medical Consultation",
           "price": "200.00"
         },
-        "sum": "200.00",
         "taxes": [
           {
             "cat": "VAT",
@@ -86,15 +88,15 @@
                   "pl-favat-tax-category": "7"
                 },
                 "base": "200.00",
-                "amount": "0.00"
+                "amount": "0"
               }
             ],
-            "amount": "0.00"
+            "amount": "0"
           }
         ],
-        "sum": "0.00"
+        "sum": "0"
       },
-      "tax": "0.00",
+      "tax": "0",
       "total_with_tax": "200.00",
       "payable": "200.00"
     },

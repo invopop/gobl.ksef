@@ -502,6 +502,51 @@ func TestCreditNoteLineInversion(t *testing.T) {
 		assert.Equal(t, "20.00", inv.Lines[0].Discounts[0].Amount.String())
 	})
 
+	t.Run("inverts line.Total for non-StanPrzed lines", func(t *testing.T) {
+		doc := testCreditNoteDoc([]*ksef.Line{
+			{
+				LineNumber:    1,
+				Name:          "Software Services",
+				Quantity:      "-10",
+				NetUnitPrice:  "10.00",
+				NetPriceTotal: "-100.00",
+				Measure:       "HUR",
+				VATRate:       "23",
+			},
+		}, "-123.00")
+
+		inv, err := doc.ToGOBL()
+		require.NoError(t, err)
+		require.Len(t, inv.Lines, 1)
+
+		// line.Total should be inverted from -100.00 to 100.00
+		require.NotNil(t, inv.Lines[0].Total)
+		assert.Equal(t, "100.00", inv.Lines[0].Total.String())
+	})
+
+	t.Run("does not invert line.Total for StanPrzed lines", func(t *testing.T) {
+		doc := testCreditNoteDoc([]*ksef.Line{
+			{
+				LineNumber:             1,
+				Name:                   "Item A",
+				Quantity:               "2",
+				NetUnitPrice:           "50.00",
+				NetPriceTotal:          "100.00",
+				Measure:                "HUR",
+				VATRate:                "23",
+				BeforeCorrectionMarker: 1,
+			},
+		}, "-123.00")
+
+		inv, err := doc.ToGOBL()
+		require.NoError(t, err)
+		require.Len(t, inv.Lines, 1)
+
+		// StanPrzed line.Total should stay positive
+		require.NotNil(t, inv.Lines[0].Total)
+		assert.Equal(t, "100.00", inv.Lines[0].Total.String())
+	})
+
 	t.Run("does not invert lines for standard invoices", func(t *testing.T) {
 		doc := &ksef.Invoice{
 			Seller: &ksef.Seller{
@@ -658,37 +703,38 @@ func TestPrepaymentBypass(t *testing.T) {
 		assert.Empty(t, inv.Lines)
 	})
 
-	t.Run("does not set bypass for ZAL with FaWiersz lines", func(t *testing.T) {
+	t.Run("sets bypass for ZAL with FaWiersz lines", func(t *testing.T) {
 		doc := testPrepaymentDoc()
 		doc.Inv.Lines = []*ksef.Line{
 			{
-				LineNumber:   1,
-				Name:         "Line item",
-				Quantity:     "1",
-				NetUnitPrice: "1000.00",
-				VATRate:      "23",
+				LineNumber:    1,
+				Name:          "Line item",
+				Quantity:      "1",
+				NetUnitPrice:  "1000.00",
+				NetPriceTotal: "1000.00",
+				VATRate:       "23",
 			},
 		}
 
 		inv, err := doc.ToGOBL()
 		require.NoError(t, err)
 
-		assert.False(t, inv.HasTags(tax.TagBypass))
+		assert.True(t, inv.HasTags(tax.TagBypass))
 		assert.Len(t, inv.Lines, 1)
 	})
 
-	t.Run("does not set bypass for standard VAT invoice with lines", func(t *testing.T) {
+	t.Run("sets bypass for standard VAT invoice with lines", func(t *testing.T) {
 		doc := testPrepaymentDoc()
 		doc.Inv.InvoiceType = "VAT"
 		doc.Inv.Order = nil
 		doc.Inv.Lines = []*ksef.Line{
-			{LineNumber: 1, Name: "Item", Quantity: "1", NetUnitPrice: "1000.00", VATRate: "23"},
+			{LineNumber: 1, Name: "Item", Quantity: "1", NetUnitPrice: "1000.00", NetPriceTotal: "1000.00", VATRate: "23"},
 		}
 
 		inv, err := doc.ToGOBL()
 		require.NoError(t, err)
 
-		assert.False(t, inv.HasTags(tax.TagBypass))
+		assert.True(t, inv.HasTags(tax.TagBypass))
 	})
 }
 
@@ -989,17 +1035,17 @@ func TestIsPrepaymentType(t *testing.T) {
 		assert.True(t, inv.HasTags(tax.TagBypass))
 	})
 
-	// Non-prepayment types: test via ToGOBL with lines (so totals calculate)
-	nonPrepayment := []struct {
+	// All invoice types now get bypass
+	allTypes := []struct {
 		name    string
 		invType string
 	}{
 		{"VAT", "VAT"},
-		{"KOR", "KOR"},  // credit note needs matching TotalAmountDue
+		{"KOR", "KOR"},
 		{"ROZ", "ROZ"},
 	}
-	for _, tt := range nonPrepayment {
-		t.Run(tt.name+" does not set bypass", func(t *testing.T) {
+	for _, tt := range allTypes {
+		t.Run(tt.name+" sets bypass", func(t *testing.T) {
 			doc := testPrepaymentDoc()
 			doc.Inv.InvoiceType = tt.invType
 			doc.Inv.StandardRateNetSale = "1000.00"
@@ -1009,20 +1055,22 @@ func TestIsPrepaymentType(t *testing.T) {
 			doc.Inv.Payment = nil
 			if tt.invType == "KOR" {
 				doc.Inv.Lines = []*ksef.Line{
-					{LineNumber: 1, Name: "Item", Quantity: "-1", NetUnitPrice: "1000.00", VATRate: "23"},
+					{LineNumber: 1, Name: "Item", Quantity: "-1", NetUnitPrice: "1000.00", NetPriceTotal: "-1000.00", VATRate: "23"},
 				}
+				doc.Inv.StandardRateNetSale = "-1000.00"
+				doc.Inv.StandardRateTax = "-230.00"
 				doc.Inv.TotalAmountDue = "-1230.00"
 				doc.Inv.CorrectedInv = []*ksef.CorrectedInv{
 					{SequentialNumber: "FV-001", IssueDate: "2026-01-01"},
 				}
 			} else {
 				doc.Inv.Lines = []*ksef.Line{
-					{LineNumber: 1, Name: "Item", Quantity: "1", NetUnitPrice: "1000.00", VATRate: "23"},
+					{LineNumber: 1, Name: "Item", Quantity: "1", NetUnitPrice: "1000.00", NetPriceTotal: "1000.00", VATRate: "23"},
 				}
 			}
 			inv, err := doc.ToGOBL()
 			require.NoError(t, err)
-			assert.False(t, inv.HasTags(tax.TagBypass))
+			assert.True(t, inv.HasTags(tax.TagBypass))
 		})
 	}
 }
@@ -1120,8 +1168,8 @@ func TestOrderingOnStandardInvoice(t *testing.T) {
 	require.Len(t, inv.Ordering.Purchases, 1)
 	assert.Equal(t, cbc.Code("PO-12345"), inv.Ordering.Purchases[0].Code)
 
-	// But should NOT have bypass tag
-	assert.False(t, inv.HasTags(tax.TagBypass))
+	// All KSeF→GOBL conversions now use bypass
+	assert.True(t, inv.HasTags(tax.TagBypass))
 	// And should have lines
 	require.Len(t, inv.Lines, 1)
 }

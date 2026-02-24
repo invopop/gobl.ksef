@@ -13,6 +13,9 @@
     "$addons": [
       "pl-favat-v3"
     ],
+    "$tags": [
+      "bypass"
+    ],
     "uuid": "00000000-0000-0000-0000-000000000000",
     "type": "credit-note",
     "code": "KOR-001",
@@ -75,7 +78,6 @@
           "price": "10.00",
           "unit": "HUR"
         },
-        "sum": "100.00",
         "taxes": [
           {
             "cat": "VAT",

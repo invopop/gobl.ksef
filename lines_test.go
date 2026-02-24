@@ -506,4 +506,56 @@ func TestLineToGOBL(t *testing.T) {
 		require.NoError(t, err)
 		assert.Equal(t, org.Unit("h"), line.Item.Unit)
 	})
+
+	t.Run("maps P_11 (NetPriceTotal) to line.Total", func(t *testing.T) {
+		ksefLine := &ksef.Line{
+			Name:          "Item with total",
+			Quantity:      "2",
+			NetUnitPrice:  "50.00",
+			NetPriceTotal: "100.00",
+			Measure:       "HUR",
+			VATRate:       "23",
+		}
+
+		line, err := ksefLine.ToGOBL()
+
+		require.NoError(t, err)
+		require.NotNil(t, line.Total)
+		assert.Equal(t, "100.00", line.Total.String())
+	})
+
+	t.Run("maps P_11A (GrossPriceTotal) to line.Total when no P_11", func(t *testing.T) {
+		ksefLine := &ksef.Line{
+			Name:            "Item with gross total",
+			Quantity:        "1",
+			GrossUnitPrice:  "123.00",
+			GrossPriceTotal: "123.00",
+			Measure:         "HUR",
+			VATRate:         "23",
+		}
+
+		line, err := ksefLine.ToGOBL()
+
+		require.NoError(t, err)
+		require.NotNil(t, line.Total)
+		assert.Equal(t, "123.00", line.Total.String())
+	})
+
+	t.Run("handles line without unit price (P_11 only)", func(t *testing.T) {
+		ksefLine := &ksef.Line{
+			Name:          "No unit price item",
+			Quantity:      "10.0",
+			NetPriceTotal: "86.3",
+			Measure:       "HUR",
+			VATRate:       "23",
+		}
+
+		line, err := ksefLine.ToGOBL()
+
+		require.NoError(t, err)
+		assert.Nil(t, line.Item.Price)
+		require.NotNil(t, line.Total)
+		assert.Equal(t, "86.3", line.Total.String())
+		assert.Equal(t, "10.0", line.Quantity.String())
+	})
 }

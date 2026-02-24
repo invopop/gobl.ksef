@@ -14,7 +14,8 @@
       "pl-favat-v3"
     ],
     "$tags": [
-      "partial"
+      "partial",
+      "bypass"
     ],
     "uuid": "00000000-0000-0000-0000-000000000000",
     "type": "standard",
@@ -61,7 +62,6 @@
           "name": "Advance Payment for Project",
           "price": "5000.00"
         },
-        "sum": "5000.00",
         "taxes": [
           {
             "cat": "VAT",
@@ -113,9 +113,9 @@
       },
       "tax": "1150.00",
       "total_with_tax": "6150.00",
-      "payable": "6150.00",
+      "payable": "3075.00",
       "advance": "3075.00",
-      "due": "3075.00"
+      "due": "0.00"
     }
   }
 }

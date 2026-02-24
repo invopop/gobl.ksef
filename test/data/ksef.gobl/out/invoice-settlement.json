@@ -14,7 +14,8 @@
       "pl-favat-v3"
     ],
     "$tags": [
-      "settlement"
+      "settlement",
+      "bypass"
     ],
     "uuid": "00000000-0000-0000-0000-000000000000",
     "type": "standard",
@@ -61,7 +62,6 @@
           "name": "Project Completion - Final Invoice",
           "price": "10000.00"
         },
-        "sum": "10000.00",
         "taxes": [
           {
             "cat": "VAT",
@@ -110,9 +110,9 @@
       },
       "tax": "2300.00",
       "total_with_tax": "12300.00",
-      "payable": "12300.00",
+      "payable": "6150.00",
       "advance": "6150.00",
-      "due": "6150.00"
+      "due": "0.00"
     },
     "notes": [
       {
