@@ -213,8 +213,7 @@ func NewFavatInv(invoice *bill.Invoice) *Inv {
 }
 
 // newTransactionConditions builds TransactionConditions from the invoice's
-// ordering data. Currently reads order references from purchases; in the
-// future this will also handle contracts and other document types.
+// ordering data, mapping Purchases to Zamowienia and Contracts to Umowy.
 func newTransactionConditions(ordering *bill.Ordering) *TransactionConditions {
 	if ordering == nil {
 		return nil
@@ -222,7 +221,7 @@ func newTransactionConditions(ordering *bill.Ordering) *TransactionConditions {
 
 	var tc TransactionConditions
 
-	// Add order references from purchases
+	// Add order references from purchases (Zamowienia)
 	for _, ref := range ordering.Purchases {
 		or := &OrderRef{
 			Number: ref.Code.String(),
@@ -233,7 +232,18 @@ func newTransactionConditions(ordering *bill.Ordering) *TransactionConditions {
 		tc.Orders = append(tc.Orders, or)
 	}
 
-	if len(tc.Orders) == 0 {
+	// Add contract references (Umowy)
+	for _, ref := range ordering.Contracts {
+		c := &Contract{
+			Number: ref.Code.String(),
+		}
+		if ref.IssueDate != nil {
+			c.Date = ref.IssueDate.String()
+		}
+		tc.Contracts = append(tc.Contracts, c)
+	}
+
+	if len(tc.Orders) == 0 && len(tc.Contracts) == 0 {
 		return nil
 	}
 
@@ -248,6 +258,9 @@ func invoiceNumber(series cbc.Code, code cbc.Code) string {
 }
 
 func (inv *Inv) setTaxRates(taxes *tax.Total) {
+	if taxes == nil {
+		return
+	}
 	for _, cat := range taxes.Categories {
 		if cat.Code != tax.CategoryVAT {
 			continue

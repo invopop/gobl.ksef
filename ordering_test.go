@@ -249,6 +249,74 @@ func TestNewOrder(t *testing.T) {
 		assert.Equal(t, "", result.Order.OrderAmount)
 	})
 
+	t.Run("sets contract ref number and date", func(t *testing.T) {
+		inv := orderingBaseInvoice()
+		issueDate := cal.MakeDate(2026, 3, 1)
+		inv.Ordering = &bill.Ordering{
+			Contracts: []*org.DocumentRef{
+				{
+					Code:      "CTR-2026-001",
+					IssueDate: &issueDate,
+				},
+			},
+		}
+
+		result := ksef.NewFavatInv(inv)
+
+		require.NotNil(t, result.TransactionConditions)
+		require.Len(t, result.TransactionConditions.Contracts, 1)
+		assert.Equal(t, "CTR-2026-001", result.TransactionConditions.Contracts[0].Number)
+		assert.Equal(t, "2026-03-01", result.TransactionConditions.Contracts[0].Date)
+		assert.Nil(t, result.TransactionConditions.Orders)
+	})
+
+	t.Run("sets contract ref without date", func(t *testing.T) {
+		inv := orderingBaseInvoice()
+		inv.Ordering = &bill.Ordering{
+			Contracts: []*org.DocumentRef{
+				{
+					Code: "CTR-99",
+				},
+			},
+		}
+
+		result := ksef.NewFavatInv(inv)
+
+		require.NotNil(t, result.TransactionConditions)
+		require.Len(t, result.TransactionConditions.Contracts, 1)
+		assert.Equal(t, "CTR-99", result.TransactionConditions.Contracts[0].Number)
+		assert.Equal(t, "", result.TransactionConditions.Contracts[0].Date)
+	})
+
+	t.Run("sets both purchases and contracts in TransactionConditions", func(t *testing.T) {
+		inv := orderingBaseInvoice()
+		contractDate := cal.MakeDate(2026, 2, 1)
+		orderDate := cal.MakeDate(2026, 2, 15)
+		inv.Ordering = &bill.Ordering{
+			Purchases: []*org.DocumentRef{
+				{
+					Code:      "PO-100",
+					IssueDate: &orderDate,
+				},
+			},
+			Contracts: []*org.DocumentRef{
+				{
+					Code:      "CTR-200",
+					IssueDate: &contractDate,
+				},
+			},
+		}
+
+		result := ksef.NewFavatInv(inv)
+
+		require.NotNil(t, result.TransactionConditions)
+		require.Len(t, result.TransactionConditions.Orders, 1)
+		assert.Equal(t, "PO-100", result.TransactionConditions.Orders[0].Number)
+		require.Len(t, result.TransactionConditions.Contracts, 1)
+		assert.Equal(t, "CTR-200", result.TransactionConditions.Contracts[0].Number)
+		assert.Equal(t, "2026-02-01", result.TransactionConditions.Contracts[0].Date)
+	})
+
 	t.Run("does not create empty Contracts in TransactionConditions", func(t *testing.T) {
 		inv := orderingBaseInvoice()
 		inv.Ordering = &bill.Ordering{
@@ -302,5 +370,87 @@ func TestNewOrderRoundTrip(t *testing.T) {
 		assert.Equal(t, "23", result.Order.LineItems[0].VATRate)
 		assert.Equal(t, "2000.00", result.Order.LineItems[1].NetPriceTotal)
 		assert.Equal(t, "460.00", result.Order.LineItems[1].TaxValue)
+	})
+}
+
+func TestContractToGOBL(t *testing.T) {
+	t.Run("parses Umowy into Ordering.Contracts", func(t *testing.T) {
+		doc := testPrepaymentDoc()
+		doc.Inv.TransactionConditions.Contracts = []*ksef.Contract{
+			{Date: "2026-03-01", Number: "CTR-2026-001"},
+		}
+
+		inv, err := doc.ToGOBL()
+		require.NoError(t, err)
+		require.NotNil(t, inv.Ordering)
+
+		// Contracts populated
+		require.Len(t, inv.Ordering.Contracts, 1)
+		assert.Equal(t, cbc.Code("CTR-2026-001"), inv.Ordering.Contracts[0].Code)
+		require.NotNil(t, inv.Ordering.Contracts[0].IssueDate)
+		assert.Equal(t, "2026-03-01", inv.Ordering.Contracts[0].IssueDate.String())
+
+		// Purchases still populated from Orders
+		require.Len(t, inv.Ordering.Purchases, 1)
+		assert.Equal(t, cbc.Code("PO-12345"), inv.Ordering.Purchases[0].Code)
+	})
+
+	t.Run("parses contract without date", func(t *testing.T) {
+		doc := testPrepaymentDoc()
+		doc.Inv.TransactionConditions.Contracts = []*ksef.Contract{
+			{Number: "CTR-NO-DATE"},
+		}
+
+		inv, err := doc.ToGOBL()
+		require.NoError(t, err)
+		require.Len(t, inv.Ordering.Contracts, 1)
+		assert.Equal(t, cbc.Code("CTR-NO-DATE"), inv.Ordering.Contracts[0].Code)
+		assert.Nil(t, inv.Ordering.Contracts[0].IssueDate)
+	})
+
+	t.Run("parses contracts only without orders", func(t *testing.T) {
+		doc := testPrepaymentDoc()
+		doc.Inv.TransactionConditions = &ksef.TransactionConditions{
+			Contracts: []*ksef.Contract{
+				{Date: "2026-04-15", Number: "CTR-ONLY"},
+			},
+		}
+		doc.Inv.Order = nil
+
+		inv, err := doc.ToGOBL()
+		require.NoError(t, err)
+		require.NotNil(t, inv.Ordering)
+		require.Len(t, inv.Ordering.Contracts, 1)
+		assert.Equal(t, cbc.Code("CTR-ONLY"), inv.Ordering.Contracts[0].Code)
+		assert.Equal(t, "2026-04-15", inv.Ordering.Contracts[0].IssueDate.String())
+
+		// No purchases when no orders
+		assert.Empty(t, inv.Ordering.Purchases)
+	})
+}
+
+func TestContractRoundTrip(t *testing.T) {
+	t.Run("contract data survives GOBL to KSeF to GOBL", func(t *testing.T) {
+		doc := testPrepaymentDoc()
+		doc.Inv.TransactionConditions.Contracts = []*ksef.Contract{
+			{Date: "2026-03-01", Number: "CTR-RT-001"},
+		}
+
+		// KSeF → GOBL
+		inv, err := doc.ToGOBL()
+		require.NoError(t, err)
+		require.Len(t, inv.Ordering.Contracts, 1)
+
+		// GOBL → KSeF
+		result := ksef.NewFavatInv(inv)
+
+		require.NotNil(t, result.TransactionConditions)
+		require.Len(t, result.TransactionConditions.Contracts, 1)
+		assert.Equal(t, "CTR-RT-001", result.TransactionConditions.Contracts[0].Number)
+		assert.Equal(t, "2026-03-01", result.TransactionConditions.Contracts[0].Date)
+
+		// Orders still survive the round trip
+		require.Len(t, result.TransactionConditions.Orders, 1)
+		assert.Equal(t, "PO-12345", result.TransactionConditions.Orders[0].Number)
 	})
 }
