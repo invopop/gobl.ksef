@@ -258,6 +258,9 @@ func invoiceNumber(series cbc.Code, code cbc.Code) string {
 }
 
 func (inv *Inv) setTaxRates(taxes *tax.Total) {
+	if taxes == nil {
+		return
+	}
 	for _, cat := range taxes.Categories {
 		if cat.Code != tax.CategoryVAT {
 			continue
