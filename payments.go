@@ -195,16 +195,28 @@ func (inv *Inv) parsePayment(goblInv *bill.Invoice) error {
 		}
 	}
 
-	// Parse payment terms (due dates)
+	// Parse payment terms (due dates).
+	// Both Termin (explicit date) and TerminOpis (relative description) can
+	// coexist in the same TerminPlatnosci element.
 	if len(inv.Payment.DueDates) > 0 {
-		// Use the last due date as the final payment deadline
 		lastDueDate := inv.Payment.DueDates[len(inv.Payment.DueDates)-1]
-		termDate, err := parseDate(lastDueDate.Date)
-		if err != nil {
-			return fmt.Errorf("parsing due date: %w", err)
+
+		var terms pay.Terms
+
+		if lastDueDate.Date != "" {
+			termDate, err := parseDate(lastDueDate.Date)
+			if err != nil {
+				return fmt.Errorf("parsing due date: %w", err)
+			}
+			terms.DueDates = []*pay.DueDate{{Date: &termDate, Percent: num.NewPercentage(100, 2)}}
 		}
-		payment.Terms = &pay.Terms{
-			DueDates: []*pay.DueDate{{Date: &termDate, Percent: num.NewPercentage(100, 2)}},
+
+		if td := lastDueDate.TermDescription; td != nil {
+			terms.Notes = fmt.Sprintf("%d %s %s", td.Quantity, td.Unit, td.StartingEvent)
+		}
+
+		if terms.DueDates != nil || terms.Notes != "" {
+			payment.Terms = &terms
 		}
 	}
 
