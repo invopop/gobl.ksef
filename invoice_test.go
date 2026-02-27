@@ -994,6 +994,30 @@ func TestParseTermDescription(t *testing.T) {
 		assert.Equal(t, "100%", inv.Payment.Terms.DueDates[0].Percent.String())
 	})
 
+	t.Run("both Termin and TerminOpis sets due date and notes", func(t *testing.T) {
+		doc := testPrepaymentDoc()
+		doc.Inv.Payment.DueDates = []*ksef.DueDate{
+			{
+				Date: "2026-03-13",
+				TermDescription: &ksef.TermDescription{
+					Quantity:      14,
+					Unit:          "DNI",
+					StartingEvent: "od daty wystawienia faktury",
+				},
+			},
+		}
+
+		inv, err := doc.ToGOBL()
+		require.NoError(t, err)
+		require.NotNil(t, inv.Payment)
+		require.NotNil(t, inv.Payment.Terms)
+		require.Len(t, inv.Payment.Terms.DueDates, 1)
+
+		assert.Equal(t, "2026-03-13", inv.Payment.Terms.DueDates[0].Date.String())
+		assert.Equal(t, "100%", inv.Payment.Terms.DueDates[0].Percent.String())
+		assert.Equal(t, "14 DNI od daty wystawienia faktury", inv.Payment.Terms.Notes)
+	})
+
 	t.Run("no date and no TerminOpis does not set terms", func(t *testing.T) {
 		doc := testPrepaymentDoc()
 		doc.Inv.Payment.DueDates = []*ksef.DueDate{
