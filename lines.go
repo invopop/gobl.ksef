@@ -233,7 +233,7 @@ func (l *Line) ToGOBL() (*bill.Line, error) {
 
 // parseAmount parses a string amount to num.Amount
 func parseAmount(s string) (num.Amount, error) {
-	amt, err := num.AmountFromString(s)
+	amt, err := num.AmountFromString(strings.TrimSpace(s))
 	if err != nil {
 		return num.Amount{}, err
 	}

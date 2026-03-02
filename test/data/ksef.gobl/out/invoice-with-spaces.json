@@ -1,0 +1,190 @@
+{
+  "$schema": "https://gobl.org/draft-0/envelope",
+  "head": {
+    "uuid": "00000000-0000-0000-0000-000000000000",
+    "dig": {
+      "alg": "sha256",
+      "val": "0000000000000000000000000000000000000000000000000000000000000000"
+    }
+  },
+  "doc": {
+    "$schema": "https://gobl.org/draft-0/bill/invoice",
+    "$regime": "PL",
+    "$addons": [
+      "pl-favat-v3"
+    ],
+    "uuid": "00000000-0000-0000-0000-000000000000",
+    "type": "standard",
+    "code": "1526079202",
+    "issue_date": "2026-02-27",
+    "currency": "PLN",
+    "tax": {
+      "rounding": "currency",
+      "ext": {
+        "pl-favat-invoice-type": "VAT"
+      }
+    },
+    "supplier": {
+      "name": "Wolters Kluwer Polska Sp. z o.o",
+      "tax_id": {
+        "country": "PL",
+        "code": "5830018931"
+      },
+      "addresses": [
+        {
+          "street": "Przyokopowa 33, 01-208 Warszawa",
+          "country": "PL"
+        }
+      ]
+    },
+    "customer": {
+      "name": "DOGMATES SPÓŁKA Z OGRANICZONĄ ODPOWIEDZIALNOŚCIĄ",
+      "tax_id": {
+        "country": "PL",
+        "code": "5273099230"
+      },
+      "addresses": [
+        {
+          "street": "ul. Sienna 64, 00-825 Warszawa",
+          "country": "PL"
+        }
+      ]
+    },
+    "lines": [
+      {
+        "i": 1,
+        "quantity": "1.000",
+        "item": {
+          "name": "LEX Ochrona Środowiska Optimum +",
+          "price": "119.50",
+          "unit": "SZT"
+        },
+        "sum": "119.50",
+        "taxes": [
+          {
+            "cat": "VAT",
+            "key": "standard",
+            "rate": "general",
+            "percent": "23.0%",
+            "ext": {
+              "pl-favat-tax-category": "1"
+            }
+          }
+        ],
+        "total": "119.50"
+      },
+      {
+        "i": 2,
+        "quantity": "1.000",
+        "item": {
+          "name": "LEX BHP Optimum +",
+          "price": "119.50",
+          "unit": "SZT"
+        },
+        "sum": "119.50",
+        "taxes": [
+          {
+            "cat": "VAT",
+            "key": "standard",
+            "rate": "general",
+            "percent": "23.0%",
+            "ext": {
+              "pl-favat-tax-category": "1"
+            }
+          }
+        ],
+        "total": "119.50"
+      },
+      {
+        "i": 3,
+        "quantity": "1.000",
+        "item": {
+          "name": "LEX Kompas Orzeczniczy 2.0",
+          "price": "146.00",
+          "unit": "SZT"
+        },
+        "sum": "146.00",
+        "taxes": [
+          {
+            "cat": "VAT",
+            "key": "standard",
+            "rate": "general",
+            "percent": "23.0%",
+            "ext": {
+              "pl-favat-tax-category": "1"
+            }
+          }
+        ],
+        "total": "146.00"
+      }
+    ],
+    "ordering": {
+      "period": {
+        "start": "2026-02-28",
+        "end": "2026-03-29"
+      },
+      "contracts": [
+        {
+          "code": "530404/2025/SF"
+        }
+      ],
+      "purchases": [
+        {
+          "issue_date": "2025-08-27",
+          "code": "1325123724"
+        }
+      ]
+    },
+    "payment": {
+      "terms": {
+        "due_dates": [
+          {
+            "date": "2026-03-13",
+            "amount": "473.55",
+            "percent": "100%"
+          }
+        ],
+        "notes": "14 DNI Płatne w terminie 14 dni"
+      },
+      "instructions": {
+        "key": "credit-transfer",
+        "credit_transfer": [
+          {
+            "number": "65188010220014346859000000",
+            "name": "Deutsche Bank Polska S.A."
+          }
+        ],
+        "ext": {
+          "pl-favat-payment-means": "6"
+        }
+      }
+    },
+    "totals": {
+      "sum": "385.00",
+      "total": "385.00",
+      "taxes": {
+        "categories": [
+          {
+            "code": "VAT",
+            "rates": [
+              {
+                "key": "standard",
+                "ext": {
+                  "pl-favat-tax-category": "1"
+                },
+                "base": "385.00",
+                "percent": "23.0%",
+                "amount": "88.55"
+              }
+            ],
+            "amount": "88.55"
+          }
+        ],
+        "sum": "88.55"
+      },
+      "tax": "88.55",
+      "total_with_tax": "473.55",
+      "payable": "473.55"
+    }
+  }
+}
