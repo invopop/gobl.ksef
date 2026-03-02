@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Faktura xmlns="http://crd.gov.pl/wzor/2025/06/25/13775/" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <Naglowek>
+    <KodFormularza kodSystemowy="FA (3)" wersjaSchemy="1-0E">FA</KodFormularza>
+    <WariantFormularza>3</WariantFormularza>
+    <DataWytworzeniaFa>2026-02-27T16:27:15Z</DataWytworzeniaFa>
+    <SystemInfo>PWP</SystemInfo>
+  </Naglowek>
+  <Podmiot1>
+    <PrefiksPodatnika>PL</PrefiksPodatnika>
+    <DaneIdentyfikacyjne>
+      <NIP>1111111111</NIP>
+      <Nazwa>Przykładowa Firma Sp. z o.o.</Nazwa>
+    </DaneIdentyfikacyjne>
+    <Adres>
+      <KodKraju>PL</KodKraju>
+      <AdresL1>ul. Testowa 10, 00-001 Warszawa</AdresL1>
+    </Adres>
+  </Podmiot1>
+  <Podmiot2>
+    <DaneIdentyfikacyjne>
+      <NIP>2222222222</NIP>
+      <Nazwa>TESTOWA SPÓŁKA Z OGRANICZONĄ ODPOWIEDZIALNOŚCIĄ</Nazwa>
+    </DaneIdentyfikacyjne>
+    <Adres>
+      <KodKraju>PL</KodKraju>
+      <AdresL1>ul. Próbna 5, 00-002 Warszawa</AdresL1>
+    </Adres>
+    <NrKlienta>0001234567</NrKlienta>
+    <JST>2</JST>
+    <GV>2</GV>
+  </Podmiot2>
+  <Fa>
+    <KodWaluty>PLN</KodWaluty>
+    <P_1>2026-02-27</P_1>
+    <P_1M>Warszawa</P_1M>
+    <P_2>1526079202</P_2>
+    <OkresFa>
+      <P_6_Od>2026-02-28</P_6_Od>
+      <P_6_Do>2026-03-29</P_6_Do>
+    </OkresFa>
+    <P_13_1> 385.00</P_13_1>
+    <P_14_1>88.55 </P_14_1>
+    <P_15> 473.55 </P_15>
+    <Adnotacje>
+      <P_16>2</P_16>
+      <P_17>2</P_17>
+      <P_18>2</P_18>
+      <P_18A>2</P_18A>
+      <Zwolnienie>
+        <P_19N>1</P_19N>
+      </Zwolnienie>
+      <NoweSrodkiTransportu>
+        <P_22N>1</P_22N>
+      </NoweSrodkiTransportu>
+      <P_23>2</P_23>
+      <PMarzy>
+        <P_PMarzyN>1</P_PMarzyN>
+      </PMarzy>
+    </Adnotacje>
+    <RodzajFaktury>VAT</RodzajFaktury>
+    <FaWiersz>
+      <NrWierszaFa> 1</NrWierszaFa>
+      <P_7>Usługa abonamentowa Standard</P_7>
+      <Indeks>SVC-1001</Indeks>
+      <P_8A>SZT</P_8A>
+      <P_8B>1.000</P_8B>
+      <P_9A>119.50 </P_9A>
+      <P_11>119.50 </P_11>
+      <P_12>23</P_12>
+    </FaWiersz>
+    <FaWiersz>
+      <NrWierszaFa> 2</NrWierszaFa>
+      <P_7>Usługa abonamentowa Premium</P_7>
+      <Indeks>SVC-1002</Indeks>
+      <P_8A>SZT</P_8A>
+      <P_8B>1.000</P_8B>
+      <P_9A>119.50 </P_9A>
+      <P_11>119.50 </P_11>
+      <P_12>23</P_12>
+    </FaWiersz>
+    <FaWiersz>
+      <NrWierszaFa> 3</NrWierszaFa>
+      <P_7>Usługa dodatkowa Pro</P_7>
+      <Indeks>SVC-1003</Indeks>
+      <P_8A>SZT</P_8A>
+      <P_8B>1.000</P_8B>
+      <P_9A>146.00 </P_9A>
+      <P_11>146.00 </P_11>
+      <P_12>23</P_12>
+    </FaWiersz>
+    <Platnosc>
+      <TerminPlatnosci>
+        <Termin>2026-03-13</Termin>
+        <TerminOpis>
+          <Ilosc>14</Ilosc>
+          <Jednostka>DNI</Jednostka>
+          <ZdarzeniePoczatkowe>Płatne w terminie 14 dni</ZdarzeniePoczatkowe>
+        </TerminOpis>
+      </TerminPlatnosci>
+      <FormaPlatnosci>6</FormaPlatnosci>
+      <RachunekBankowy>
+        <NrRB>11222233334444555566667777</NrRB>
+        <NazwaBanku>Bank Testowy S.A.</NazwaBanku>
+      </RachunekBankowy>
+    </Platnosc>
+    <WarunkiTransakcji>
+      <Umowy>
+        <NrUmowy>100200/2025/AB</NrUmowy>
+      </Umowy>
+      <Zamowienia>
+        <DataZamowienia>2025-08-27</DataZamowienia>
+        <NrZamowienia>9876543210</NrZamowienia>
+      </Zamowienia>
+    </WarunkiTransakcji>
+  </Fa>
+  <Stopka>
+    <Informacje>
+      <StopkaFaktury>Infolinia 0 800 00 00 00</StopkaFaktury>
+    </Informacje>
+    <Rejestry>
+      <PelnaNazwa>Przykładowa Firma Sp. z o.o.</PelnaNazwa>
+      <KRS>0000000001</KRS>
+      <REGON>000000001</REGON>
+      <BDO>000000001</BDO>
+    </Rejestry>
+  </Stopka>
+</Faktura>
