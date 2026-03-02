@@ -11,7 +11,6 @@ import (
 	"github.com/invopop/gobl/bill"
 	"github.com/invopop/gobl/cbc"
 	"github.com/invopop/gobl/currency"
-	"github.com/invopop/gobl/num"
 	"github.com/invopop/gobl/tax"
 )
 
@@ -148,7 +147,7 @@ func (d *Invoice) ToGOBL() (*bill.Invoice, error) {
 		// so we must invert the KSeF P_15 total to match.
 		totalDue := d.Inv.TotalAmountDue
 		if inv.Type == bill.InvoiceTypeCreditNote {
-			amt, err := num.AmountFromString(totalDue)
+			amt, err := parseAmount(totalDue)
 			if err != nil {
 				return inv, fmt.Errorf("parsing total amount due: %w", err)
 			}
