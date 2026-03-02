@@ -9,24 +9,24 @@
   <Podmiot1>
     <PrefiksPodatnika>PL</PrefiksPodatnika>
     <DaneIdentyfikacyjne>
-      <NIP>5830018931</NIP>
-      <Nazwa>Wolters Kluwer Polska Sp. z o.o</Nazwa>
+      <NIP>1111111111</NIP>
+      <Nazwa>Przykładowa Firma Sp. z o.o.</Nazwa>
     </DaneIdentyfikacyjne>
     <Adres>
       <KodKraju>PL</KodKraju>
-      <AdresL1>Przyokopowa 33, 01-208 Warszawa</AdresL1>
+      <AdresL1>ul. Testowa 10, 00-001 Warszawa</AdresL1>
     </Adres>
   </Podmiot1>
   <Podmiot2>
     <DaneIdentyfikacyjne>
-      <NIP>5273099230</NIP>
-      <Nazwa>DOGMATES SPÓŁKA Z OGRANICZONĄ ODPOWIEDZIALNOŚCIĄ</Nazwa>
+      <NIP>2222222222</NIP>
+      <Nazwa>TESTOWA SPÓŁKA Z OGRANICZONĄ ODPOWIEDZIALNOŚCIĄ</Nazwa>
     </DaneIdentyfikacyjne>
     <Adres>
       <KodKraju>PL</KodKraju>
-      <AdresL1>ul. Sienna 64, 00-825 Warszawa</AdresL1>
+      <AdresL1>ul. Próbna 5, 00-002 Warszawa</AdresL1>
     </Adres>
-    <NrKlienta>0004346859</NrKlienta>
+    <NrKlienta>0001234567</NrKlienta>
     <JST>2</JST>
     <GV>2</GV>
   </Podmiot2>
@@ -61,8 +61,8 @@
     <RodzajFaktury>VAT</RodzajFaktury>
     <FaWiersz>
       <NrWierszaFa> 1</NrWierszaFa>
-      <P_7>LEX Ochrona Środowiska Optimum +</P_7>
-      <Indeks>LEU-8024</Indeks>
+      <P_7>Usługa abonamentowa Standard</P_7>
+      <Indeks>SVC-1001</Indeks>
       <P_8A>SZT</P_8A>
       <P_8B>1.000</P_8B>
       <P_9A>119.50 </P_9A>
@@ -71,8 +71,8 @@
     </FaWiersz>
     <FaWiersz>
       <NrWierszaFa> 2</NrWierszaFa>
-      <P_7>LEX BHP Optimum +</P_7>
-      <Indeks>LEU-8007</Indeks>
+      <P_7>Usługa abonamentowa Premium</P_7>
+      <Indeks>SVC-1002</Indeks>
       <P_8A>SZT</P_8A>
       <P_8B>1.000</P_8B>
       <P_9A>119.50 </P_9A>
@@ -81,8 +81,8 @@
     </FaWiersz>
     <FaWiersz>
       <NrWierszaFa> 3</NrWierszaFa>
-      <P_7>LEX Kompas Orzeczniczy 2.0</P_7>
-      <Indeks>LEU-4531</Indeks>
+      <P_7>Usługa dodatkowa Pro</P_7>
+      <Indeks>SVC-1003</Indeks>
       <P_8A>SZT</P_8A>
       <P_8B>1.000</P_8B>
       <P_9A>146.00 </P_9A>
@@ -100,29 +100,29 @@
       </TerminPlatnosci>
       <FormaPlatnosci>6</FormaPlatnosci>
       <RachunekBankowy>
-        <NrRB>65188010220014346859000000</NrRB>
-        <NazwaBanku>Deutsche Bank Polska S.A.</NazwaBanku>
+        <NrRB>11222233334444555566667777</NrRB>
+        <NazwaBanku>Bank Testowy S.A.</NazwaBanku>
       </RachunekBankowy>
     </Platnosc>
     <WarunkiTransakcji>
       <Umowy>
-        <NrUmowy>530404/2025/SF</NrUmowy>
+        <NrUmowy>100200/2025/AB</NrUmowy>
       </Umowy>
       <Zamowienia>
         <DataZamowienia>2025-08-27</DataZamowienia>
-        <NrZamowienia>1325123724</NrZamowienia>
+        <NrZamowienia>9876543210</NrZamowienia>
       </Zamowienia>
     </WarunkiTransakcji>
   </Fa>
   <Stopka>
     <Informacje>
-      <StopkaFaktury>Infolinia 0 801 04 45 45</StopkaFaktury>
+      <StopkaFaktury>Infolinia 0 800 00 00 00</StopkaFaktury>
     </Informacje>
     <Rejestry>
-      <PelnaNazwa>Wolters Kluwer Polska Sp. z o.o.</PelnaNazwa>
-      <KRS>0000709879</KRS>
-      <REGON>190610277</REGON>
-      <BDO>000110936</BDO>
+      <PelnaNazwa>Przykładowa Firma Sp. z o.o.</PelnaNazwa>
+      <KRS>0000000001</KRS>
+      <REGON>000000001</REGON>
+      <BDO>000000001</BDO>
     </Rejestry>
   </Stopka>
 </Faktura>

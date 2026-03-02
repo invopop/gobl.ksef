@@ -25,27 +25,27 @@
       }
     },
     "supplier": {
-      "name": "Wolters Kluwer Polska Sp. z o.o",
+      "name": "Przykładowa Firma Sp. z o.o.",
       "tax_id": {
         "country": "PL",
-        "code": "5830018931"
+        "code": "1111111111"
       },
       "addresses": [
         {
-          "street": "Przyokopowa 33, 01-208 Warszawa",
+          "street": "ul. Testowa 10, 00-001 Warszawa",
           "country": "PL"
         }
       ]
     },
     "customer": {
-      "name": "DOGMATES SPÓŁKA Z OGRANICZONĄ ODPOWIEDZIALNOŚCIĄ",
+      "name": "TESTOWA SPÓŁKA Z OGRANICZONĄ ODPOWIEDZIALNOŚCIĄ",
       "tax_id": {
         "country": "PL",
-        "code": "5273099230"
+        "code": "2222222222"
       },
       "addresses": [
         {
-          "street": "ul. Sienna 64, 00-825 Warszawa",
+          "street": "ul. Próbna 5, 00-002 Warszawa",
           "country": "PL"
         }
       ]
@@ -55,7 +55,7 @@
         "i": 1,
         "quantity": "1.000",
         "item": {
-          "name": "LEX Ochrona Środowiska Optimum +",
+          "name": "Usługa abonamentowa Standard",
           "price": "119.50",
           "unit": "SZT"
         },
@@ -77,7 +77,7 @@
         "i": 2,
         "quantity": "1.000",
         "item": {
-          "name": "LEX BHP Optimum +",
+          "name": "Usługa abonamentowa Premium",
           "price": "119.50",
           "unit": "SZT"
         },
@@ -99,7 +99,7 @@
         "i": 3,
         "quantity": "1.000",
         "item": {
-          "name": "LEX Kompas Orzeczniczy 2.0",
+          "name": "Usługa dodatkowa Pro",
           "price": "146.00",
           "unit": "SZT"
         },
@@ -125,13 +125,13 @@
       },
       "contracts": [
         {
-          "code": "530404/2025/SF"
+          "code": "100200/2025/AB"
         }
       ],
       "purchases": [
         {
           "issue_date": "2025-08-27",
-          "code": "1325123724"
+          "code": "9876543210"
         }
       ]
     },
@@ -150,8 +150,8 @@
         "key": "credit-transfer",
         "credit_transfer": [
           {
-            "number": "65188010220014346859000000",
-            "name": "Deutsche Bank Polska S.A."
+            "number": "11222233334444555566667777",
+            "name": "Bank Testowy S.A."
           }
         ],
         "ext": {
