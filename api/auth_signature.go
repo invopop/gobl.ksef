@@ -38,7 +38,7 @@ func (c *Client) buildSignedAuthorizationRequest(challenge *authorizationChallen
 	}
 
 	subjectIdentifierType := "certificateSubject"
-	if contextIdentifier != nil && contextIdentifier.NipVatUe != "" {
+	if c.useCertificateFingerprint || (contextIdentifier != nil && contextIdentifier.NipVatUe != "") {
 		subjectIdentifierType = "certificateFingerprint"
 	}
 	root.CreateElement("SubjectIdentifierType").SetText(subjectIdentifierType)

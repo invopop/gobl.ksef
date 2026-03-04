@@ -27,13 +27,14 @@ const (
 
 // clientOpts defines the client parameters
 type clientOpts struct {
-	client            *resty.Client        // Resty client used for making the requests
-	url               string               // Base API URL for the requests
-	qrUrl             string               // Base API URL for QR code verification
-	contextIdentifier *ContextIdentifier   // Identifies the business entity the requests are made for
-	certificate       *xmldsig.Certificate // Certificate used for authorization
-	accessToken       *apiToken            // Access token used for making most of the requests
-	refeshToken       *apiToken            // Refresh token used for refreshing the access token
+	client                    *resty.Client        // Resty client used for making the requests
+	url                       string               // Base API URL for the requests
+	qrUrl                     string               // Base API URL for QR code verification
+	contextIdentifier         *ContextIdentifier   // Identifies the business entity the requests are made for
+	certificate               *xmldsig.Certificate // Certificate used for authorization
+	accessToken               *apiToken            // Access token used for making most of the requests
+	refeshToken               *apiToken            // Refresh token used for refreshing the access token
+	useCertificateFingerprint bool                 // Force certificateFingerprint SubjectIdentifierType
 }
 
 func defaultClientOpts(contextIdentifier *ContextIdentifier, certificate *xmldsig.Certificate) clientOpts {
@@ -71,6 +72,17 @@ func WithDebugClient() ClientOptFunc {
 func WithProductionURL(o *clientOpts) {
 	o.url = "https://api.ksef.mf.gov.pl/v2"
 	o.qrUrl = EnvironmentProductionQrUrl
+}
+
+// WithCertificateFingerprint forces the use of certificateFingerprint as the
+// SubjectIdentifierType when authenticating. This is needed when the signing
+// certificate does not contain a Polish NIP or PESEL (e.g., a foreign entity's
+// certificate). The certificate's SHA-256 fingerprint must have been granted
+// permissions for the target context in KSeF.
+func WithCertificateFingerprint() ClientOptFunc {
+	return func(o *clientOpts) {
+		o.useCertificateFingerprint = true
+	}
 }
 
 // WithDemoURL sets the client url to KSeF demo
