@@ -27,13 +27,13 @@ const (
 
 // clientOpts defines the client parameters
 type clientOpts struct {
-	client                    *resty.Client        // Resty client used for making the requests
-	url                       string               // Base API URL for the requests
-	qrUrl                     string               // Base API URL for QR code verification
-	contextIdentifier         *ContextIdentifier   // Identifies the business entity the requests are made for
-	certificate               *xmldsig.Certificate // Certificate used for authorization
-	accessToken               *apiToken            // Access token used for making most of the requests
-	refeshToken               *apiToken            // Refresh token used for refreshing the access token
+	client            *resty.Client        // Resty client used for making the requests
+	url               string               // Base API URL for the requests
+	qrUrl             string               // Base API URL for QR code verification
+	contextIdentifier *ContextIdentifier   // Identifies the business entity the requests are made for
+	certificate       *xmldsig.Certificate // Certificate used for authorization
+	accessToken       *apiToken            // Access token used for making most of the requests
+	refeshToken       *apiToken            // Refresh token used for refreshing the access token
 }
 
 func defaultClientOpts(contextIdentifier *ContextIdentifier, certificate *xmldsig.Certificate) clientOpts {
