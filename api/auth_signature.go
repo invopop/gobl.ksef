@@ -3,6 +3,7 @@ package api
 import (
 	"encoding/xml"
 	"errors"
+	"strings"
 
 	"github.com/beevik/etree"
 	"github.com/invopop/xmldsig"
@@ -37,11 +38,9 @@ func (c *Client) buildSignedAuthorizationRequest(challenge *authorizationChallen
 		ctx.CreateElement("PeppolId").SetText(contextIdentifier.PeppolId)
 	}
 
-	subjectIdentifierType := "certificateSubject"
-	if contextIdentifier != nil && contextIdentifier.NipVatUe != "" {
-		subjectIdentifierType = "certificateFingerprint"
-	}
-	root.CreateElement("SubjectIdentifierType").SetText(subjectIdentifierType)
+	root.CreateElement("SubjectIdentifierType").SetText(
+		subjectIdentifierType(c.certificate, contextIdentifier),
+	)
 
 	unsignedXML, err := doc.WriteToString()
 	if err != nil {
@@ -74,4 +73,42 @@ func (c *Client) buildSignedAuthorizationRequest(challenge *authorizationChallen
 	}
 
 	return []byte(signedXML), nil
+}
+
+// polishCertPrefixes are the Subject.SerialNumber prefixes that identify
+// a certificate as Polish (carrying a NIP or PESEL).
+var polishCertPrefixes = []string{"TINPL", "PNOPL", "PESEL", "NIP"}
+
+// subjectIdentifierType determines which SubjectIdentifierType to use in the
+// KSeF auth request. It returns "certificateFingerprint" when the certificate
+// doesn't carry a Polish identifier or when authenticating via NipVatUe
+// (EU VAT context). Otherwise it returns "certificateSubject".
+func subjectIdentifierType(cert *xmldsig.Certificate, id *ContextIdentifier) string {
+	if !isPolishCertificate(cert) || (id != nil && id.NipVatUe != "") {
+		return "certificateFingerprint"
+	}
+	return "certificateSubject"
+}
+
+// isPolishCertificate returns true when the certificate's Subject serial
+// number starts with a recognised Polish identifier prefix. Foreign
+// certificates (e.g. Lithuanian "PASLT-…") will return false, which
+// signals that certificateFingerprint auth must be used instead of
+// certificateSubject.
+func isPolishCertificate(cert *xmldsig.Certificate) bool {
+	if cert == nil {
+		return true // safe default
+	}
+	return hasPolishSubjectPrefix(cert.SubjectSerialNumber())
+}
+
+// hasPolishSubjectPrefix checks whether the given Subject serial number
+// string starts with a recognised Polish identifier prefix.
+func hasPolishSubjectPrefix(subjectSerialNumber string) bool {
+	for _, prefix := range polishCertPrefixes {
+		if strings.HasPrefix(subjectSerialNumber, prefix) {
+			return true
+		}
+	}
+	return false
 }
