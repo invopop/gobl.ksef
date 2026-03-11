@@ -81,34 +81,40 @@ var polishCertPrefixes = []string{"TINPL", "PNOPL", "PESEL", "NIP"}
 
 // subjectIdentifierType determines which SubjectIdentifierType to use in the
 // KSeF auth request. It returns "certificateFingerprint" when the certificate
-// doesn't carry a Polish identifier or when authenticating via NipVatUe
+// carries a foreign identifier or when authenticating via NipVatUe
 // (EU VAT context). Otherwise it returns "certificateSubject".
 func subjectIdentifierType(cert *xmldsig.Certificate, id *ContextIdentifier) string {
-	if !isPolishCertificate(cert) || (id != nil && id.NipVatUe != "") {
+	if isForeignCertificate(cert) || (id != nil && id.NipVatUe != "") {
 		return "certificateFingerprint"
 	}
 	return "certificateSubject"
 }
 
-// isPolishCertificate returns true when the certificate's Subject serial
-// number starts with a recognised Polish identifier prefix. Foreign
-// certificates (e.g. Lithuanian "PASLT-…") will return false, which
-// signals that certificateFingerprint auth must be used instead of
-// certificateSubject.
-func isPolishCertificate(cert *xmldsig.Certificate) bool {
+// isForeignCertificate returns true when the certificate's Subject serial
+// number is present and does NOT start with a recognised Polish identifier
+// prefix. This indicates a foreign certificate (e.g. Lithuanian "PASLT-…")
+// that requires certificateFingerprint authentication.
+//
+// Certificates with an empty SerialNumber (e.g. Polish CCK KSeF certs that
+// carry the NIP in OID 2.5.4.97 instead) are treated as non-foreign and
+// will use the default certificateSubject authentication.
+func isForeignCertificate(cert *xmldsig.Certificate) bool {
 	if cert == nil {
-		return true // safe default
+		return false
 	}
-	return hasPolishSubjectPrefix(cert.SubjectSerialNumber())
+	return hasForeignSubjectPrefix(cert.SubjectSerialNumber())
 }
 
-// hasPolishSubjectPrefix checks whether the given Subject serial number
-// string starts with a recognised Polish identifier prefix.
-func hasPolishSubjectPrefix(subjectSerialNumber string) bool {
+// hasForeignSubjectPrefix returns true when the Subject serial number is
+// non-empty and does not start with any recognised Polish prefix.
+func hasForeignSubjectPrefix(subjectSerialNumber string) bool {
+	if subjectSerialNumber == "" {
+		return false
+	}
 	for _, prefix := range polishCertPrefixes {
 		if strings.HasPrefix(subjectSerialNumber, prefix) {
-			return true
+			return false
 		}
 	}
-	return false
+	return true
 }
