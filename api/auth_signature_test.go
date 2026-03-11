@@ -6,7 +6,7 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func TestHasForeignSubjectPrefix(t *testing.T) {
+func TestIsNonPolishSubjectSerialNumber(t *testing.T) {
 	tests := []struct {
 		name          string
 		serialNumber  string
@@ -28,7 +28,7 @@ func TestHasForeignSubjectPrefix(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			got := hasForeignSubjectPrefix(tt.serialNumber)
+			got := isNonPolishSubjectSerialNumber(tt.serialNumber)
 			assert.Equal(t, tt.expectForeign, got)
 		})
 	}

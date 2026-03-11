@@ -95,19 +95,21 @@ func subjectIdentifierType(cert *xmldsig.Certificate, id *ContextIdentifier) str
 // prefix. This indicates a foreign certificate (e.g. Lithuanian "PASLT-…")
 // that requires certificateFingerprint authentication.
 //
-// Certificates with an empty SerialNumber (e.g. Polish CCK KSeF certs that
-// carry the NIP in OID 2.5.4.97 instead) are treated as non-foreign and
-// will use the default certificateSubject authentication.
+// Returns false (non-foreign) when:
+//   - cert is nil — safe default to avoid breaking callers without a certificate.
+//   - SerialNumber is empty — e.g. Polish CCK KSeF certs that carry the NIP
+//     in OID 2.5.4.97 instead of SerialNumber.
 func isForeignCertificate(cert *xmldsig.Certificate) bool {
 	if cert == nil {
 		return false
 	}
-	return hasForeignSubjectPrefix(cert.SubjectSerialNumber())
+	return isNonPolishSubjectSerialNumber(cert.SubjectSerialNumber())
 }
 
-// hasForeignSubjectPrefix returns true when the Subject serial number is
-// non-empty and does not start with any recognised Polish prefix.
-func hasForeignSubjectPrefix(subjectSerialNumber string) bool {
+// isNonPolishSubjectSerialNumber returns true when the Subject serial number
+// is non-empty and does not start with any recognised Polish prefix (TINPL,
+// PNOPL, PESEL, NIP). An empty serial number returns false (safe default).
+func isNonPolishSubjectSerialNumber(subjectSerialNumber string) bool {
 	if subjectSerialNumber == "" {
 		return false
 	}
