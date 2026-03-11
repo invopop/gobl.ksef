@@ -6,26 +6,30 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func TestHasPolishSubjectPrefix(t *testing.T) {
+func TestIsNonPolishSubjectSerialNumber(t *testing.T) {
 	tests := []struct {
-		name           string
-		serialNumber   string
-		expectPolish   bool
+		name          string
+		serialNumber  string
+		expectForeign bool
 	}{
-		{name: "TINPL prefix", serialNumber: "TINPL-1234567890", expectPolish: true},
-		{name: "PNOPL prefix", serialNumber: "PNOPL-88102341294", expectPolish: true},
-		{name: "PESEL prefix", serialNumber: "PESEL-88102341294", expectPolish: true},
-		{name: "NIP prefix", serialNumber: "NIP-1234567890", expectPolish: true},
-		{name: "Lithuanian PASLT", serialNumber: "PASLT-25428602", expectPolish: false},
-		{name: "German TINDE", serialNumber: "TINDE-123456789", expectPolish: false},
-		{name: "empty string", serialNumber: "", expectPolish: false},
-		{name: "unrelated value", serialNumber: "CN=Test", expectPolish: false},
+		// Polish prefixes → not foreign
+		{name: "TINPL prefix", serialNumber: "TINPL-1234567890", expectForeign: false},
+		{name: "PNOPL prefix", serialNumber: "PNOPL-88102341294", expectForeign: false},
+		{name: "PESEL prefix", serialNumber: "PESEL-88102341294", expectForeign: false},
+		{name: "NIP prefix", serialNumber: "NIP-1234567890", expectForeign: false},
+		// Foreign prefixes → foreign
+		{name: "Lithuanian PASLT", serialNumber: "PASLT-25428602", expectForeign: true},
+		{name: "German TINDE", serialNumber: "TINDE-123456789", expectForeign: true},
+		{name: "unrelated value", serialNumber: "CN=Test", expectForeign: true},
+		// Empty → not foreign (safe default for Polish CCK KSeF certs
+		// that carry the NIP in OID 2.5.4.97 instead of SerialNumber)
+		{name: "empty string", serialNumber: "", expectForeign: false},
 	}
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			got := hasPolishSubjectPrefix(tt.serialNumber)
-			assert.Equal(t, tt.expectPolish, got)
+			got := isNonPolishSubjectSerialNumber(tt.serialNumber)
+			assert.Equal(t, tt.expectForeign, got)
 		})
 	}
 }
@@ -55,7 +59,7 @@ func TestSubjectIdentifierType(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			// nil certificate is treated as Polish (safe default)
+			// nil certificate is treated as non-foreign (safe default)
 			got := subjectIdentifierType(nil, tt.id)
 			assert.Equal(t, tt.expected, got)
 		})
