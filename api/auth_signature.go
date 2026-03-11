@@ -3,6 +3,7 @@ package api
 import (
 	"encoding/xml"
 	"errors"
+	"strings"
 
 	"github.com/beevik/etree"
 	"github.com/invopop/xmldsig"
@@ -38,7 +39,7 @@ func (c *Client) buildSignedAuthorizationRequest(challenge *authorizationChallen
 	}
 
 	subjectIdentifierType := "certificateSubject"
-	if c.useCertificateFingerprint || (contextIdentifier != nil && contextIdentifier.NipVatUe != "") {
+	if !isPolishCertificate(c.certificate) || (contextIdentifier != nil && contextIdentifier.NipVatUe != "") {
 		subjectIdentifierType = "certificateFingerprint"
 	}
 	root.CreateElement("SubjectIdentifierType").SetText(subjectIdentifierType)
@@ -74,4 +75,26 @@ func (c *Client) buildSignedAuthorizationRequest(challenge *authorizationChallen
 	}
 
 	return []byte(signedXML), nil
+}
+
+// polishCertPrefixes are the Subject.SerialNumber prefixes that identify
+// a certificate as Polish (carrying a NIP or PESEL).
+var polishCertPrefixes = []string{"TINPL", "PNOPL", "PESEL", "NIP"}
+
+// isPolishCertificate returns true when the certificate's Subject serial
+// number starts with a recognised Polish identifier prefix. Foreign
+// certificates (e.g. Lithuanian "PASLT-…") will return false, which
+// signals that certificateFingerprint auth must be used instead of
+// certificateSubject.
+func isPolishCertificate(cert *xmldsig.Certificate) bool {
+	if cert == nil {
+		return true // safe default
+	}
+	sn := cert.SubjectSerialNumber()
+	for _, prefix := range polishCertPrefixes {
+		if strings.HasPrefix(sn, prefix) {
+			return true
+		}
+	}
+	return false
 }
