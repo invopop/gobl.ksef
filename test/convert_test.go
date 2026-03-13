@@ -2,6 +2,7 @@ package test
 
 import (
 	"encoding/json"
+	"encoding/xml"
 	"os"
 	"path/filepath"
 	"testing"
@@ -9,8 +10,14 @@ import (
 
 	"github.com/invopop/gobl"
 	ksef "github.com/invopop/gobl.ksef"
+	"github.com/invopop/xmldsig"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
+)
+
+const (
+	msgMissingOutFile    = "output file %s missing, run tests with `--update` flag to create"
+	msgUnmatchingOutFile = "output file %s does not match, run tests with `--update` flag to update"
 )
 
 // TestGOBLToKSeF tests conversion from GOBL JSON to KSeF XML
@@ -22,6 +29,9 @@ func TestGOBLToKSeF(t *testing.T) {
 	t.Cleanup(func() {
 		ksef.SetTimeNow(time.Now)
 	})
+
+	signingTime := time.Date(2026, 1, 1, 0, 0, 0, 0, time.UTC)
+	cert := loadTestCertificate(t)
 
 	inputDir := filepath.Join(GetDataPath(), "gobl.ksef")
 	outputDir := filepath.Join(GetDataPath(), "gobl.ksef", "out")
@@ -55,29 +65,36 @@ func TestGOBLToKSeF(t *testing.T) {
 			xmlData, err := inv.Bytes()
 			require.NoError(t, err, "marshaling XML")
 
-			// Determine output file name
+			// Sign the generated XML
+			sigData := signKSeFXML(t, xmlData, cert, signingTime)
+
 			baseName := name[:len(name)-len(filepath.Ext(name))]
-			outputPath := filepath.Join(outputDir, baseName+".xml")
+			outPath := filepath.Join(outputDir, baseName+".xml")
+			sigPath := filepath.Join(outputDir, baseName+".sig.xml")
 
 			if UpdateOut {
-				// Update golden file
-				err = os.WriteFile(outputPath, xmlData, 0644)
-				require.NoError(t, err, "writing golden file")
-				t.Logf("Updated golden file: %s", outputPath)
-			} else {
-				// Compare with golden file
-				expected, err := os.ReadFile(outputPath)
-				require.NoError(t, err, "reading golden file")
-
 				// Basic validation - just check we can parse it back
+				// TODO: Validate against the schema
 				_, err = ksef.ParseKSeF(xmlData)
-				assert.NoError(t, err, "validating generated XML can be parsed")
+				require.NoError(t, err, "validating generated XML can be parsed")
 
-				// Note: We don't do exact XML comparison as formatting may differ
-				// The round-trip test validates correctness
-				assert.NotEmpty(t, xmlData)
-				assert.NotEmpty(t, expected)
+				err = os.WriteFile(outPath, xmlData, 0644)
+				require.NoError(t, err)
+
+				err = os.WriteFile(sigPath, sigData, 0644)
+				require.NoError(t, err)
+				return
 			}
+
+			expected, err := os.ReadFile(outPath)
+			require.False(t, os.IsNotExist(err), msgMissingOutFile, filepath.Base(outPath))
+			require.NoError(t, err)
+			require.Equal(t, string(expected), string(xmlData), msgUnmatchingOutFile, filepath.Base(outPath))
+
+			expectedSig, err := os.ReadFile(sigPath)
+			require.False(t, os.IsNotExist(err), msgMissingOutFile, filepath.Base(sigPath))
+			require.NoError(t, err)
+			require.Equal(t, string(expectedSig), string(sigData), msgUnmatchingOutFile, filepath.Base(sigPath))
 		})
 	}
 }
@@ -199,4 +216,31 @@ func TestRoundTrip(t *testing.T) {
 			assert.NotNil(t, roundTripEnv.Document)
 		})
 	}
+}
+
+func loadTestCertificate(t *testing.T) *xmldsig.Certificate {
+	t.Helper()
+
+	certPath := filepath.Join(GetTestPath(), "certs", "test.pfx")
+	cert, err := xmldsig.LoadCertificate(certPath, "")
+	require.NoError(t, err, "loading test certificate — regenerate with: go run ./test/cmd/gencert")
+
+	return cert
+}
+
+func signKSeFXML(t *testing.T, xmlData []byte, cert *xmldsig.Certificate, signingTime time.Time) []byte {
+	t.Helper()
+
+	signature, err := xmldsig.Sign(xmlData,
+		xmldsig.WithCertificate(cert),
+		xmldsig.WithKSeF(),
+		xmldsig.WithDocID("test"),
+		xmldsig.WithCurrentTime(func() time.Time { return signingTime }),
+	)
+	require.NoError(t, err, "signing XML")
+
+	data, err := xml.MarshalIndent(signature, "", "  ")
+	require.NoError(t, err, "marshaling signature")
+
+	return data
 }
