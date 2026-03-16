@@ -125,6 +125,10 @@ func (d *Invoice) ToGOBL() (*bill.Invoice, error) {
 		return inv, err
 	}
 
+	// Parse additional descriptions (must be after parseLines so line-level
+	// notes can be attached to the correct lines)
+	d.Inv.parseAdditionalDescriptions(inv)
+
 	// Parse ordering lines (Zamowienie → Ordering.Purchases)
 	if err := d.Inv.parseOrderingLines(inv); err != nil {
 		return inv, err

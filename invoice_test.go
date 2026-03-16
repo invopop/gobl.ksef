@@ -1065,6 +1065,214 @@ func TestAdditionalDescriptionCodeValidation(t *testing.T) {
 	})
 }
 
+func TestParseAdditionalDescriptions(t *testing.T) {
+	// Helper: standard VAT invoice with 2 lines.
+	stdDoc := func() *ksef.Invoice {
+		return &ksef.Invoice{
+			Seller: &ksef.Seller{
+				NIP:  "1234567890",
+				Name: "Test Supplier",
+				Address: &ksef.Address{
+					CountryCode: "PL",
+					AddressL1:   "ul. Testowa 1 00-001 Warszawa",
+				},
+			},
+			Buyer: &ksef.Buyer{
+				NIP:  "9876543210",
+				Name: "Test Buyer",
+				Address: &ksef.Address{
+					CountryCode: "PL",
+					AddressL1:   "ul. Testowa 2 00-002 Warszawa",
+				},
+				JST: "2",
+				GV:  "2",
+			},
+			Inv: &ksef.Inv{
+				CurrencyCode:       "PLN",
+				IssueDate:          "2026-01-20",
+				SequentialNumber:    "FV-001",
+				TotalAmountDue:     "246.00",
+				InvoiceType:        "VAT",
+				StandardRateNetSale: "200.00",
+				StandardRateTax:    "46.00",
+				Annotations: &ksef.Annotations{
+					CashAccounting:                      "2",
+					SelfBilling:                         "2",
+					ReverseCharge:                       "2",
+					SplitPaymentMechanism:               "2",
+					SimplifiedProcedureBySecondTaxpayer: "2",
+					TaxExemption:                        &ksef.TaxExemption{NoExemption: "1"},
+					NewTransportMeans:                   &ksef.NewTransportMeans{NoNewTransportMeans: "1"},
+					MarginScheme:                        &ksef.MarginScheme{NoMarginScheme: "1"},
+				},
+				Lines: []*ksef.Line{
+					{LineNumber: 1, Name: "Item A", Quantity: "1", NetUnitPrice: "100.00", VATRate: "23"},
+					{LineNumber: 2, Name: "Item B", Quantity: "1", NetUnitPrice: "100.00", VATRate: "23"},
+				},
+			},
+		}
+	}
+
+	t.Run("NrWiersza routes note to correct line", func(t *testing.T) {
+		doc := stdDoc()
+		doc.Inv.AdditionalDescription = []*ksef.AdditionalDescriptionLine{
+			{LineNumber: "1", Key: "batch", Value: "LOT-001"},
+			{LineNumber: "2", Key: "batch", Value: "LOT-002"},
+		}
+
+		inv, err := doc.ToGOBL()
+		require.NoError(t, err)
+
+		// No invoice-level notes
+		assert.Empty(t, inv.Notes)
+
+		// Line 1 should have a note
+		require.Len(t, inv.Lines, 2)
+		require.Len(t, inv.Lines[0].Notes, 1)
+		assert.Equal(t, cbc.Code("batch"), inv.Lines[0].Notes[0].Code)
+		assert.Equal(t, "LOT-001", inv.Lines[0].Notes[0].Text)
+
+		// Line 2 should have a note
+		require.Len(t, inv.Lines[1].Notes, 1)
+		assert.Equal(t, cbc.Code("batch"), inv.Lines[1].Notes[0].Code)
+		assert.Equal(t, "LOT-002", inv.Lines[1].Notes[0].Text)
+	})
+
+	t.Run("without NrWiersza stays as invoice note", func(t *testing.T) {
+		doc := stdDoc()
+		doc.Inv.AdditionalDescription = []*ksef.AdditionalDescriptionLine{
+			{Key: "general", Value: "Invoice-level note"},
+		}
+
+		inv, err := doc.ToGOBL()
+		require.NoError(t, err)
+
+		require.Len(t, inv.Notes, 1)
+		assert.Equal(t, cbc.Code("general"), inv.Notes[0].Code)
+		assert.Equal(t, "Invoice-level note", inv.Notes[0].Text)
+
+		// No line notes
+		for _, line := range inv.Lines {
+			assert.Empty(t, line.Notes)
+		}
+	})
+
+	t.Run("NrWiersza referencing non-existent line falls back to invoice", func(t *testing.T) {
+		doc := stdDoc()
+		doc.Inv.AdditionalDescription = []*ksef.AdditionalDescriptionLine{
+			{LineNumber: "99", Key: "orphan", Value: "No such line"},
+		}
+
+		inv, err := doc.ToGOBL()
+		require.NoError(t, err)
+
+		// Should fall back to invoice-level note
+		require.Len(t, inv.Notes, 1)
+		assert.Equal(t, cbc.Code("orphan"), inv.Notes[0].Code)
+
+		// No line notes
+		for _, line := range inv.Lines {
+			assert.Empty(t, line.Notes)
+		}
+	})
+
+	t.Run("mixed NrWiersza and invoice-level notes", func(t *testing.T) {
+		doc := stdDoc()
+		doc.Inv.AdditionalDescription = []*ksef.AdditionalDescriptionLine{
+			{Key: "general", Value: "Top-level note"},
+			{LineNumber: "1", Key: "detail", Value: "Line 1 detail"},
+			{LineNumber: "2", Key: "detail", Value: "Line 2 detail"},
+			{Key: "footer", Value: "Another top-level"},
+		}
+
+		inv, err := doc.ToGOBL()
+		require.NoError(t, err)
+
+		// Invoice-level: 2 notes
+		require.Len(t, inv.Notes, 2)
+		assert.Equal(t, cbc.Code("general"), inv.Notes[0].Code)
+		assert.Equal(t, cbc.Code("footer"), inv.Notes[1].Code)
+
+		// Each line: 1 note
+		require.Len(t, inv.Lines[0].Notes, 1)
+		assert.Equal(t, "Line 1 detail", inv.Lines[0].Notes[0].Text)
+		require.Len(t, inv.Lines[1].Notes, 1)
+		assert.Equal(t, "Line 2 detail", inv.Lines[1].Notes[0].Text)
+	})
+}
+
+func TestNewFavatInvLineNotes(t *testing.T) {
+	baseInvoice := func() *bill.Invoice {
+		pct23 := num.MakePercentage(230, 3)
+		return &bill.Invoice{
+			Currency: currency.PLN,
+			Supplier: &org.Party{
+				TaxID: &tax.Identity{Country: l10n.PL.Tax()},
+			},
+			Tax: &bill.Tax{
+				Ext: tax.Extensions{
+					favat.ExtKeyInvoiceType: "VAT",
+				},
+			},
+			Lines: []*bill.Line{
+				{
+					Index:    1,
+					Quantity: num.MakeAmount(1, 0),
+					Item: &org.Item{
+						Name:  "Item A",
+						Price: num.NewAmount(10000, 2),
+					},
+					Total: num.NewAmount(10000, 2),
+					Taxes: tax.Set{
+						{
+							Category: tax.CategoryVAT,
+							Percent:  &pct23,
+							Ext:      tax.Extensions{favat.ExtKeyTaxCategory: "1"},
+						},
+					},
+				},
+			},
+			Totals: &bill.Totals{
+				Taxes: &tax.Total{},
+			},
+		}
+	}
+
+	t.Run("line notes exported as DodatkowyOpis with NrWiersza", func(t *testing.T) {
+		inv := baseInvoice()
+		inv.Lines[0].Notes = []*org.Note{
+			{Key: "batch", Text: "LOT-001"},
+		}
+
+		ksefInv := ksef.NewFavatInv(inv)
+
+		require.Len(t, ksefInv.AdditionalDescription, 1)
+		assert.Equal(t, "1", ksefInv.AdditionalDescription[0].LineNumber)
+		assert.Equal(t, "batch", ksefInv.AdditionalDescription[0].Key)
+		assert.Equal(t, "LOT-001", ksefInv.AdditionalDescription[0].Value)
+	})
+
+	t.Run("invoice and line notes combined", func(t *testing.T) {
+		inv := baseInvoice()
+		inv.Notes = []*org.Note{
+			{Key: "general", Text: "Invoice note"},
+		}
+		inv.Lines[0].Notes = []*org.Note{
+			{Key: "detail", Text: "Line note"},
+		}
+
+		ksefInv := ksef.NewFavatInv(inv)
+
+		require.Len(t, ksefInv.AdditionalDescription, 2)
+		// Invoice notes come first (no NrWiersza)
+		assert.Empty(t, ksefInv.AdditionalDescription[0].LineNumber)
+		assert.Equal(t, "general", ksefInv.AdditionalDescription[0].Key)
+		// Line notes come after (with NrWiersza)
+		assert.Equal(t, "1", ksefInv.AdditionalDescription[1].LineNumber)
+		assert.Equal(t, "detail", ksefInv.AdditionalDescription[1].Key)
+	})
+}
+
 func TestIsPrepaymentType(t *testing.T) {
 	// Prepayment types: test via ToGOBL that bypass is set
 	t.Run("ZAL sets bypass", func(t *testing.T) {

@@ -3,6 +3,8 @@ package ksef
 import (
 	"fmt"
 	"regexp"
+	"strconv"
+	"strings"
 	"time"
 
 	"github.com/invopop/gobl/addons/pl/favat"
@@ -183,19 +185,36 @@ func NewFavatInv(invoice *bill.Invoice) *Inv {
 		inv.InvoiceType = invoice.Tax.Ext.Get(favat.ExtKeyInvoiceType).String()
 	}
 
-	inv.setTaxRates(invoice.Totals.Taxes)
+	taxes := invoice.Totals.Taxes
 
-	// For settlement invoices with advances, adjust P_13_X/P_14_X to show
-	// only the remaining amounts and map advance refs to FakturaZaliczkowa.
-	if inv.InvoiceType == "ROZ" || inv.InvoiceType == "KOR_ROZ" {
-		inv.adjustSettlementTotals(invoice)
+	// For settlement invoices (ROZ/KOR_ROZ) with advances, KSeF expects
+	// P_13_X/P_14_X to contain only the remaining amounts after advance
+	// deductions — not the full order totals. We build adjusted tax totals
+	// and map advance refs to FakturaZaliczkowa.
+	if (inv.InvoiceType == "ROZ" || inv.InvoiceType == "KOR_ROZ") &&
+		invoice.Payment != nil && len(invoice.Payment.Advances) > 0 {
+		inv.mapSettlementAdvanceRefs(invoice)
+		taxes = settlementTaxTotals(invoice.Totals)
 	}
+
+	inv.setTaxRates(taxes)
 
 	if len(invoice.Notes) > 0 {
 		for _, note := range invoice.Notes {
 			inv.AdditionalDescription = append(inv.AdditionalDescription, &AdditionalDescriptionLine{
 				Key:   note.Key.String(),
 				Value: note.Text,
+			})
+		}
+	}
+
+	// Export line-level notes as DodatkowyOpis with NrWiersza
+	for _, line := range invoice.Lines {
+		for _, note := range line.Notes {
+			inv.AdditionalDescription = append(inv.AdditionalDescription, &AdditionalDescriptionLine{
+				LineNumber: strconv.Itoa(line.Index),
+				Key:        note.Key.String(),
+				Value:      note.Text,
 			})
 		}
 	}
@@ -310,21 +329,9 @@ func (inv *Inv) setTaxRates(taxes *tax.Total) {
 	}
 }
 
-// adjustSettlementTotals adjusts P_13_X/P_14_X for settlement invoices (ROZ/KOR_ROZ)
-// with advances. Per Art. 106f sec. 3, KSeF expects:
-//   - FaWiersz: full order value (handled by lines, unchanged)
-//   - P_13_X/P_14_X: only the remaining amount after advance deductions
-//   - P_15: the amount remaining to be paid (already set from Due)
-//   - FakturaZaliczkowa: references to preceding advance invoices
-//
-// GOBL calculates tax totals from full line amounts, so we prorate each tax
-// rate by the ratio Due/Payable to get the remaining amounts.
-func (inv *Inv) adjustSettlementTotals(invoice *bill.Invoice) {
-	if invoice.Payment == nil || len(invoice.Payment.Advances) == 0 {
-		return
-	}
-
-	// Map advance refs to FakturaZaliczkowa
+// mapSettlementAdvanceRefs maps GOBL advance payment refs to KSeF
+// FakturaZaliczkowa elements for settlement invoices.
+func (inv *Inv) mapSettlementAdvanceRefs(invoice *bill.Invoice) {
 	for _, adv := range invoice.Payment.Advances {
 		if adv.Ref != "" {
 			inv.AdvanceInvoices = append(inv.AdvanceInvoices, &AdvanceInvoiceRef{
@@ -332,22 +339,22 @@ func (inv *Inv) adjustSettlementTotals(invoice *bill.Invoice) {
 			})
 		}
 	}
+}
 
-	// Prorate tax summary fields to remaining amounts.
-	// Skip if no Due (nothing to adjust) or no Payable (shouldn't happen).
-	if invoice.Totals.Due == nil || invoice.Totals.Payable.IsZero() {
-		return
+// settlementTaxTotals returns a copy of the invoice's tax totals with Base and
+// Amount prorated by Due/Payable. This gives the remaining tax amounts after
+// advance deductions, as required by KSeF for settlement invoices (ROZ/KOR_ROZ).
+// Returns the original totals unchanged when no proration is needed.
+func settlementTaxTotals(totals *bill.Totals) *tax.Total {
+	if totals.Taxes == nil || totals.Due == nil || totals.Payable.IsZero() {
+		return totals.Taxes
 	}
-
-	due := *invoice.Totals.Due
-	payable := invoice.Totals.Payable
-
+	due := *totals.Due
+	payable := totals.Payable
 	if due.Equals(payable) {
-		// No advances effectively applied, nothing to adjust
-		return
+		return totals.Taxes
 	}
 
-	// Helper to prorate: remaining = full * due / payable
 	prorate := func(full num.Amount) num.Amount {
 		if full.IsZero() {
 			return full
@@ -355,70 +362,23 @@ func (inv *Inv) adjustSettlementTotals(invoice *bill.Invoice) {
 		return full.Multiply(due).Divide(payable)
 	}
 
-	// Adjust each P_13_X/P_14_X pair
-	if inv.StandardRateNetSale != "" {
-		inv.StandardRateNetSale = prorate(mustParseAmount(inv.StandardRateNetSale)).String()
+	adjusted := &tax.Total{}
+	for _, cat := range totals.Taxes.Categories {
+		ac := &tax.CategoryTotal{
+			Code: cat.Code,
+		}
+		for _, rate := range cat.Rates {
+			ac.Rates = append(ac.Rates, &tax.RateTotal{
+				Key:     rate.Key,
+				Ext:     rate.Ext,
+				Percent: rate.Percent,
+				Base:    prorate(rate.Base),
+				Amount:  prorate(rate.Amount),
+			})
+		}
+		adjusted.Categories = append(adjusted.Categories, ac)
 	}
-	if inv.StandardRateTax != "" {
-		inv.StandardRateTax = prorate(mustParseAmount(inv.StandardRateTax)).String()
-	}
-	if inv.ReducedRateNetSale != "" {
-		inv.ReducedRateNetSale = prorate(mustParseAmount(inv.ReducedRateNetSale)).String()
-	}
-	if inv.ReducedRateTax != "" {
-		inv.ReducedRateTax = prorate(mustParseAmount(inv.ReducedRateTax)).String()
-	}
-	if inv.SuperReducedRateNetSale != "" {
-		inv.SuperReducedRateNetSale = prorate(mustParseAmount(inv.SuperReducedRateNetSale)).String()
-	}
-	if inv.SuperReducedRateTax != "" {
-		inv.SuperReducedRateTax = prorate(mustParseAmount(inv.SuperReducedRateTax)).String()
-	}
-	if inv.TaxiRateNetSale != "" {
-		inv.TaxiRateNetSale = prorate(mustParseAmount(inv.TaxiRateNetSale)).String()
-	}
-	if inv.TaxiRateTax != "" {
-		inv.TaxiRateTax = prorate(mustParseAmount(inv.TaxiRateTax)).String()
-	}
-	if inv.OSSNetSale != "" {
-		inv.OSSNetSale = prorate(mustParseAmount(inv.OSSNetSale)).String()
-	}
-	if inv.OSSTax != "" {
-		inv.OSSTax = prorate(mustParseAmount(inv.OSSTax)).String()
-	}
-	if inv.ZeroTaxExceptIntraCommunityNetSale != "" {
-		inv.ZeroTaxExceptIntraCommunityNetSale = prorate(mustParseAmount(inv.ZeroTaxExceptIntraCommunityNetSale)).String()
-	}
-	if inv.IntraCommunityNetSale != "" {
-		inv.IntraCommunityNetSale = prorate(mustParseAmount(inv.IntraCommunityNetSale)).String()
-	}
-	if inv.ExportNetSale != "" {
-		inv.ExportNetSale = prorate(mustParseAmount(inv.ExportNetSale)).String()
-	}
-	if inv.TaxExemptNetSale != "" {
-		inv.TaxExemptNetSale = prorate(mustParseAmount(inv.TaxExemptNetSale)).String()
-	}
-	if inv.OutsideScopeNetSale != "" {
-		inv.OutsideScopeNetSale = prorate(mustParseAmount(inv.OutsideScopeNetSale)).String()
-	}
-	if inv.ReverseChargeNetSale != "" {
-		inv.ReverseChargeNetSale = prorate(mustParseAmount(inv.ReverseChargeNetSale)).String()
-	}
-	if inv.DomesticReverseChargeNetSale != "" {
-		inv.DomesticReverseChargeNetSale = prorate(mustParseAmount(inv.DomesticReverseChargeNetSale)).String()
-	}
-	if inv.MarginNetSale != "" {
-		inv.MarginNetSale = prorate(mustParseAmount(inv.MarginNetSale)).String()
-	}
-}
-
-// mustParseAmount parses an amount string, returning zero on error.
-func mustParseAmount(s string) num.Amount {
-	amt, err := parseAmount(s)
-	if err != nil {
-		return num.MakeAmount(0, 2)
-	}
-	return amt
+	return adjusted
 }
 
 // parseInvoiceData converts KSEF invoice data to GOBL invoice fields
@@ -471,24 +431,9 @@ func (inv *Inv) parseInvoiceData(goblInv *bill.Invoice) error {
 	}
 	goblInv.Tax.Rounding = tax.RoundingRuleCurrency
 
-	// Parse additional description as notes
-	if len(inv.AdditionalDescription) > 0 {
-		if goblInv.Notes == nil {
-			goblInv.Notes = []*org.Note{}
-		}
-		for _, desc := range inv.AdditionalDescription {
-			note := &org.Note{}
-			if validCodeRe.MatchString(desc.Key) {
-				note.Code = cbc.Code(desc.Key)
-				note.Text = desc.Value
-			} else {
-				// Key contains characters not valid for cbc.Code;
-				// combine key and value into the text field.
-				note.Text = desc.Key + ": " + desc.Value
-			}
-			goblInv.Notes = append(goblInv.Notes, note)
-		}
-	}
+	// NOTE: DodatkowyOpis (additional descriptions) are parsed after lines
+	// in parseAdditionalDescriptions, so that line-level notes (NrWiersza)
+	// can be attached to the correct GOBL lines.
 
 	// Parse corrected invoices (preceding documents for credit notes)
 	if len(inv.CorrectedInv) > 0 {
@@ -528,6 +473,56 @@ func (inv *Inv) parseInvoiceData(goblInv *bill.Invoice) error {
 	}
 
 	return nil
+}
+
+// buildNote creates an org.Note from a KSeF additional description line.
+func buildNote(desc *AdditionalDescriptionLine) *org.Note {
+	note := &org.Note{}
+	if validCodeRe.MatchString(desc.Key) {
+		note.Code = cbc.Code(desc.Key)
+		note.Text = desc.Value
+	} else {
+		// Key contains characters not valid for cbc.Code;
+		// combine key and value into the text field.
+		note.Text = desc.Key + ": " + desc.Value
+	}
+	return note
+}
+
+// parseAdditionalDescriptions converts KSeF DodatkowyOpis entries to GOBL notes.
+// Entries with NrWiersza are attached to the corresponding line's notes;
+// entries without NrWiersza (or referencing a non-existent line) become
+// invoice-level notes. Must be called after parseLines so that GOBL lines
+// are already populated.
+func (inv *Inv) parseAdditionalDescriptions(goblInv *bill.Invoice) {
+	if len(inv.AdditionalDescription) == 0 {
+		return
+	}
+
+	// Build map from KSeF line number → GOBL line
+	lineMap := make(map[int]*bill.Line)
+	for i, ksefLine := range inv.Lines {
+		if i < len(goblInv.Lines) {
+			lineMap[ksefLine.LineNumber] = goblInv.Lines[i]
+		}
+	}
+
+	for _, desc := range inv.AdditionalDescription {
+		note := buildNote(desc)
+
+		if desc.LineNumber != "" {
+			lineNum, err := strconv.Atoi(strings.TrimSpace(desc.LineNumber))
+			if err == nil {
+				if line, ok := lineMap[lineNum]; ok {
+					line.Notes = append(line.Notes, note)
+					continue
+				}
+			}
+			// Fall through to invoice-level if line not found
+		}
+
+		goblInv.Notes = append(goblInv.Notes, note)
+	}
 }
 
 // parseDate parses a date string in YYYY-MM-DD format

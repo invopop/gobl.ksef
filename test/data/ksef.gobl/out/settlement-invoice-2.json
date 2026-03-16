@@ -79,7 +79,27 @@
             }
           }
         ],
-        "total": "55580.00"
+        "total": "55580.00",
+        "notes": [
+          {
+            "text": "(PL) Nr zamówienia sprzedaży/poz,:: 0000100001 / 000010\n"
+          },
+          {
+            "text": "(PL) Nr zamówienia sprzedaży/poz,:: 0000100002 / 000010\n"
+          },
+          {
+            "text": "(PL) PKWIU:: 28.22.18.0\n"
+          },
+          {
+            "text": "(PL) Tekst sprzedaży materiału: Oferta produktowa nr OF/2026/001\n"
+          },
+          {
+            "text": "Materiał: 10001"
+          },
+          {
+            "text": "Opis materiału: Robot przemysłowy Model X + transport"
+          }
+        ]
       }
     ],
     "ordering": {
@@ -161,24 +181,6 @@
       {
         "code": "ROZ_ZALICZKI",
         "text": "ZAL/2026/0001 ( KSEF: 3333333333-20260311-CCDD0000001B-01 )"
-      },
-      {
-        "text": "(PL) Nr zamówienia sprzedaży/poz,:: 0000100001 / 000010\n"
-      },
-      {
-        "text": "(PL) Nr zamówienia sprzedaży/poz,:: 0000100002 / 000010\n"
-      },
-      {
-        "text": "(PL) PKWIU:: 28.22.18.0\n"
-      },
-      {
-        "text": "(PL) Tekst sprzedaży materiału: Oferta produktowa nr OF/2026/001\n"
-      },
-      {
-        "text": "Materiał: 10001"
-      },
-      {
-        "text": "Opis materiału: Robot przemysłowy Model X + transport"
       },
       {
         "text": "(PL) Nr zamówienia sprzedaży/poz,:: 0000100001 / 000030\n"
