@@ -2,10 +2,12 @@ package ksef_test
 
 import (
 	"testing"
+	"time"
 
 	ksef "github.com/invopop/gobl.ksef"
 	"github.com/invopop/gobl/addons/pl/favat"
 	"github.com/invopop/gobl/bill"
+	"github.com/invopop/gobl/cal"
 	"github.com/invopop/gobl/cbc"
 	"github.com/invopop/gobl/currency"
 	"github.com/invopop/gobl/l10n"
@@ -1343,6 +1345,162 @@ func TestDeriveSettlementAdvances(t *testing.T) {
 		if inv.Payment != nil {
 			assert.Empty(t, inv.Payment.Advances)
 		}
+	})
+}
+
+func TestAdjustSettlementTotals(t *testing.T) {
+	// Helper to build a GOBL settlement invoice for GOBL→KSeF tests.
+	// Fields are pre-populated as if Calculate() had already run.
+	pct23 := num.MakePercentage(230, 3)
+	advDate := cal.DateOf(time.Date(2026, 1, 1, 0, 0, 0, 0, time.UTC))
+	baseSettlementInvoice := func() *bill.Invoice {
+		due := num.MakeAmount(615000, 2)     // 6150.00
+		advance := num.MakeAmount(615000, 2) // 6150.00
+		return &bill.Invoice{
+			Currency: currency.PLN,
+			Supplier: &org.Party{
+				TaxID: &tax.Identity{Country: l10n.PL.Tax()},
+			},
+			Tax: &bill.Tax{
+				Ext: tax.Extensions{
+					favat.ExtKeyInvoiceType: "ROZ",
+				},
+			},
+			Lines: []*bill.Line{
+				{
+					Index:    1,
+					Quantity: num.MakeAmount(1, 0),
+					Item: &org.Item{
+						Name:  "Full order item",
+						Price: num.NewAmount(1000000, 2),
+					},
+					Total: num.NewAmount(1000000, 2),
+					Taxes: tax.Set{
+						{
+							Category: tax.CategoryVAT,
+							Percent:  &pct23,
+							Ext:      tax.Extensions{favat.ExtKeyTaxCategory: "1"},
+						},
+					},
+				},
+			},
+			Payment: &bill.PaymentDetails{
+				Advances: []*pay.Advance{
+					{
+						Date:        &advDate,
+						Ref:         "1234567890-20260101-AAA000BBB111-01",
+						Description: "Advance payment",
+						Amount:      num.MakeAmount(615000, 2),
+					},
+				},
+			},
+			Totals: &bill.Totals{
+				Sum:   num.MakeAmount(1000000, 2),
+				Total: num.MakeAmount(1000000, 2),
+				Taxes: &tax.Total{
+					Categories: []*tax.CategoryTotal{
+						{
+							Code: tax.CategoryVAT,
+							Rates: []*tax.RateTotal{
+								{
+									Key:     tax.KeyStandard,
+									Base:    num.MakeAmount(1000000, 2),
+									Percent: &pct23,
+									Amount:  num.MakeAmount(230000, 2),
+									Ext:     tax.Extensions{favat.ExtKeyTaxCategory: "1"},
+								},
+							},
+							Amount: num.MakeAmount(230000, 2),
+						},
+					},
+					Sum: num.MakeAmount(230000, 2),
+				},
+				Tax:          num.MakeAmount(230000, 2),
+				TotalWithTax: num.MakeAmount(1230000, 2),
+				Payable:      num.MakeAmount(1230000, 2),
+				Advances:     &advance,
+				Due:          &due,
+			},
+		}
+	}
+
+	t.Run("prorates P_13_X/P_14_X to remaining amounts", func(t *testing.T) {
+		inv := baseSettlementInvoice()
+		inv.Totals.Taxes.Categories[0].Rates[0].Amount = num.MakeAmount(230000, 2)
+		ksefInv := ksef.NewFavatInv(inv)
+
+		// P_15 = Due = 6150.00
+		assert.Equal(t, "6150.00", ksefInv.TotalAmountDue)
+
+		// P_13_1 should be prorated: 10000 * (6150/12300) = 5000.00
+		assert.Equal(t, "5000.00", ksefInv.StandardRateNetSale)
+
+		// P_14_1 should be prorated: 2300 * (6150/12300) = 1150.00
+		assert.Equal(t, "1150.00", ksefInv.StandardRateTax)
+
+		// FakturaZaliczkowa should be mapped from advance ref
+		require.Len(t, ksefInv.AdvanceInvoices, 1)
+		assert.Equal(t, "1234567890-20260101-AAA000BBB111-01", ksefInv.AdvanceInvoices[0].KSeFAdvanceInvoiceNo)
+
+		// Lines should still show full amount
+		require.Len(t, ksefInv.Lines, 1)
+		assert.Equal(t, "10000.00", ksefInv.Lines[0].NetPriceTotal)
+	})
+
+	t.Run("fully prepaid sets tax totals to zero", func(t *testing.T) {
+		inv := baseSettlementInvoice()
+		inv.Totals.Taxes.Categories[0].Rates[0].Amount = num.MakeAmount(230000, 2)
+		zero := num.MakeAmount(0, 2)
+		fullPayable := num.MakeAmount(1230000, 2)
+		inv.Totals.Due = &zero
+		inv.Totals.Advances = &fullPayable
+
+		ksefInv := ksef.NewFavatInv(inv)
+
+		assert.Equal(t, "0.00", ksefInv.TotalAmountDue)
+		assert.Equal(t, "0.00", ksefInv.StandardRateNetSale)
+		assert.Equal(t, "0.00", ksefInv.StandardRateTax)
+	})
+
+	t.Run("no advances does not adjust tax totals", func(t *testing.T) {
+		inv := baseSettlementInvoice()
+		inv.Totals.Taxes.Categories[0].Rates[0].Amount = num.MakeAmount(230000, 2)
+		inv.Payment = nil
+		inv.Totals.Due = nil
+		inv.Totals.Advances = nil
+
+		ksefInv := ksef.NewFavatInv(inv)
+
+		// Should use Payable since no Due
+		assert.Equal(t, "12300.00", ksefInv.TotalAmountDue)
+		// Tax totals should be unchanged (full order amounts)
+		assert.Equal(t, "10000.00", ksefInv.StandardRateNetSale)
+		assert.Equal(t, "2300.00", ksefInv.StandardRateTax)
+	})
+
+	t.Run("advance without ref does not emit FakturaZaliczkowa", func(t *testing.T) {
+		inv := baseSettlementInvoice()
+		inv.Totals.Taxes.Categories[0].Rates[0].Amount = num.MakeAmount(230000, 2)
+		inv.Payment.Advances[0].Ref = "" // no KSeF number
+
+		ksefInv := ksef.NewFavatInv(inv)
+
+		// No FakturaZaliczkowa
+		assert.Empty(t, ksefInv.AdvanceInvoices)
+		// But tax totals should still be prorated
+		assert.Equal(t, "5000.00", ksefInv.StandardRateNetSale)
+	})
+
+	t.Run("non-settlement with advances does not adjust", func(t *testing.T) {
+		inv := baseSettlementInvoice()
+		inv.Totals.Taxes.Categories[0].Rates[0].Amount = num.MakeAmount(230000, 2)
+		inv.Tax.Ext[favat.ExtKeyInvoiceType] = "VAT"
+
+		ksefInv := ksef.NewFavatInv(inv)
+
+		// Tax totals should be unchanged for non-settlement
+		assert.Equal(t, "10000.00", ksefInv.StandardRateNetSale)
+		assert.Equal(t, "2300.00", ksefInv.StandardRateTax)
 	})
 }
 

@@ -142,7 +142,9 @@ Settlement invoices (`ROZ`) finalize orders that had advance payments (`ZAL` inv
 
 This creates a structural mismatch: GOBL calculates Payable from line items (full amount), but P_15 is the remaining balance. For example, an order worth 68,363.40 PLN with a 13,672.68 PLN advance would have lines totalling 68,363.40 but P_15 = 54,690.72.
 
-When converting KSeF → GOBL, the converter detects settlement invoices with `FakturaZaliczkowa` references and no explicit `ZaplataCzesciowa` (partial payment) entries, and derives the advance amount as `Payable - P_15`. This produces a natural GOBL invoice where lines represent the full order, advances represent prepaid amounts, and Due equals the remaining balance. When explicit `ZaplataCzesciowa` entries are present (as in some ERP systems), those are used directly and no derivation occurs.
+**KSeF → GOBL:** The converter detects settlement invoices with `FakturaZaliczkowa` references and no explicit `ZaplataCzesciowa` (partial payment) entries, and derives the advance amount as `Payable - P_15`. This produces a natural GOBL invoice where lines represent the full order, advances represent prepaid amounts, and Due equals the remaining balance. When explicit `ZaplataCzesciowa` entries are present (as in some ERP systems), those are used directly and no derivation occurs.
+
+**GOBL → KSeF:** When a settlement invoice has advances, the converter prorates the tax summary fields (`P_13_X`/`P_14_X`) by the ratio `Due / Payable` so they reflect only the remaining amounts. Advance `ref` values are mapped to `FakturaZaliczkowa` elements. Lines and `ZaplataCzesciowa` entries are emitted unchanged.
 
 ## KSeF API
 

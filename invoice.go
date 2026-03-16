@@ -185,6 +185,12 @@ func NewFavatInv(invoice *bill.Invoice) *Inv {
 
 	inv.setTaxRates(invoice.Totals.Taxes)
 
+	// For settlement invoices with advances, adjust P_13_X/P_14_X to show
+	// only the remaining amounts and map advance refs to FakturaZaliczkowa.
+	if inv.InvoiceType == "ROZ" || inv.InvoiceType == "KOR_ROZ" {
+		inv.adjustSettlementTotals(invoice)
+	}
+
 	if len(invoice.Notes) > 0 {
 		for _, note := range invoice.Notes {
 			inv.AdditionalDescription = append(inv.AdditionalDescription, &AdditionalDescriptionLine{
@@ -302,6 +308,117 @@ func (inv *Inv) setTaxRates(taxes *tax.Total) {
 			}
 		}
 	}
+}
+
+// adjustSettlementTotals adjusts P_13_X/P_14_X for settlement invoices (ROZ/KOR_ROZ)
+// with advances. Per Art. 106f sec. 3, KSeF expects:
+//   - FaWiersz: full order value (handled by lines, unchanged)
+//   - P_13_X/P_14_X: only the remaining amount after advance deductions
+//   - P_15: the amount remaining to be paid (already set from Due)
+//   - FakturaZaliczkowa: references to preceding advance invoices
+//
+// GOBL calculates tax totals from full line amounts, so we prorate each tax
+// rate by the ratio Due/Payable to get the remaining amounts.
+func (inv *Inv) adjustSettlementTotals(invoice *bill.Invoice) {
+	if invoice.Payment == nil || len(invoice.Payment.Advances) == 0 {
+		return
+	}
+
+	// Map advance refs to FakturaZaliczkowa
+	for _, adv := range invoice.Payment.Advances {
+		if adv.Ref != "" {
+			inv.AdvanceInvoices = append(inv.AdvanceInvoices, &AdvanceInvoiceRef{
+				KSeFAdvanceInvoiceNo: adv.Ref,
+			})
+		}
+	}
+
+	// Prorate tax summary fields to remaining amounts.
+	// Skip if no Due (nothing to adjust) or no Payable (shouldn't happen).
+	if invoice.Totals.Due == nil || invoice.Totals.Payable.IsZero() {
+		return
+	}
+
+	due := *invoice.Totals.Due
+	payable := invoice.Totals.Payable
+
+	if due.Equals(payable) {
+		// No advances effectively applied, nothing to adjust
+		return
+	}
+
+	// Helper to prorate: remaining = full * due / payable
+	prorate := func(full num.Amount) num.Amount {
+		if full.IsZero() {
+			return full
+		}
+		return full.Multiply(due).Divide(payable)
+	}
+
+	// Adjust each P_13_X/P_14_X pair
+	if inv.StandardRateNetSale != "" {
+		inv.StandardRateNetSale = prorate(mustParseAmount(inv.StandardRateNetSale)).String()
+	}
+	if inv.StandardRateTax != "" {
+		inv.StandardRateTax = prorate(mustParseAmount(inv.StandardRateTax)).String()
+	}
+	if inv.ReducedRateNetSale != "" {
+		inv.ReducedRateNetSale = prorate(mustParseAmount(inv.ReducedRateNetSale)).String()
+	}
+	if inv.ReducedRateTax != "" {
+		inv.ReducedRateTax = prorate(mustParseAmount(inv.ReducedRateTax)).String()
+	}
+	if inv.SuperReducedRateNetSale != "" {
+		inv.SuperReducedRateNetSale = prorate(mustParseAmount(inv.SuperReducedRateNetSale)).String()
+	}
+	if inv.SuperReducedRateTax != "" {
+		inv.SuperReducedRateTax = prorate(mustParseAmount(inv.SuperReducedRateTax)).String()
+	}
+	if inv.TaxiRateNetSale != "" {
+		inv.TaxiRateNetSale = prorate(mustParseAmount(inv.TaxiRateNetSale)).String()
+	}
+	if inv.TaxiRateTax != "" {
+		inv.TaxiRateTax = prorate(mustParseAmount(inv.TaxiRateTax)).String()
+	}
+	if inv.OSSNetSale != "" {
+		inv.OSSNetSale = prorate(mustParseAmount(inv.OSSNetSale)).String()
+	}
+	if inv.OSSTax != "" {
+		inv.OSSTax = prorate(mustParseAmount(inv.OSSTax)).String()
+	}
+	if inv.ZeroTaxExceptIntraCommunityNetSale != "" {
+		inv.ZeroTaxExceptIntraCommunityNetSale = prorate(mustParseAmount(inv.ZeroTaxExceptIntraCommunityNetSale)).String()
+	}
+	if inv.IntraCommunityNetSale != "" {
+		inv.IntraCommunityNetSale = prorate(mustParseAmount(inv.IntraCommunityNetSale)).String()
+	}
+	if inv.ExportNetSale != "" {
+		inv.ExportNetSale = prorate(mustParseAmount(inv.ExportNetSale)).String()
+	}
+	if inv.TaxExemptNetSale != "" {
+		inv.TaxExemptNetSale = prorate(mustParseAmount(inv.TaxExemptNetSale)).String()
+	}
+	if inv.OutsideScopeNetSale != "" {
+		inv.OutsideScopeNetSale = prorate(mustParseAmount(inv.OutsideScopeNetSale)).String()
+	}
+	if inv.ReverseChargeNetSale != "" {
+		inv.ReverseChargeNetSale = prorate(mustParseAmount(inv.ReverseChargeNetSale)).String()
+	}
+	if inv.DomesticReverseChargeNetSale != "" {
+		inv.DomesticReverseChargeNetSale = prorate(mustParseAmount(inv.DomesticReverseChargeNetSale)).String()
+	}
+	if inv.MarginNetSale != "" {
+		inv.MarginNetSale = prorate(mustParseAmount(inv.MarginNetSale)).String()
+	}
+}
+
+// mustParseAmount parses an amount string, returning zero on error.
+func mustParseAmount(s string) num.Amount {
+	amt, err := parseAmount(s)
+	if err != nil {
+		return num.MakeAmount(0, 2)
+	}
+	return amt
 }
 
 // parseInvoiceData converts KSEF invoice data to GOBL invoice fields
