@@ -1554,6 +1554,22 @@ func TestDeriveSettlementAdvances(t *testing.T) {
 			assert.Empty(t, inv.Payment.Advances)
 		}
 	})
+
+	t.Run("multiple advance refs are concatenated", func(t *testing.T) {
+		doc := testSettlementDoc()
+		doc.Inv.AdvanceInvoices = []*ksef.AdvanceInvoiceRef{
+			{KSeFAdvanceInvoiceNo: "1234567890-20260101-AAA111-01"},
+			{KSeFAdvanceInvoiceNo: "1234567890-20260105-BBB222-02"},
+		}
+
+		inv, err := doc.ToGOBL()
+		require.NoError(t, err)
+
+		require.NotNil(t, inv.Payment)
+		require.Len(t, inv.Payment.Advances, 1)
+		assert.Equal(t, "1234567890-20260101-AAA111-01, 1234567890-20260105-BBB222-02",
+			inv.Payment.Advances[0].Ref)
+	})
 }
 
 func TestAdjustSettlementTotals(t *testing.T) {

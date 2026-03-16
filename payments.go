@@ -2,6 +2,7 @@ package ksef
 
 import (
 	"fmt"
+	"strings"
 
 	"github.com/invopop/gobl/addons/pl/favat"
 	"github.com/invopop/gobl/bill"
@@ -328,17 +329,18 @@ func (inv *Inv) deriveSettlementAdvances(goblInv *bill.Invoice, totalDueStr stri
 		return nil
 	}
 
-	// Build advance with KSeF number reference
+	// Collect KSeF numbers from all advance invoice references.
+	var refs []string
+	for _, ref := range inv.AdvanceInvoices {
+		if ref.KSeFAdvanceInvoiceNo != "" {
+			refs = append(refs, ref.KSeFAdvanceInvoiceNo)
+		}
+	}
+
 	advance := &pay.Advance{
 		Description: "Advance payment",
 		Amount:      advanceAmt,
-	}
-
-	// Set KSeF number reference from advance invoice references
-	for _, ref := range inv.AdvanceInvoices {
-		if ref.KSeFAdvanceInvoiceNo != "" {
-			advance.Ref = ref.KSeFAdvanceInvoiceNo
-		}
+		Ref:         strings.Join(refs, ", "),
 	}
 
 	if goblInv.Payment == nil {
