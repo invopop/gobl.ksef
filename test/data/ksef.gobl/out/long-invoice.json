@@ -1,0 +1,945 @@
+{
+  "$schema": "https://gobl.org/draft-0/envelope",
+  "head": {
+    "uuid": "00000000-0000-0000-0000-000000000000",
+    "dig": {
+      "alg": "sha256",
+      "val": "0000000000000000000000000000000000000000000000000000000000000000"
+    }
+  },
+  "doc": {
+    "$schema": "https://gobl.org/draft-0/bill/invoice",
+    "$regime": "PL",
+    "$addons": [
+      "pl-favat-v3"
+    ],
+    "uuid": "00000000-0000-0000-0000-000000000000",
+    "type": "standard",
+    "code": "FV/26/0000001",
+    "issue_date": "2026-03-13",
+    "currency": "PLN",
+    "tax": {
+      "prices_include": "VAT",
+      "rounding": "currency",
+      "ext": {
+        "pl-favat-invoice-type": "VAT"
+      }
+    },
+    "supplier": {
+      "name": "TESTOWA HURTOWNIA S.A.",
+      "tax_id": {
+        "country": "PL",
+        "code": "1111111111"
+      },
+      "addresses": [
+        {
+          "street": "ul. Przykładowa 10/12 00-100 Warszawa",
+          "country": "PL"
+        }
+      ]
+    },
+    "customer": {
+      "name": "PRZYKŁADOWA FIRMA SP. Z O.O.",
+      "tax_id": {
+        "country": "PL",
+        "code": "2222222222"
+      },
+      "identities": [
+        {
+          "country": "PL",
+          "code": "2222222222",
+          "ext": {
+            "pl-favat-third-party-role": "10"
+          }
+        }
+      ],
+      "addresses": [
+        {
+          "street": "Testowa 5 00-200 Warszawa Polska",
+          "country": "PL"
+        }
+      ],
+      "ext": {
+        "pl-favat-group-vat": "1"
+      }
+    },
+    "lines": [
+      {
+        "i": 1,
+        "quantity": "1.00",
+        "item": {
+          "name": "Opakowanie zbiorcze (w tym opłata środowiskowa)",
+          "price": "5.95",
+          "unit": "szt"
+        },
+        "sum": "5.95",
+        "taxes": [
+          {
+            "cat": "VAT",
+            "key": "standard",
+            "rate": "general",
+            "percent": "23.0%",
+            "ext": {
+              "pl-favat-tax-category": "1"
+            }
+          }
+        ],
+        "total": "5.95"
+      },
+      {
+        "i": 2,
+        "quantity": "4.00",
+        "item": {
+          "name": "Serek naturalny 200g",
+          "price": "3.86",
+          "unit": "szt"
+        },
+        "sum": "15.44",
+        "taxes": [
+          {
+            "cat": "VAT",
+            "key": "standard",
+            "rate": "super-reduced",
+            "percent": "5.0%",
+            "ext": {
+              "pl-favat-tax-category": "3"
+            }
+          }
+        ],
+        "total": "15.44"
+      },
+      {
+        "i": 3,
+        "quantity": "2.00",
+        "item": {
+          "name": "Serek owocowy brzoskwinia 150g",
+          "price": "3.79",
+          "unit": "szt"
+        },
+        "sum": "7.58",
+        "taxes": [
+          {
+            "cat": "VAT",
+            "key": "standard",
+            "rate": "super-reduced",
+            "percent": "5.0%",
+            "ext": {
+              "pl-favat-tax-category": "3"
+            }
+          }
+        ],
+        "total": "7.58"
+      },
+      {
+        "i": 4,
+        "quantity": "2.00",
+        "item": {
+          "name": "Serek owocowy truskawka 150g",
+          "price": "3.79",
+          "unit": "szt"
+        },
+        "sum": "7.58",
+        "taxes": [
+          {
+            "cat": "VAT",
+            "key": "standard",
+            "rate": "super-reduced",
+            "percent": "5.0%",
+            "ext": {
+              "pl-favat-tax-category": "3"
+            }
+          }
+        ],
+        "total": "7.58"
+      },
+      {
+        "i": 5,
+        "quantity": "2.00",
+        "item": {
+          "name": "Kefir tradycyjny 1,5% 400ml",
+          "price": "3.29",
+          "unit": "szt"
+        },
+        "sum": "6.58",
+        "taxes": [
+          {
+            "cat": "VAT",
+            "key": "standard",
+            "rate": "super-reduced",
+            "percent": "5.0%",
+            "ext": {
+              "pl-favat-tax-category": "3"
+            }
+          }
+        ],
+        "total": "6.58"
+      },
+      {
+        "i": 6,
+        "quantity": "15.00",
+        "item": {
+          "name": "Napój mleczny czekoladowy 250ml",
+          "price": "3.99",
+          "unit": "szt"
+        },
+        "sum": "59.85",
+        "taxes": [
+          {
+            "cat": "VAT",
+            "key": "standard",
+            "rate": "super-reduced",
+            "percent": "5.0%",
+            "ext": {
+              "pl-favat-tax-category": "3"
+            }
+          }
+        ],
+        "total": "59.85"
+      },
+      {
+        "i": 7,
+        "quantity": "3.00",
+        "item": {
+          "name": "Jogurt naturalny 370g",
+          "price": "1.99",
+          "unit": "szt"
+        },
+        "sum": "5.97",
+        "taxes": [
+          {
+            "cat": "VAT",
+            "key": "standard",
+            "rate": "super-reduced",
+            "percent": "5.0%",
+            "ext": {
+              "pl-favat-tax-category": "3"
+            }
+          }
+        ],
+        "total": "5.97"
+      },
+      {
+        "i": 8,
+        "quantity": "6.00",
+        "item": {
+          "name": "Orzechy włoskie 100g",
+          "price": "6.99",
+          "unit": "szt"
+        },
+        "sum": "41.94",
+        "taxes": [
+          {
+            "cat": "VAT",
+            "key": "standard",
+            "rate": "super-reduced",
+            "percent": "5.0%",
+            "ext": {
+              "pl-favat-tax-category": "3"
+            }
+          }
+        ],
+        "total": "41.94"
+      },
+      {
+        "i": 9,
+        "quantity": "5.00",
+        "item": {
+          "name": "Orzechy nerkowca 150g",
+          "price": "9.99",
+          "unit": "szt"
+        },
+        "sum": "49.95",
+        "taxes": [
+          {
+            "cat": "VAT",
+            "key": "standard",
+            "rate": "super-reduced",
+            "percent": "5.0%",
+            "ext": {
+              "pl-favat-tax-category": "3"
+            }
+          }
+        ],
+        "total": "49.95"
+      },
+      {
+        "i": 10,
+        "quantity": "1.00",
+        "item": {
+          "name": "Jogurt naturalny bez laktozy 370g",
+          "price": "2.89",
+          "unit": "szt"
+        },
+        "sum": "2.89",
+        "taxes": [
+          {
+            "cat": "VAT",
+            "key": "standard",
+            "rate": "super-reduced",
+            "percent": "5.0%",
+            "ext": {
+              "pl-favat-tax-category": "3"
+            }
+          }
+        ],
+        "total": "2.89"
+      },
+      {
+        "i": 11,
+        "quantity": "1.00",
+        "item": {
+          "name": "Szynka konserwowa 300g",
+          "price": "6.35",
+          "unit": "szt"
+        },
+        "sum": "6.35",
+        "taxes": [
+          {
+            "cat": "VAT",
+            "key": "standard",
+            "rate": "super-reduced",
+            "percent": "5.0%",
+            "ext": {
+              "pl-favat-tax-category": "3"
+            }
+          }
+        ],
+        "total": "6.35"
+      },
+      {
+        "i": 12,
+        "quantity": "3.00",
+        "item": {
+          "name": "Serek wiejski bez laktozy 200g",
+          "price": "4.39",
+          "unit": "szt"
+        },
+        "sum": "13.17",
+        "taxes": [
+          {
+            "cat": "VAT",
+            "key": "standard",
+            "rate": "super-reduced",
+            "percent": "5.0%",
+            "ext": {
+              "pl-favat-tax-category": "3"
+            }
+          }
+        ],
+        "total": "13.17"
+      },
+      {
+        "i": 13,
+        "quantity": "2.00",
+        "item": {
+          "name": "Kefir bez laktozy z probiotykiem 1,5% 400ml",
+          "price": "3.69",
+          "unit": "szt"
+        },
+        "sum": "7.38",
+        "taxes": [
+          {
+            "cat": "VAT",
+            "key": "standard",
+            "rate": "super-reduced",
+            "percent": "5.0%",
+            "ext": {
+              "pl-favat-tax-category": "3"
+            }
+          }
+        ],
+        "total": "7.38"
+      },
+      {
+        "i": 14,
+        "quantity": "5.00",
+        "item": {
+          "name": "Mieszanka orzechów 200g",
+          "price": "9.99",
+          "unit": "szt"
+        },
+        "sum": "49.95",
+        "taxes": [
+          {
+            "cat": "VAT",
+            "key": "standard",
+            "rate": "super-reduced",
+            "percent": "5.0%",
+            "ext": {
+              "pl-favat-tax-category": "3"
+            }
+          }
+        ],
+        "total": "49.95"
+      },
+      {
+        "i": 15,
+        "quantity": "2.00",
+        "item": {
+          "name": "Produkt sojowy jagodowy 400g",
+          "price": "4.89",
+          "unit": "szt"
+        },
+        "sum": "9.78",
+        "taxes": [
+          {
+            "cat": "VAT",
+            "key": "standard",
+            "rate": "reduced",
+            "percent": "8.0%",
+            "ext": {
+              "pl-favat-tax-category": "2"
+            }
+          }
+        ],
+        "total": "9.78"
+      },
+      {
+        "i": 16,
+        "quantity": "2.00",
+        "item": {
+          "name": "Produkt sojowy brzoskwiniowy 400g",
+          "price": "4.89",
+          "unit": "szt"
+        },
+        "sum": "9.78",
+        "taxes": [
+          {
+            "cat": "VAT",
+            "key": "standard",
+            "rate": "reduced",
+            "percent": "8.0%",
+            "ext": {
+              "pl-favat-tax-category": "2"
+            }
+          }
+        ],
+        "total": "9.78"
+      },
+      {
+        "i": 17,
+        "quantity": "5.00",
+        "item": {
+          "name": "Paluszki serowe 80g",
+          "price": "6.19",
+          "unit": "szt"
+        },
+        "sum": "30.95",
+        "taxes": [
+          {
+            "cat": "VAT",
+            "key": "standard",
+            "rate": "super-reduced",
+            "percent": "5.0%",
+            "ext": {
+              "pl-favat-tax-category": "3"
+            }
+          }
+        ],
+        "total": "30.95"
+      },
+      {
+        "i": 18,
+        "quantity": "8.00",
+        "item": {
+          "name": "Beef jerky proteinowy 25g",
+          "price": "10.45",
+          "unit": "szt"
+        },
+        "sum": "83.60",
+        "taxes": [
+          {
+            "cat": "VAT",
+            "key": "standard",
+            "rate": "super-reduced",
+            "percent": "5.0%",
+            "ext": {
+              "pl-favat-tax-category": "3"
+            }
+          }
+        ],
+        "total": "83.60"
+      },
+      {
+        "i": 19,
+        "quantity": "10.00",
+        "item": {
+          "name": "Kabanosy drobiowe bezglutenowe 120g",
+          "price": "6.49",
+          "unit": "szt"
+        },
+        "sum": "64.90",
+        "taxes": [
+          {
+            "cat": "VAT",
+            "key": "standard",
+            "rate": "super-reduced",
+            "percent": "5.0%",
+            "ext": {
+              "pl-favat-tax-category": "3"
+            }
+          }
+        ],
+        "total": "64.90"
+      },
+      {
+        "i": 20,
+        "quantity": "10.00",
+        "item": {
+          "name": "Jogurt pitny jagodowy 330ml",
+          "price": "5.85",
+          "unit": "szt"
+        },
+        "sum": "58.50",
+        "taxes": [
+          {
+            "cat": "VAT",
+            "key": "standard",
+            "rate": "super-reduced",
+            "percent": "5.0%",
+            "ext": {
+              "pl-favat-tax-category": "3"
+            }
+          }
+        ],
+        "total": "58.50"
+      },
+      {
+        "i": 21,
+        "quantity": "5.00",
+        "item": {
+          "name": "Jogurt pitny mango marakuja 330ml",
+          "price": "5.85",
+          "unit": "szt"
+        },
+        "sum": "29.25",
+        "taxes": [
+          {
+            "cat": "VAT",
+            "key": "standard",
+            "rate": "super-reduced",
+            "percent": "5.0%",
+            "ext": {
+              "pl-favat-tax-category": "3"
+            }
+          }
+        ],
+        "total": "29.25"
+      },
+      {
+        "i": 22,
+        "quantity": "1.00",
+        "item": {
+          "name": "Kiełbasa krakowska sucha 250g",
+          "price": "8.39",
+          "unit": "szt"
+        },
+        "sum": "8.39",
+        "taxes": [
+          {
+            "cat": "VAT",
+            "key": "standard",
+            "rate": "super-reduced",
+            "percent": "5.0%",
+            "ext": {
+              "pl-favat-tax-category": "3"
+            }
+          }
+        ],
+        "total": "8.39"
+      },
+      {
+        "i": 23,
+        "quantity": "6.00",
+        "item": {
+          "name": "Mus owocowy jabłko 120g",
+          "price": "3.99",
+          "unit": "szt"
+        },
+        "sum": "23.94",
+        "taxes": [
+          {
+            "cat": "VAT",
+            "key": "standard",
+            "rate": "super-reduced",
+            "percent": "5.0%",
+            "ext": {
+              "pl-favat-tax-category": "3"
+            }
+          }
+        ],
+        "total": "23.94"
+      },
+      {
+        "i": 24,
+        "quantity": "10.00",
+        "item": {
+          "name": "Mus owocowy jabłko truskawka 120g",
+          "price": "3.99",
+          "unit": "szt"
+        },
+        "sum": "39.90",
+        "taxes": [
+          {
+            "cat": "VAT",
+            "key": "standard",
+            "rate": "super-reduced",
+            "percent": "5.0%",
+            "ext": {
+              "pl-favat-tax-category": "3"
+            }
+          }
+        ],
+        "total": "39.90"
+      },
+      {
+        "i": 25,
+        "quantity": "4.00",
+        "item": {
+          "name": "Serek wiejski wysokobiałkowy 200g",
+          "price": "4.39",
+          "unit": "szt"
+        },
+        "sum": "17.56",
+        "taxes": [
+          {
+            "cat": "VAT",
+            "key": "standard",
+            "rate": "super-reduced",
+            "percent": "5.0%",
+            "ext": {
+              "pl-favat-tax-category": "3"
+            }
+          }
+        ],
+        "total": "17.56"
+      },
+      {
+        "i": 26,
+        "quantity": "5.00",
+        "item": {
+          "name": "Jogurt pitny wanilia 330ml",
+          "price": "5.85",
+          "unit": "szt"
+        },
+        "sum": "29.25",
+        "taxes": [
+          {
+            "cat": "VAT",
+            "key": "standard",
+            "rate": "super-reduced",
+            "percent": "5.0%",
+            "ext": {
+              "pl-favat-tax-category": "3"
+            }
+          }
+        ],
+        "total": "29.25"
+      },
+      {
+        "i": 27,
+        "quantity": "10.00",
+        "item": {
+          "name": "Jogurt pitny truskawka \u0026 kiwi 330ml",
+          "price": "5.85",
+          "unit": "szt"
+        },
+        "sum": "58.50",
+        "taxes": [
+          {
+            "cat": "VAT",
+            "key": "standard",
+            "rate": "super-reduced",
+            "percent": "5.0%",
+            "ext": {
+              "pl-favat-tax-category": "3"
+            }
+          }
+        ],
+        "total": "58.50"
+      },
+      {
+        "i": 28,
+        "quantity": "15.00",
+        "item": {
+          "name": "Mus owocowy jabłko mango 120g",
+          "price": "3.99",
+          "unit": "szt"
+        },
+        "sum": "59.85",
+        "taxes": [
+          {
+            "cat": "VAT",
+            "key": "standard",
+            "rate": "super-reduced",
+            "percent": "5.0%",
+            "ext": {
+              "pl-favat-tax-category": "3"
+            }
+          }
+        ],
+        "total": "59.85"
+      },
+      {
+        "i": 29,
+        "quantity": "3.00",
+        "item": {
+          "name": "Pudding proteinowy czekoladowy 200g",
+          "price": "6.75",
+          "unit": "szt"
+        },
+        "sum": "20.25",
+        "taxes": [
+          {
+            "cat": "VAT",
+            "key": "standard",
+            "rate": "super-reduced",
+            "percent": "5.0%",
+            "ext": {
+              "pl-favat-tax-category": "3"
+            }
+          }
+        ],
+        "total": "20.25"
+      },
+      {
+        "i": 30,
+        "quantity": "3.00",
+        "item": {
+          "name": "Pudding proteinowy waniliowy 200g",
+          "price": "6.75",
+          "unit": "szt"
+        },
+        "sum": "20.25",
+        "taxes": [
+          {
+            "cat": "VAT",
+            "key": "standard",
+            "rate": "super-reduced",
+            "percent": "5.0%",
+            "ext": {
+              "pl-favat-tax-category": "3"
+            }
+          }
+        ],
+        "total": "20.25"
+      },
+      {
+        "i": 31,
+        "quantity": "3.00",
+        "item": {
+          "name": "Pudding proteinowy ryżowy 200g",
+          "price": "6.75",
+          "unit": "szt"
+        },
+        "sum": "20.25",
+        "taxes": [
+          {
+            "cat": "VAT",
+            "key": "standard",
+            "rate": "super-reduced",
+            "percent": "5.0%",
+            "ext": {
+              "pl-favat-tax-category": "3"
+            }
+          }
+        ],
+        "total": "20.25"
+      },
+      {
+        "i": 32,
+        "quantity": "1.00",
+        "item": {
+          "name": "Chleb tostowy pszenny 550g",
+          "price": "6.99",
+          "unit": "szt"
+        },
+        "sum": "6.99",
+        "taxes": [
+          {
+            "cat": "VAT",
+            "key": "standard",
+            "rate": "super-reduced",
+            "percent": "5.0%",
+            "ext": {
+              "pl-favat-tax-category": "3"
+            }
+          }
+        ],
+        "total": "6.99"
+      },
+      {
+        "i": 33,
+        "quantity": "2.00",
+        "item": {
+          "name": "Jogurt sojowy truskawka-porzeczka-malina 400g",
+          "price": "6.95",
+          "unit": "szt"
+        },
+        "sum": "13.90",
+        "taxes": [
+          {
+            "cat": "VAT",
+            "key": "standard",
+            "rate": "reduced",
+            "percent": "8.0%",
+            "ext": {
+              "pl-favat-tax-category": "2"
+            }
+          }
+        ],
+        "total": "13.90"
+      },
+      {
+        "i": 34,
+        "quantity": "2.00",
+        "item": {
+          "name": "Jogurt sojowy mango-banan 400g",
+          "price": "6.95",
+          "unit": "szt"
+        },
+        "sum": "13.90",
+        "taxes": [
+          {
+            "cat": "VAT",
+            "key": "standard",
+            "rate": "reduced",
+            "percent": "8.0%",
+            "ext": {
+              "pl-favat-tax-category": "2"
+            }
+          }
+        ],
+        "total": "13.90"
+      },
+      {
+        "i": 35,
+        "quantity": "3.00",
+        "item": {
+          "name": "Pudding proteinowy biała czekolada 200g",
+          "price": "6.75",
+          "unit": "szt"
+        },
+        "sum": "20.25",
+        "taxes": [
+          {
+            "cat": "VAT",
+            "key": "standard",
+            "rate": "super-reduced",
+            "percent": "5.0%",
+            "ext": {
+              "pl-favat-tax-category": "3"
+            }
+          }
+        ],
+        "total": "20.25"
+      },
+      {
+        "i": 36,
+        "quantity": "5.00",
+        "item": {
+          "name": "Jogurt pitny nektarynka malina 330ml",
+          "price": "5.89",
+          "unit": "szt"
+        },
+        "sum": "29.45",
+        "taxes": [
+          {
+            "cat": "VAT",
+            "key": "standard",
+            "rate": "super-reduced",
+            "percent": "5.0%",
+            "ext": {
+              "pl-favat-tax-category": "3"
+            }
+          }
+        ],
+        "total": "29.45"
+      }
+    ],
+    "payment": {
+      "terms": {
+        "due_dates": [
+          {
+            "date": "2026-03-20",
+            "amount": "949.97",
+            "percent": "100%"
+          }
+        ],
+        "notes": "7 Dzień Wystawienie faktury"
+      },
+      "advances": [
+        {
+          "date": "2026-03-12",
+          "description": "Advance payment",
+          "amount": "13.78"
+        }
+      ],
+      "instructions": {
+        "key": "credit-transfer",
+        "credit_transfer": [
+          {
+            "number": "11222233334444555566667777"
+          }
+        ],
+        "ext": {
+          "pl-favat-payment-means": "6"
+        }
+      }
+    },
+    "totals": {
+      "sum": "949.97",
+      "tax_included": "47.32",
+      "total": "902.65",
+      "taxes": {
+        "categories": [
+          {
+            "code": "VAT",
+            "rates": [
+              {
+                "key": "standard",
+                "ext": {
+                  "pl-favat-tax-category": "1"
+                },
+                "base": "4.84",
+                "percent": "23.0%",
+                "amount": "1.11"
+              },
+              {
+                "key": "standard",
+                "ext": {
+                  "pl-favat-tax-category": "3"
+                },
+                "base": "853.98",
+                "percent": "5.0%",
+                "amount": "42.70"
+              },
+              {
+                "key": "standard",
+                "ext": {
+                  "pl-favat-tax-category": "2"
+                },
+                "base": "43.86",
+                "percent": "8.0%",
+                "amount": "3.51"
+              }
+            ],
+            "amount": "47.32"
+          }
+        ],
+        "sum": "47.32"
+      },
+      "tax": "47.32",
+      "total_with_tax": "949.97",
+      "payable": "949.97",
+      "advance": "13.78",
+      "due": "936.19"
+    },
+    "notes": [
+      {
+        "code": "Magazyn",
+        "text": "MG"
+      }
+    ]
+  }
+}
