@@ -456,6 +456,11 @@ func (inv *Inv) isPrepaymentType() bool {
 	return inv.InvoiceType == "ZAL" || inv.InvoiceType == "KOR_ZAL"
 }
 
+// isSettlementType returns true for settlement invoice types (ROZ or KOR_ROZ).
+func (inv *Inv) isSettlementType() bool {
+	return inv.InvoiceType == "ROZ" || inv.InvoiceType == "KOR_ROZ"
+}
+
 // parseLines converts KSEF lines to GOBL lines.
 func (inv *Inv) parseLines(goblInv *bill.Invoice) error {
 	if len(inv.Lines) == 0 {

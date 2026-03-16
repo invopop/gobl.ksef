@@ -1,0 +1,255 @@
+<ns0:Faktura
+	xmlns:ns0="http://crd.gov.pl/wzor/2025/06/25/13775/">
+	<ns0:Naglowek>
+		<ns0:KodFormularza kodSystemowy="FA (3)" wersjaSchemy="1-0E">FA</ns0:KodFormularza>
+		<ns0:WariantFormularza>3</ns0:WariantFormularza>
+		<ns0:DataWytworzeniaFa>2026-03-02T03:50:50Z</ns0:DataWytworzeniaFa>
+		<ns0:SystemInfo>TestERP 6.3</ns0:SystemInfo>
+	</ns0:Naglowek>
+	<ns0:Podmiot1>
+		<ns0:DaneIdentyfikacyjne>
+			<ns0:NIP>1111111111</ns0:NIP>
+			<ns0:Nazwa>Testowa Hurtownia S.A.</ns0:Nazwa>
+		</ns0:DaneIdentyfikacyjne>
+		<ns0:Adres>
+			<ns0:KodKraju>PL</ns0:KodKraju>
+			<ns0:AdresL1>ul. Przykładowa 10/12 00-001 Warszawa</ns0:AdresL1>
+		</ns0:Adres>
+	</ns0:Podmiot1>
+	<ns0:Podmiot2>
+		<ns0:DaneIdentyfikacyjne>
+			<ns0:NIP>2222222222</ns0:NIP>
+			<ns0:Nazwa>Odbiorca Testowy Sp. z o.o.</ns0:Nazwa>
+		</ns0:DaneIdentyfikacyjne>
+		<ns0:Adres>
+			<ns0:KodKraju>PL</ns0:KodKraju>
+			<ns0:AdresL1>ul. Testowa 53 00-002 Warszawa</ns0:AdresL1>
+		</ns0:Adres>
+		<ns0:JST>2</ns0:JST>
+		<ns0:GV>2</ns0:GV>
+	</ns0:Podmiot2>
+	<ns0:Fa>
+		<ns0:KodWaluty>PLN</ns0:KodWaluty>
+		<ns0:P_1>2026-03-02</ns0:P_1>
+		<ns0:P_2>FSE/26/0000001</ns0:P_2>
+		<ns0:WZ>WZ/26/0000001</ns0:WZ>
+		<ns0:P_6>2026-03-02</ns0:P_6>
+		<ns0:P_13_1>0</ns0:P_13_1>
+		<ns0:P_14_1>0</ns0:P_14_1>
+		<ns0:P_13_3>0</ns0:P_13_3>
+		<ns0:P_14_3>0</ns0:P_14_3>
+		<ns0:P_15>0.00</ns0:P_15>
+		<ns0:Adnotacje>
+			<ns0:P_16>2</ns0:P_16>
+			<ns0:P_17>2</ns0:P_17>
+			<ns0:P_18>2</ns0:P_18>
+			<ns0:P_18A>2</ns0:P_18A>
+			<ns0:Zwolnienie>
+				<ns0:P_19N>1</ns0:P_19N>
+			</ns0:Zwolnienie>
+			<ns0:NoweSrodkiTransportu>
+				<ns0:P_22N>1</ns0:P_22N>
+			</ns0:NoweSrodkiTransportu>
+			<ns0:P_23>2</ns0:P_23>
+			<ns0:PMarzy>
+				<ns0:P_PMarzyN>1</ns0:P_PMarzyN>
+			</ns0:PMarzy>
+		</ns0:Adnotacje>
+		<ns0:RodzajFaktury>ROZ</ns0:RodzajFaktury>
+		<ns0:DodatkowyOpis>
+			<ns0:Klucz>OK0001 Rodzaj opakowania CAN</ns0:Klucz>
+			<ns0:Wartosc>Ilość opakowań = 96,00, kaucja za szt = 0,50, łączna wartość = 48,00</ns0:Wartosc>
+		</ns0:DodatkowyOpis>
+		<ns0:DodatkowyOpis>
+			<ns0:Klucz>OK0002 Rodzaj opakowania PET</ns0:Klucz>
+			<ns0:Wartosc>Ilość opakowań = 96,00, kaucja za szt = 0,50, łączna wartość = 48,00</ns0:Wartosc>
+		</ns0:DodatkowyOpis>
+		<ns0:DodatkowyOpis>
+			<ns0:Klucz>Magazyn</ns0:Klucz>
+			<ns0:Wartosc>MG</ns0:Wartosc>
+		</ns0:DodatkowyOpis>
+		<ns0:DodatkowyOpis>
+			<ns0:Klucz>Faktura zaliczkowa</ns0:Klucz>
+			<ns0:Wartosc>ZFS/26/0000100, kwota faktury = 2 249,43 (w tym kaucje 96,00 PLN) Zaliczka 23% wartość netto 424,32 VAT 97,59; Zaliczka 5% wartość netto 1 553,83 VAT 77,69;</ns0:Wartosc>
+		</ns0:DodatkowyOpis>
+		<ns0:FakturaZaliczkowa>
+			<ns0:NrKSeFFaZaliczkowej>1111111111-20260301-AABB0000001A-01</ns0:NrKSeFFaZaliczkowej>
+		</ns0:FakturaZaliczkowa>
+		<ns0:FaWiersz>
+			<ns0:NrWierszaFa>1</ns0:NrWierszaFa>
+			<ns0:P_7>Usługa pakowania - ECO</ns0:P_7>
+			<ns0:Indeks>T00001</ns0:Indeks>
+			<ns0:P_8A>szt</ns0:P_8A>
+			<ns0:P_8B>1.00</ns0:P_8B>
+			<ns0:P_9B>4.95</ns0:P_9B>
+			<ns0:P_11A>4.95</ns0:P_11A>
+			<ns0:P_11Vat>0.93</ns0:P_11Vat>
+			<ns0:P_12>23</ns0:P_12>
+			<ns0:KursWaluty>0.00</ns0:KursWaluty>
+		</ns0:FaWiersz>
+		<ns0:FaWiersz>
+			<ns0:NrWierszaFa>2</ns0:NrWierszaFa>
+			<ns0:P_7>Napój aloesowy 500ml</ns0:P_7>
+			<ns0:Indeks>T00002</ns0:Indeks>
+			<ns0:P_8A>12pak</ns0:P_8A>
+			<ns0:P_8B>4.00</ns0:P_8B>
+			<ns0:P_9B>76.20</ns0:P_9B>
+			<ns0:P_11A>304.80</ns0:P_11A>
+			<ns0:P_11Vat>14.52</ns0:P_11Vat>
+			<ns0:P_12>5</ns0:P_12>
+			<ns0:KursWaluty>0.00</ns0:KursWaluty>
+		</ns0:FaWiersz>
+		<ns0:FaWiersz>
+			<ns0:NrWierszaFa>3</ns0:NrWierszaFa>
+			<ns0:P_7>Shot witaminowy Odporność</ns0:P_7>
+			<ns0:Indeks>T00003</ns0:Indeks>
+			<ns0:P_8A>szt</ns0:P_8A>
+			<ns0:P_8B>48.00</ns0:P_8B>
+			<ns0:P_9B>5.27</ns0:P_9B>
+			<ns0:P_11A>252.96</ns0:P_11A>
+			<ns0:P_11Vat>12.05</ns0:P_11Vat>
+			<ns0:P_12>5</ns0:P_12>
+			<ns0:KursWaluty>0.00</ns0:KursWaluty>
+		</ns0:FaWiersz>
+		<ns0:FaWiersz>
+			<ns0:NrWierszaFa>4</ns0:NrWierszaFa>
+			<ns0:P_7>Sok 100% grejpfrut 1L</ns0:P_7>
+			<ns0:Indeks>T00004</ns0:Indeks>
+			<ns0:P_8A>szt</ns0:P_8A>
+			<ns0:P_8B>10.00</ns0:P_8B>
+			<ns0:P_9B>9.49</ns0:P_9B>
+			<ns0:P_11A>94.90</ns0:P_11A>
+			<ns0:P_11Vat>4.52</ns0:P_11Vat>
+			<ns0:P_12>5</ns0:P_12>
+			<ns0:KursWaluty>0.00</ns0:KursWaluty>
+		</ns0:FaWiersz>
+		<ns0:FaWiersz>
+			<ns0:NrWierszaFa>5</ns0:NrWierszaFa>
+			<ns0:P_7>Kabanosy drobiowe 100g</ns0:P_7>
+			<ns0:Indeks>T00005</ns0:Indeks>
+			<ns0:P_8A>szt</ns0:P_8A>
+			<ns0:P_8B>20.00</ns0:P_8B>
+			<ns0:P_9B>7.59</ns0:P_9B>
+			<ns0:P_11A>151.80</ns0:P_11A>
+			<ns0:P_11Vat>7.23</ns0:P_11Vat>
+			<ns0:P_12>5</ns0:P_12>
+			<ns0:KursWaluty>0.00</ns0:KursWaluty>
+		</ns0:FaWiersz>
+		<ns0:FaWiersz>
+			<ns0:NrWierszaFa>6</ns0:NrWierszaFa>
+			<ns0:P_7>Shot witaminowy Uroda</ns0:P_7>
+			<ns0:Indeks>T00006</ns0:Indeks>
+			<ns0:P_8A>szt</ns0:P_8A>
+			<ns0:P_8B>30.00</ns0:P_8B>
+			<ns0:P_9B>5.27</ns0:P_9B>
+			<ns0:P_11A>158.10</ns0:P_11A>
+			<ns0:P_11Vat>7.53</ns0:P_11Vat>
+			<ns0:P_12>5</ns0:P_12>
+			<ns0:KursWaluty>0.00</ns0:KursWaluty>
+		</ns0:FaWiersz>
+		<ns0:FaWiersz>
+			<ns0:NrWierszaFa>7</ns0:NrWierszaFa>
+			<ns0:P_7>Espresso z tonikiem 250ml</ns0:P_7>
+			<ns0:Indeks>T00007</ns0:Indeks>
+			<ns0:P_8A>szt</ns0:P_8A>
+			<ns0:P_8B>20.00</ns0:P_8B>
+			<ns0:P_9B>8.54</ns0:P_9B>
+			<ns0:P_11A>170.80</ns0:P_11A>
+			<ns0:P_11Vat>8.13</ns0:P_11Vat>
+			<ns0:P_12>5</ns0:P_12>
+			<ns0:KursWaluty>0.00</ns0:KursWaluty>
+		</ns0:FaWiersz>
+		<ns0:FaWiersz>
+			<ns0:NrWierszaFa>8</ns0:NrWierszaFa>
+			<ns0:P_7>Lemoniada grejpfrutowa 330ml</ns0:P_7>
+			<ns0:Indeks>T00008</ns0:Indeks>
+			<ns0:P_8A>szt</ns0:P_8A>
+			<ns0:P_8B>20.00</ns0:P_8B>
+			<ns0:P_9B>4.74</ns0:P_9B>
+			<ns0:P_11A>94.80</ns0:P_11A>
+			<ns0:P_11Vat>17.73</ns0:P_11Vat>
+			<ns0:P_12>23</ns0:P_12>
+			<ns0:KursWaluty>0.00</ns0:KursWaluty>
+		</ns0:FaWiersz>
+		<ns0:FaWiersz>
+			<ns0:NrWierszaFa>9</ns0:NrWierszaFa>
+			<ns0:P_7>Espresso z lemoniadą 250ml</ns0:P_7>
+			<ns0:Indeks>T00009</ns0:Indeks>
+			<ns0:P_8A>szt</ns0:P_8A>
+			<ns0:P_8B>20.00</ns0:P_8B>
+			<ns0:P_9B>8.54</ns0:P_9B>
+			<ns0:P_11A>170.80</ns0:P_11A>
+			<ns0:P_11Vat>8.13</ns0:P_11Vat>
+			<ns0:P_12>5</ns0:P_12>
+			<ns0:KursWaluty>0.00</ns0:KursWaluty>
+		</ns0:FaWiersz>
+		<ns0:FaWiersz>
+			<ns0:NrWierszaFa>10</ns0:NrWierszaFa>
+			<ns0:P_7>Lemoniada owocowa 330ml</ns0:P_7>
+			<ns0:Indeks>T00010</ns0:Indeks>
+			<ns0:P_8A>szt</ns0:P_8A>
+			<ns0:P_8B>20.00</ns0:P_8B>
+			<ns0:P_9B>4.74</ns0:P_9B>
+			<ns0:P_11A>94.80</ns0:P_11A>
+			<ns0:P_11Vat>17.73</ns0:P_11Vat>
+			<ns0:P_12>23</ns0:P_12>
+			<ns0:KursWaluty>0.00</ns0:KursWaluty>
+		</ns0:FaWiersz>
+		<ns0:FaWiersz>
+			<ns0:NrWierszaFa>11</ns0:NrWierszaFa>
+			<ns0:P_7>Sok multiwitamina PET 1L</ns0:P_7>
+			<ns0:Indeks>T00011</ns0:Indeks>
+			<ns0:P_8A>12pak</ns0:P_8A>
+			<ns0:P_8B>4.00</ns0:P_8B>
+			<ns0:P_9B>40.92</ns0:P_9B>
+			<ns0:P_11A>163.68</ns0:P_11A>
+			<ns0:P_11Vat>7.79</ns0:P_11Vat>
+			<ns0:P_12>5</ns0:P_12>
+			<ns0:KursWaluty>0.00</ns0:KursWaluty>
+		</ns0:FaWiersz>
+		<ns0:FaWiersz>
+			<ns0:NrWierszaFa>12</ns0:NrWierszaFa>
+			<ns0:P_7>Sok pomarańczowy PET 1L</ns0:P_7>
+			<ns0:Indeks>T00012</ns0:Indeks>
+			<ns0:P_8A>12pak</ns0:P_8A>
+			<ns0:P_8B>4.00</ns0:P_8B>
+			<ns0:P_9B>40.92</ns0:P_9B>
+			<ns0:P_11A>163.68</ns0:P_11A>
+			<ns0:P_11Vat>7.79</ns0:P_11Vat>
+			<ns0:P_12>5</ns0:P_12>
+			<ns0:KursWaluty>0.00</ns0:KursWaluty>
+		</ns0:FaWiersz>
+		<ns0:FaWiersz>
+			<ns0:NrWierszaFa>13</ns0:NrWierszaFa>
+			<ns0:P_7>Napój energetyczny ZERO tropikalny 250ml</ns0:P_7>
+			<ns0:Indeks>T00013</ns0:Indeks>
+			<ns0:P_8A>24pak</ns0:P_8A>
+			<ns0:P_8B>4.00</ns0:P_8B>
+			<ns0:P_9B>81.84</ns0:P_9B>
+			<ns0:P_11A>327.36</ns0:P_11A>
+			<ns0:P_11Vat>61.20</ns0:P_11Vat>
+			<ns0:P_12>23</ns0:P_12>
+			<ns0:KursWaluty>0.00</ns0:KursWaluty>
+		</ns0:FaWiersz>
+		<ns0:Platnosc>
+			<ns0:TerminPlatnosci>
+				<ns0:Termin>2026-02-28</ns0:Termin>
+				<ns0:TerminOpis>
+					<ns0:Ilosc>0</ns0:Ilosc>
+					<ns0:Jednostka>Dzień</ns0:Jednostka>
+					<ns0:ZdarzeniePoczatkowe>Wystawienie faktury</ns0:ZdarzeniePoczatkowe>
+				</ns0:TerminOpis>
+			</ns0:TerminPlatnosci>
+			<ns0:FormaPlatnosci>7</ns0:FormaPlatnosci>
+			<ns0:RachunekBankowy>
+				<ns0:NrRB>00111100002222000033334444</ns0:NrRB>
+			</ns0:RachunekBankowy>
+		</ns0:Platnosc>
+	</ns0:Fa>
+	<ns0:Stopka>
+		<ns0:Rejestry>
+			<ns0:PelnaNazwa>Testowa Hurtownia S.A.</ns0:PelnaNazwa>
+			<ns0:BDO>000000001</ns0:BDO>
+		</ns0:Rejestry>
+	</ns0:Stopka>
+</ns0:Faktura>

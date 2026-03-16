@@ -39,9 +39,12 @@ func AdjustRounding(inv *bill.Invoice, ksefTotalDue string) error {
 		return fmt.Errorf("parsing KSEF total amount: %w", err)
 	}
 
-	// Calculate the difference between the expected and the calculated totals
+	// Calculate the difference between the expected and the calculated totals.
+	// Use Due when it's non-zero (advances partially paid) or when both Due
+	// and expected are zero (fully-prepaid settlement invoices where P_15=0).
+	// Fall back to Payable for standard paid invoices where Due=0 but P_15=Payable.
 	var calculatedTotal num.Amount
-	if inv.Totals.Due != nil && !inv.Totals.Due.IsZero() {
+	if inv.Totals.Due != nil && (!inv.Totals.Due.IsZero() || expectedTotal.IsZero()) {
 		calculatedTotal = *inv.Totals.Due
 	} else {
 		calculatedTotal = inv.Totals.Payable

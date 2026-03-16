@@ -291,6 +291,64 @@ func (inv *Inv) parsePayment(goblInv *bill.Invoice) error {
 	return nil
 }
 
+// deriveSettlementAdvances reconstructs advance payment data for settlement
+// invoices (ROZ/KOR_ROZ) that reference advance invoices (FakturaZaliczkowa)
+// but lack explicit ZaplataCzesciowa entries. The advance amount is derived
+// from the difference between the calculated payable (from lines) and P_15
+// (the remaining amount due).
+func (inv *Inv) deriveSettlementAdvances(goblInv *bill.Invoice, totalDueStr string) error {
+	// Only act when: settlement type + has advance invoice refs + no existing advances
+	if !inv.isSettlementType() || len(inv.AdvanceInvoices) == 0 {
+		return nil
+	}
+	if goblInv.Payment != nil && len(goblInv.Payment.Advances) > 0 {
+		return nil
+	}
+
+	// Calculate to get Payable from lines
+	if err := goblInv.Calculate(); err != nil {
+		return fmt.Errorf("calculating totals for settlement advance derivation: %w", err)
+	}
+
+	// Parse P_15 (the remaining amount due)
+	p15, err := parseAmount(totalDueStr)
+	if err != nil {
+		return fmt.Errorf("parsing P_15 for settlement advance derivation: %w", err)
+	}
+
+	// For credit notes, P_15 is negative in KSeF but GOBL uses positive amounts
+	if goblInv.Type == bill.InvoiceTypeCreditNote {
+		p15 = p15.Invert()
+	}
+
+	payable := goblInv.Totals.Payable
+	advanceAmt := payable.Subtract(p15)
+
+	if advanceAmt.IsZero() {
+		return nil
+	}
+
+	// Build advance with KSeF number reference
+	advance := &pay.Advance{
+		Description: "Advance payment",
+		Amount:      advanceAmt,
+	}
+
+	// Set KSeF number reference from advance invoice references
+	for _, ref := range inv.AdvanceInvoices {
+		if ref.KSeFAdvanceInvoiceNo != "" {
+			advance.Ref = ref.KSeFAdvanceInvoiceNo
+		}
+	}
+
+	if goblInv.Payment == nil {
+		goblInv.Payment = &bill.PaymentDetails{}
+	}
+	goblInv.Payment.Advances = append(goblInv.Payment.Advances, advance)
+
+	return nil
+}
+
 // ParsePaymentMeansCode converts KSEF payment means code to GOBL payment key.
 func ParsePaymentMeansCode(code string) cbc.Key {
 	switch code {

@@ -1,0 +1,176 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Faktura xmlns="http://crd.gov.pl/wzor/2025/06/25/13775/">
+  <Naglowek>
+    <KodFormularza kodSystemowy="FA (3)" wersjaSchemy="1-0E">FA</KodFormularza>
+    <WariantFormularza>3</WariantFormularza>
+    <DataWytworzeniaFa>2026-03-12T15:03:06Z</DataWytworzeniaFa>
+    <SystemInfo>TestERP 100</SystemInfo>
+  </Naglowek>
+  <Podmiot1>
+    <NrEORI>PL333333333300000</NrEORI>
+    <DaneIdentyfikacyjne>
+      <NIP>3333333333</NIP>
+      <Nazwa>Dostawca Maszyn Sp. z o.o.</Nazwa>
+    </DaneIdentyfikacyjne>
+    <Adres>
+      <KodKraju>PL</KodKraju>
+      <AdresL1>ul. Przemysłowa 1</AdresL1>
+      <AdresL2>04-100 Warszawa</AdresL2>
+    </Adres>
+  </Podmiot1>
+  <Podmiot2>
+    <DaneIdentyfikacyjne>
+      <NIP>4444444444</NIP>
+      <Nazwa>Klient Przemysłowy Sp. z o.o.</Nazwa>
+    </DaneIdentyfikacyjne>
+    <Adres>
+      <KodKraju>PL</KodKraju>
+      <AdresL1>ul. Fabryczna 36</AdresL1>
+      <AdresL2>02-500 Warszawa</AdresL2>
+    </Adres>
+    <DaneKontaktowe>
+      <Telefon>48500100200</Telefon>
+    </DaneKontaktowe>
+    <NrKlienta>9900001</NrKlienta>
+    <JST>2</JST>
+    <GV>2</GV>
+  </Podmiot2>
+  <Fa>
+    <KodWaluty>PLN</KodWaluty>
+    <P_1>2026-03-12</P_1>
+    <P_1M>Warszawa</P_1M>
+    <P_2>ROZ/2026/0001</P_2>
+    <WZ>WZ/2026/0001</WZ>
+    <P_6>2026-03-09</P_6>
+    <P_13_1>44464.0</P_13_1>
+    <P_14_1>10226.72</P_14_1>
+    <P_15>54690.72</P_15>
+    <Adnotacje>
+      <P_16>2</P_16>
+      <P_17>2</P_17>
+      <P_18>2</P_18>
+      <P_18A>2</P_18A>
+      <Zwolnienie>
+        <P_19N>1</P_19N>
+      </Zwolnienie>
+      <NoweSrodkiTransportu>
+        <P_22N>1</P_22N>
+      </NoweSrodkiTransportu>
+      <P_23>2</P_23>
+      <PMarzy>
+        <P_PMarzyN>1</P_PMarzyN>
+      </PMarzy>
+    </Adnotacje>
+    <RodzajFaktury>ROZ</RodzajFaktury>
+    <DodatkowyOpis>
+      <Klucz>(PL) Tekst nagł. formul.</Klucz>
+      <Wartosc>faktura zaliczka VAT ZAL/2026/0001, wpłata zaksiegowana 06.03.2026
+</Wartosc>
+    </DodatkowyOpis>
+    <DodatkowyOpis>
+      <Klucz>Osoba kontaktowa</Klucz>
+      <Wartosc>Jan Kowalski</Wartosc>
+    </DodatkowyOpis>
+    <DodatkowyOpis>
+      <Klucz>ROZ_ZALICZKI</Klucz>
+      <Wartosc>ZAL/2026/0001 ( KSEF: 3333333333-20260311-CCDD0000001B-01 )</Wartosc>
+    </DodatkowyOpis>
+    <DodatkowyOpis>
+      <NrWiersza>1</NrWiersza>
+      <Klucz>(PL) Nr zamówienia sprzedaży/poz,:</Klucz>
+      <Wartosc>0000100001 / 000010
+</Wartosc>
+    </DodatkowyOpis>
+    <DodatkowyOpis>
+      <NrWiersza>1</NrWiersza>
+      <Klucz>(PL) Nr zamówienia sprzedaży/poz,:</Klucz>
+      <Wartosc>0000100002 / 000010
+</Wartosc>
+    </DodatkowyOpis>
+    <DodatkowyOpis>
+      <NrWiersza>1</NrWiersza>
+      <Klucz>(PL) PKWIU:</Klucz>
+      <Wartosc>28.22.18.0
+</Wartosc>
+    </DodatkowyOpis>
+    <DodatkowyOpis>
+      <NrWiersza>1</NrWiersza>
+      <Klucz>(PL) Tekst sprzedaży materiału</Klucz>
+      <Wartosc>Oferta produktowa nr OF/2026/001
+</Wartosc>
+    </DodatkowyOpis>
+    <DodatkowyOpis>
+      <NrWiersza>1</NrWiersza>
+      <Klucz>Materiał</Klucz>
+      <Wartosc>10001</Wartosc>
+    </DodatkowyOpis>
+    <DodatkowyOpis>
+      <NrWiersza>1</NrWiersza>
+      <Klucz>Opis materiału</Klucz>
+      <Wartosc>Robot przemysłowy Model X + transport</Wartosc>
+    </DodatkowyOpis>
+    <DodatkowyOpis>
+      <NrWiersza>2</NrWiersza>
+      <Klucz>(PL) Nr zamówienia sprzedaży/poz,:</Klucz>
+      <Wartosc>0000100001 / 000030
+</Wartosc>
+    </DodatkowyOpis>
+    <DodatkowyOpis>
+      <NrWiersza>2</NrWiersza>
+      <Klucz>Materiał</Klucz>
+      <Wartosc>ROZ_ZALICZKI</Wartosc>
+    </DodatkowyOpis>
+    <DodatkowyOpis>
+      <NrWiersza>2</NrWiersza>
+      <Klucz>Opis materiału</Klucz>
+      <Wartosc>Rozliczenie zaliczki</Wartosc>
+    </DodatkowyOpis>
+    <FakturaZaliczkowa>
+      <NrKSeFFaZaliczkowej>3333333333-20260311-CCDD0000001B-01</NrKSeFFaZaliczkowej>
+    </FakturaZaliczkowa>
+    <FaWiersz>
+      <NrWierszaFa>1</NrWierszaFa>
+      <UU_ID>ROZ20260001000001</UU_ID>
+      <P_7>Robot przemysłowy Model X + transport</P_7>
+      <Indeks>000000000000010001</Indeks>
+      <PKWiU>28.22.18.0</PKWiU>
+      <P_8A>SZT</P_8A>
+      <P_8B>1.0</P_8B>
+      <P_9A>55580.0</P_9A>
+      <P_11>55580.0</P_11>
+      <P_12>23</P_12>
+    </FaWiersz>
+    <Platnosc>
+      <TerminPlatnosci>
+        <Termin>2026-04-27</Termin>
+        <TerminOpis>
+          <Ilosc>45</Ilosc>
+          <Jednostka>dni</Jednostka>
+          <ZdarzeniePoczatkowe>wystawienie faktury</ZdarzeniePoczatkowe>
+        </TerminOpis>
+      </TerminPlatnosci>
+      <FormaPlatnosci>6</FormaPlatnosci>
+      <RachunekBankowy>
+        <NrRB>PL00111100002222000033335555</NrRB>
+        <SWIFT>TESTPLPX</SWIFT>
+        <NazwaBanku>Bank Testowy SA</NazwaBanku>
+        <OpisRachunku>PL00111100002222000033335555(PLN)</OpisRachunku>
+      </RachunekBankowy>
+    </Platnosc>
+    <WarunkiTransakcji>
+      <Zamowienia>
+        <DataZamowienia>2026-03-05</DataZamowienia>
+        <NrZamowienia>ZAM/2026/0001</NrZamowienia>
+      </Zamowienia>
+      <WarunkiDostawy>CPT Warszawa</WarunkiDostawy>
+    </WarunkiTransakcji>
+  </Fa>
+  <Stopka>
+    <Informacje></Informacje>
+    <Rejestry>
+      <KRS>0000000001</KRS>
+      <REGON>000000001</REGON>
+      <BDO>000000002</BDO>
+    </Rejestry>
+  </Stopka>
+</Faktura>

@@ -1,0 +1,194 @@
+{
+  "$schema": "https://gobl.org/draft-0/envelope",
+  "head": {
+    "uuid": "00000000-0000-0000-0000-000000000000",
+    "dig": {
+      "alg": "sha256",
+      "val": "0000000000000000000000000000000000000000000000000000000000000000"
+    }
+  },
+  "doc": {
+    "$schema": "https://gobl.org/draft-0/bill/invoice",
+    "$regime": "PL",
+    "$addons": [
+      "pl-favat-v3"
+    ],
+    "$tags": [
+      "settlement"
+    ],
+    "uuid": "00000000-0000-0000-0000-000000000000",
+    "type": "standard",
+    "code": "ROZ/2026/0001",
+    "issue_date": "2026-03-12",
+    "currency": "PLN",
+    "tax": {
+      "rounding": "currency",
+      "ext": {
+        "pl-favat-invoice-type": "ROZ"
+      }
+    },
+    "supplier": {
+      "name": "Dostawca Maszyn Sp. z o.o.",
+      "tax_id": {
+        "country": "PL",
+        "code": "3333333333"
+      },
+      "addresses": [
+        {
+          "street": "ul. Przemysłowa 1 04-100 Warszawa",
+          "country": "PL"
+        }
+      ]
+    },
+    "customer": {
+      "name": "Klient Przemysłowy Sp. z o.o.",
+      "tax_id": {
+        "country": "PL",
+        "code": "4444444444"
+      },
+      "addresses": [
+        {
+          "street": "ul. Fabryczna 36 02-500 Warszawa",
+          "country": "PL"
+        }
+      ],
+      "telephones": [
+        {
+          "num": "48500100200"
+        }
+      ]
+    },
+    "lines": [
+      {
+        "i": 1,
+        "quantity": "1.0",
+        "item": {
+          "name": "Robot przemysłowy Model X + transport",
+          "price": "55580.00",
+          "unit": "SZT"
+        },
+        "sum": "55580.00",
+        "taxes": [
+          {
+            "cat": "VAT",
+            "key": "standard",
+            "rate": "general",
+            "percent": "23.0%",
+            "ext": {
+              "pl-favat-tax-category": "1"
+            }
+          }
+        ],
+        "total": "55580.00"
+      }
+    ],
+    "ordering": {
+      "purchases": [
+        {
+          "issue_date": "2026-03-05",
+          "code": "ZAM/2026/0001"
+        }
+      ]
+    },
+    "payment": {
+      "terms": {
+        "due_dates": [
+          {
+            "date": "2026-04-27",
+            "amount": "68363.40",
+            "percent": "100%"
+          }
+        ],
+        "notes": "45 dni wystawienie faktury"
+      },
+      "advances": [
+        {
+          "ref": "3333333333-20260311-CCDD0000001B-01",
+          "description": "Advance payment",
+          "amount": "13672.68"
+        }
+      ],
+      "instructions": {
+        "key": "credit-transfer",
+        "credit_transfer": [
+          {
+            "bic": "TESTPLPX",
+            "number": "PL00111100002222000033335555",
+            "name": "Bank Testowy SA"
+          }
+        ],
+        "ext": {
+          "pl-favat-payment-means": "6"
+        }
+      }
+    },
+    "totals": {
+      "sum": "55580.00",
+      "total": "55580.00",
+      "taxes": {
+        "categories": [
+          {
+            "code": "VAT",
+            "rates": [
+              {
+                "key": "standard",
+                "ext": {
+                  "pl-favat-tax-category": "1"
+                },
+                "base": "55580.00",
+                "percent": "23.0%",
+                "amount": "12783.40"
+              }
+            ],
+            "amount": "12783.40"
+          }
+        ],
+        "sum": "12783.40"
+      },
+      "tax": "12783.40",
+      "total_with_tax": "68363.40",
+      "payable": "68363.40",
+      "advance": "13672.68",
+      "due": "54690.72"
+    },
+    "notes": [
+      {
+        "text": "(PL) Tekst nagł. formul.: faktura zaliczka VAT ZAL/2026/0001, wpłata zaksiegowana 06.03.2026\n"
+      },
+      {
+        "text": "Osoba kontaktowa: Jan Kowalski"
+      },
+      {
+        "code": "ROZ_ZALICZKI",
+        "text": "ZAL/2026/0001 ( KSEF: 3333333333-20260311-CCDD0000001B-01 )"
+      },
+      {
+        "text": "(PL) Nr zamówienia sprzedaży/poz,:: 0000100001 / 000010\n"
+      },
+      {
+        "text": "(PL) Nr zamówienia sprzedaży/poz,:: 0000100002 / 000010\n"
+      },
+      {
+        "text": "(PL) PKWIU:: 28.22.18.0\n"
+      },
+      {
+        "text": "(PL) Tekst sprzedaży materiału: Oferta produktowa nr OF/2026/001\n"
+      },
+      {
+        "text": "Materiał: 10001"
+      },
+      {
+        "text": "Opis materiału: Robot przemysłowy Model X + transport"
+      },
+      {
+        "text": "(PL) Nr zamówienia sprzedaży/poz,:: 0000100001 / 000030\n"
+      },
+      {
+        "text": "Materiał: ROZ_ZALICZKI"
+      },
+      {
+        "text": "Opis materiału: Rozliczenie zaliczki"
+      }
+    ]
+  }
+}

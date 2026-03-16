@@ -142,6 +142,15 @@ func (d *Invoice) ToGOBL() (*bill.Invoice, error) {
 			return inv, err
 		}
 	} else {
+		// For settlement invoices with advance invoice references,
+		// derive the advance payment amount from the difference between
+		// calculated payable (from lines) and P_15 (remaining amount).
+		if d.Inv.isSettlementType() && len(d.Inv.AdvanceInvoices) > 0 {
+			if err := d.Inv.deriveSettlementAdvances(inv, d.Inv.TotalAmountDue); err != nil {
+				return inv, err
+			}
+		}
+
 		// Calculate totals and adjust for rounding if needed.
 		// For credit notes, line totals are now positive (GOBL convention),
 		// so we must invert the KSeF P_15 total to match.
