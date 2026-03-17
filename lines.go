@@ -27,7 +27,7 @@ type Line struct {
 	Quantity                string `xml:"P_8B,omitempty"`
 	NetUnitPrice            string `xml:"P_9A,omitempty"`
 	GrossUnitPrice          string `xml:"P_9B,omitempty"`
-	UnitDiscount            string `xml:"P_10,omitempty"`
+	Discount                string `xml:"P_10,omitempty"`
 	NetPriceTotal           string `xml:"P_11,omitempty"`
 	GrossPriceTotal         string `xml:"P_11A,omitempty"`
 	VATAmount               string `xml:"P_11Vat,omitempty"`
@@ -60,7 +60,7 @@ func newLine(line *bill.Line) *Line {
 		Measure:       string(line.Item.Unit.UNECE()),
 		NetUnitPrice:  line.Item.Price.String(),
 		Quantity:      line.Quantity.String(),
-		UnitDiscount:  unitDiscount(line),
+		Discount:      lineDiscount(line),
 		NetPriceTotal: line.Total.String(),
 	}
 	if tc := line.Taxes.Get(tax.CategoryVAT); tc != nil {
@@ -106,7 +106,7 @@ func vatRate(tc *tax.Combo) string {
 	}
 }
 
-func unitDiscount(line *bill.Line) string {
+func lineDiscount(line *bill.Line) string {
 	if len(line.Discounts) == 0 {
 		return ""
 	}
@@ -117,9 +117,7 @@ func unitDiscount(line *bill.Line) string {
 		amount = amount.Add(discount.Amount)
 	}
 
-	discount := amount.Divide(line.Quantity)
-
-	return discount.String()
+	return amount.String()
 }
 
 // ToGOBL converts a KSEF Line to a GOBL Line.
@@ -188,16 +186,14 @@ func (l *Line) ToGOBL() (*bill.Line, error) {
 		line.Item.Unit = org.Unit(l.Measure)
 	}
 
-	// Parse discount
-	if l.UnitDiscount != "" {
-		discount, err := parseAmount(l.UnitDiscount)
+	// Parse discount — P_10 is the total line discount per the KSeF spec,
+	// map it directly.
+	if l.Discount != "" {
+		discount, err := parseAmount(l.Discount)
 		if err != nil {
 			return nil, err
 		}
 		if !discount.IsZero() {
-			if !line.Quantity.IsZero() {
-				discount = discount.Multiply(line.Quantity)
-			}
 			line.Discounts = []*bill.LineDiscount{
 				{
 					Amount: discount,

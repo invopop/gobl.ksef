@@ -253,13 +253,13 @@ func TestParseLinesSetsPricesInclude(t *testing.T) {
 				GV:  "2",
 			},
 			Inv: &ksef.Inv{
-				CurrencyCode:     "PLN",
-				IssueDate:        "2024-06-15",
-				SequentialNumber:  "FV-001",
-				TotalAmountDue:   "123.00",
-				InvoiceType:      "VAT",
+				CurrencyCode:        "PLN",
+				IssueDate:           "2024-06-15",
+				SequentialNumber:    "FV-001",
+				TotalAmountDue:      "123.00",
+				InvoiceType:         "VAT",
 				StandardRateNetSale: "100.00",
-				StandardRateTax:    "23.00",
+				StandardRateTax:     "23.00",
 				Annotations: &ksef.Annotations{
 					CashAccounting:                      "2",
 					SelfBilling:                         "2",
@@ -316,13 +316,13 @@ func TestParseLinesSetsPricesInclude(t *testing.T) {
 				GV:  "2",
 			},
 			Inv: &ksef.Inv{
-				CurrencyCode:     "PLN",
-				IssueDate:        "2024-06-15",
-				SequentialNumber:  "FV-001",
-				TotalAmountDue:   "123.00",
-				InvoiceType:      "VAT",
+				CurrencyCode:        "PLN",
+				IssueDate:           "2024-06-15",
+				SequentialNumber:    "FV-001",
+				TotalAmountDue:      "123.00",
+				InvoiceType:         "VAT",
 				StandardRateNetSale: "100.00",
-				StandardRateTax:    "23.00",
+				StandardRateTax:     "23.00",
 				Annotations: &ksef.Annotations{
 					CashAccounting:                      "2",
 					SelfBilling:                         "2",
@@ -382,14 +382,14 @@ func testCreditNoteDoc(lines []*ksef.Line, totalDue string) *ksef.Invoice {
 			GV:  "2",
 		},
 		Inv: &ksef.Inv{
-			CurrencyCode:       "PLN",
-			IssueDate:          "2026-01-20",
+			CurrencyCode:        "PLN",
+			IssueDate:           "2026-01-20",
 			SequentialNumber:    "KOR-TEST",
-			TotalAmountDue:     totalDue,
-			InvoiceType:        "KOR",
+			TotalAmountDue:      totalDue,
+			InvoiceType:         "KOR",
 			StandardRateNetSale: "-100.00",
-			StandardRateTax:    "-23.00",
-			CorrectionReason:   "Test correction",
+			StandardRateTax:     "-23.00",
+			CorrectionReason:    "Test correction",
 			CorrectedInv: []*ksef.CorrectedInv{
 				{IssueDate: "2026-01-15", SequentialNumber: "INV-001"},
 			},
@@ -476,17 +476,17 @@ func TestCreditNoteLineInversion(t *testing.T) {
 		assert.Contains(t, inv.Lines[1].Notes[0].Text, "Before correction")
 	})
 
-	t.Run("inverts discount amounts for non-StanPrzed lines", func(t *testing.T) {
-		// In KSeF credit notes (differences method), qty is negative, but
-		// unit discount is positive. ToGOBL multiplies discount * qty → negative.
-		// parseLines then inverts both qty and discount → both positive.
+	t.Run("keeps discount positive for non-StanPrzed lines", func(t *testing.T) {
+		// In KSeF credit notes (differences method), qty is negative but
+		// P_10 is always a positive total discount. parseLines inverts qty
+		// to positive; the discount stays positive as-is.
 		doc := testCreditNoteDoc([]*ksef.Line{
 			{
 				LineNumber:    1,
 				Name:          "Discounted Item",
 				Quantity:      "-2",
 				NetUnitPrice:  "100.00",
-				UnitDiscount:  "10.00",
+				Discount:      "20.00",
 				Measure:       "HUR",
 				VATRate:       "23",
 				NetPriceTotal: "-180.00",
@@ -499,7 +499,7 @@ func TestCreditNoteLineInversion(t *testing.T) {
 
 		// Quantity inverted from -2 to 2
 		assert.Equal(t, "2", inv.Lines[0].Quantity.String())
-		// Discount = 10.00 * (-2) = -20.00, then inverted to 20.00
+		// P_10 = 20.00 total discount, stays positive
 		require.Len(t, inv.Lines[0].Discounts, 1)
 		assert.Equal(t, "20.00", inv.Lines[0].Discounts[0].Amount.String())
 	})
@@ -525,13 +525,13 @@ func TestCreditNoteLineInversion(t *testing.T) {
 				GV:  "2",
 			},
 			Inv: &ksef.Inv{
-				CurrencyCode:       "PLN",
-				IssueDate:          "2026-01-20",
+				CurrencyCode:        "PLN",
+				IssueDate:           "2026-01-20",
 				SequentialNumber:    "FV-001",
-				TotalAmountDue:     "123.00",
-				InvoiceType:        "VAT",
+				TotalAmountDue:      "123.00",
+				InvoiceType:         "VAT",
 				StandardRateNetSale: "100.00",
-				StandardRateTax:    "23.00",
+				StandardRateTax:     "23.00",
 				Annotations: &ksef.Annotations{
 					CashAccounting:                      "2",
 					SelfBilling:                         "2",
@@ -593,10 +593,10 @@ func testPrepaymentDoc() *ksef.Invoice {
 			GV:  "2",
 		},
 		Inv: &ksef.Inv{
-			CurrencyCode:       "PLN",
-			IssueDate:          "2026-01-15",
+			CurrencyCode:        "PLN",
+			IssueDate:           "2026-01-15",
 			SequentialNumber:    "ZAL-001",
-			InvoiceType:        "ZAL",
+			InvoiceType:         "ZAL",
 			StandardRateNetSale: "1000.00",
 			StandardRateTax:     "230.00",
 			TotalAmountDue:      "1230.00",
@@ -1088,13 +1088,13 @@ func TestParseAdditionalDescriptions(t *testing.T) {
 				GV:  "2",
 			},
 			Inv: &ksef.Inv{
-				CurrencyCode:       "PLN",
-				IssueDate:          "2026-01-20",
+				CurrencyCode:        "PLN",
+				IssueDate:           "2026-01-20",
 				SequentialNumber:    "FV-001",
-				TotalAmountDue:     "246.00",
-				InvoiceType:        "VAT",
+				TotalAmountDue:      "246.00",
+				InvoiceType:         "VAT",
 				StandardRateNetSale: "200.00",
-				StandardRateTax:    "46.00",
+				StandardRateTax:     "46.00",
 				Annotations: &ksef.Annotations{
 					CashAccounting:                      "2",
 					SelfBilling:                         "2",
@@ -1300,7 +1300,7 @@ func TestIsPrepaymentType(t *testing.T) {
 		invType string
 	}{
 		{"VAT", "VAT"},
-		{"KOR", "KOR"},  // credit note needs matching TotalAmountDue
+		{"KOR", "KOR"}, // credit note needs matching TotalAmountDue
 		{"ROZ", "ROZ"},
 	}
 	for _, tt := range nonPrepayment {
@@ -1425,7 +1425,7 @@ func testSettlementDoc() *ksef.Invoice {
 			GV:  "2",
 		},
 		Inv: &ksef.Inv{
-			CurrencyCode:    "PLN",
+			CurrencyCode:     "PLN",
 			IssueDate:        "2026-01-20",
 			SequentialNumber: "ROZ-001",
 			InvoiceType:      "ROZ",
@@ -1755,4 +1755,3 @@ func TestOrderingOnStandardInvoice(t *testing.T) {
 	// And should have lines
 	require.Len(t, inv.Lines, 1)
 }
-

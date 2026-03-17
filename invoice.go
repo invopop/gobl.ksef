@@ -621,9 +621,8 @@ func (inv *Inv) parseLines(goblInv *bill.Invoice) error {
 				})
 			} else {
 				line.Quantity = line.Quantity.Invert()
-				for _, d := range line.Discounts {
-					d.Amount = d.Amount.Invert()
-				}
+				// P_10 is always a positive total discount amount in KSeF,
+				// no inversion needed — GOBL also expects positive discounts.
 			}
 		}
 

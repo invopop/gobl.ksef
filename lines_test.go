@@ -163,7 +163,7 @@ func TestNewLines(t *testing.T) {
 		result := ksef.NewLines(lines)
 
 		require.Len(t, result, 1)
-		assert.Equal(t, "10.00", result[0].UnitDiscount) // 20.00 / 2 = 10.00
+		assert.Equal(t, "20.00", result[0].Discount) // total line discount, not per-unit
 	})
 
 	t.Run("handles multiple discounts on same line", func(t *testing.T) {
@@ -199,7 +199,7 @@ func TestNewLines(t *testing.T) {
 		result := ksef.NewLines(lines)
 
 		require.Len(t, result, 1)
-		assert.Equal(t, "10.00", result[0].UnitDiscount) // (20.00 + 20.00) / 4 = 10.00
+		assert.Equal(t, "40.00", result[0].Discount) // total line discount: 20.00 + 20.00 = 40.00
 	})
 }
 
@@ -231,7 +231,7 @@ func TestLineToGOBL(t *testing.T) {
 			Name:          "Discounted Item",
 			Quantity:      "2",
 			NetUnitPrice:  "100.00",
-			UnitDiscount:  "10.00",
+			Discount:      "20.00",
 			Measure:       "HUR",
 			VATRate:       "23",
 			NetPriceTotal: "180.00",
@@ -241,7 +241,7 @@ func TestLineToGOBL(t *testing.T) {
 
 		require.NoError(t, err)
 		assert.Len(t, line.Discounts, 1)
-		// UnitDiscount is per-unit; total line discount = 10.00 * 2 = 20.00
+		// P_10 mapped directly as total line discount
 		assert.Equal(t, "20.00", line.Discounts[0].Amount.String())
 	})
 
@@ -250,7 +250,7 @@ func TestLineToGOBL(t *testing.T) {
 			Name:          "Single Unit Discounted Item",
 			Quantity:      "1",
 			NetUnitPrice:  "100.00",
-			UnitDiscount:  "15.00",
+			Discount:      "15.00",
 			Measure:       "HUR",
 			VATRate:       "23",
 			NetPriceTotal: "85.00",
@@ -260,7 +260,7 @@ func TestLineToGOBL(t *testing.T) {
 
 		require.NoError(t, err)
 		assert.Len(t, line.Discounts, 1)
-		// With quantity 1, line discount equals unit discount
+		// P_10 mapped directly as total line discount
 		assert.Equal(t, "15.00", line.Discounts[0].Amount.String())
 	})
 
@@ -269,7 +269,7 @@ func TestLineToGOBL(t *testing.T) {
 			Name:          "No Discount Item",
 			Quantity:      "2",
 			NetUnitPrice:  "100.00",
-			UnitDiscount:  "0.00",
+			Discount:      "0.00",
 			Measure:       "HUR",
 			VATRate:       "23",
 			NetPriceTotal: "200.00",
@@ -286,7 +286,7 @@ func TestLineToGOBL(t *testing.T) {
 			Name:         "Zero Qty Discounted Item",
 			Quantity:     "0",
 			NetUnitPrice: "100.00",
-			UnitDiscount: "10.00",
+			Discount:     "10.00",
 			Measure:      "HUR",
 			VATRate:      "23",
 		}
@@ -295,7 +295,7 @@ func TestLineToGOBL(t *testing.T) {
 
 		require.NoError(t, err)
 		assert.Len(t, line.Discounts, 1)
-		// When quantity is zero, discount is not multiplied
+		// No line total available; P_10 used directly as total discount
 		assert.Equal(t, "10.00", line.Discounts[0].Amount.String())
 	})
 
@@ -490,5 +490,24 @@ func TestLineToGOBL(t *testing.T) {
 
 		require.NoError(t, err)
 		assert.Equal(t, org.Unit("h"), line.Item.Unit)
+	})
+
+	t.Run("maps discount directly from P_10", func(t *testing.T) {
+		// Auchan-style data: P_9B=5.98, qty=2, P_10=2.40, P_11A=9.56
+		ksefLine := &ksef.Line{
+			Name:            "Auchan Item",
+			Quantity:        "2",
+			GrossUnitPrice:  "5.98",
+			Discount:        "2.40",
+			GrossPriceTotal: "9.56",
+			VATRate:         "23",
+		}
+
+		line, err := ksefLine.ToGOBL()
+
+		require.NoError(t, err)
+		require.Len(t, line.Discounts, 1)
+		// P_10 mapped directly as total line discount
+		assert.Equal(t, "2.40", line.Discounts[0].Amount.String())
 	})
 }
