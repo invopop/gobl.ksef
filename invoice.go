@@ -134,7 +134,7 @@ type Contract struct {
 
 // OrderRef defines the XML structure for order reference
 type OrderRef struct {
-	Date   string `xml:"DataZamowienia"`
+	Date   string `xml:"DataZamowienia,omitempty"`
 	Number string `xml:"NrZamowienia"`
 }
 
