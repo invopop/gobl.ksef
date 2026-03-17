@@ -1471,7 +1471,7 @@ func TestDeriveSettlementAdvances(t *testing.T) {
 
 		// Advance = Payable(12300) - P_15(6150) = 6150
 		assert.Equal(t, "6150.00", inv.Payment.Advances[0].Amount.String())
-		assert.Equal(t, "Advance payment", inv.Payment.Advances[0].Description)
+		assert.Equal(t, "Payment 1234567890-20260101-ABC123-01", inv.Payment.Advances[0].Description)
 		assert.Equal(t, "1234567890-20260101-ABC123-01", inv.Payment.Advances[0].Ref)
 
 		// Due should equal P_15
@@ -1555,7 +1555,7 @@ func TestDeriveSettlementAdvances(t *testing.T) {
 		}
 	})
 
-	t.Run("multiple advance refs are concatenated", func(t *testing.T) {
+	t.Run("multiple advance refs create separate advances", func(t *testing.T) {
 		doc := testSettlementDoc()
 		doc.Inv.AdvanceInvoices = []*ksef.AdvanceInvoiceRef{
 			{KSeFAdvanceInvoiceNo: "1234567890-20260101-AAA111-01"},
@@ -1566,9 +1566,17 @@ func TestDeriveSettlementAdvances(t *testing.T) {
 		require.NoError(t, err)
 
 		require.NotNil(t, inv.Payment)
-		require.Len(t, inv.Payment.Advances, 1)
-		assert.Equal(t, "1234567890-20260101-AAA111-01, 1234567890-20260105-BBB222-02",
-			inv.Payment.Advances[0].Ref)
+		require.Len(t, inv.Payment.Advances, 2)
+
+		// First advance carries the total amount
+		assert.Equal(t, "6150.00", inv.Payment.Advances[0].Amount.String())
+		assert.Equal(t, "1234567890-20260101-AAA111-01", inv.Payment.Advances[0].Ref)
+		assert.Equal(t, "Payment 1234567890-20260101-AAA111-01", inv.Payment.Advances[0].Description)
+
+		// Second advance has zero amount
+		assert.Equal(t, "0.00", inv.Payment.Advances[1].Amount.String())
+		assert.Equal(t, "1234567890-20260105-BBB222-02", inv.Payment.Advances[1].Ref)
+		assert.Equal(t, "Payment 1234567890-20260105-BBB222-02", inv.Payment.Advances[1].Description)
 	})
 }
 
