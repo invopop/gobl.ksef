@@ -1,0 +1,166 @@
+{
+	"$schema": "https://gobl.org/draft-0/envelope",
+	"head": {
+		"uuid": "8a51fd30-2a27-11ee-be56-0242ac120002",
+		"dig": {
+			"alg": "sha256",
+			"val": "6c3ae94d5e06d1ab5458411c9a07f3eea9ac479f10634e7d3aaef867cbbed8ac"
+		}
+	},
+	"doc": {
+		"$schema": "https://gobl.org/draft-0/bill/invoice",
+		"$regime": "PL",
+		"$addons": [
+			"pl-favat-v3"
+		],
+		"uuid": "01927639-c1a0-7f3a-88d9-5b1f2a5e3c4d",
+		"type": "standard",
+		"series": "TEST",
+		"code": "001",
+		"issue_date": "2026-03-09",
+		"currency": "PLN",
+		"tax": {
+			"ext": {
+				"pl-favat-invoice-type": "VAT",
+				"untdid-document-type": "380"
+			}
+		},
+		"supplier": {
+			"name": "Firma Testowa Sp. z o.o.",
+			"tax_id": {
+				"country": "PL",
+				"code": "9876543210"
+			},
+			"addresses": [
+				{
+					"street": "ul. Główna 1",
+					"locality": "Warsaw",
+					"code": "00-001",
+					"country": "PL"
+				}
+			]
+		},
+		"customer": {
+			"name": "Klient Testowy Sp. z o.o.",
+			"tax_id": {
+				"country": "PL",
+				"code": "1111111111"
+			},
+			"addresses": [
+				{
+					"street": "ul. Testowa 10",
+					"locality": "Kraków",
+					"country": "PL"
+				}
+			]
+		},
+		"lines": [
+			{
+				"i": 1,
+				"quantity": "2.0",
+				"item": {
+					"name": "Office Supplies",
+					"price": "100.00"
+				},
+				"sum": "200.00",
+				"taxes": [
+					{
+						"cat": "VAT",
+						"key": "standard",
+						"percent": "23%",
+						"ext": {
+							"pl-favat-tax-category": "1"
+						}
+					}
+				],
+				"total": "200.00"
+			},
+			{
+				"i": 2,
+				"quantity": "20.0",
+				"item": {
+					"name": "Shipping Cost",
+					"price": "1.00"
+				},
+				"sum": "20.00",
+				"taxes": [
+					{
+						"cat": "VAT",
+						"key": "zero",
+						"percent": "0%",
+						"ext": {
+							"pl-favat-tax-category": "6.1"
+						}
+					}
+				],
+				"total": "20.00"
+			}
+		],
+		"ordering": {
+			"purchases": [
+				{
+					"code": "PO-2026-100"
+				}
+			]
+		},
+		"payment": {
+			"terms": {
+				"due_dates": [
+					{
+						"date": "2026-04-08",
+						"amount": "266.00"
+					}
+				]
+			},
+			"instructions": {
+				"key": "credit-transfer",
+				"credit_transfer": [
+					{
+						"iban": "PL61109010140000071219812874",
+						"bic": "BIGBPLPW",
+						"name": "Bank Testowy S.A."
+					}
+				],
+				"ext": {
+					"pl-favat-payment-means": "6"
+				}
+			}
+		},
+		"totals": {
+			"sum": "220.00",
+			"total": "220.00",
+			"taxes": {
+				"categories": [
+					{
+						"code": "VAT",
+						"rates": [
+							{
+								"key": "standard",
+								"ext": {
+									"pl-favat-tax-category": "1"
+								},
+								"base": "200.00",
+								"percent": "23%",
+								"amount": "46.00"
+							},
+							{
+								"key": "zero",
+								"ext": {
+									"pl-favat-tax-category": "6.1"
+								},
+								"base": "20.00",
+								"percent": "0%",
+								"amount": "0.00"
+							}
+						],
+						"amount": "46.00"
+					}
+				],
+				"sum": "46.00"
+			},
+			"tax": "46.00",
+			"total_with_tax": "266.00",
+			"payable": "266.00"
+		}
+	}
+}

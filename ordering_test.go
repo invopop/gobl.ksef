@@ -245,8 +245,12 @@ func TestNewOrder(t *testing.T) {
 
 		result := ksef.NewFavatInv(inv)
 
-		require.NotNil(t, result.Order)
-		assert.Equal(t, "", result.Order.OrderAmount)
+		// Without payable/tax data, the purchase goes into
+		// TransactionConditions.Orders, not Zamowienie (Order).
+		assert.Nil(t, result.Order)
+		require.NotNil(t, result.TransactionConditions)
+		require.Len(t, result.TransactionConditions.Orders, 1)
+		assert.Equal(t, "PO-4", result.TransactionConditions.Orders[0].Number)
 	})
 
 	t.Run("sets contract ref number and date", func(t *testing.T) {

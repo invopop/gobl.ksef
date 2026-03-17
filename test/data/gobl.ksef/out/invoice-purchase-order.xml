@@ -10,7 +10,7 @@
     <PrefiksPodatnika>PL</PrefiksPodatnika>
     <DaneIdentyfikacyjne>
       <NIP>9876543210</NIP>
-      <Nazwa>Testowa Firma Sp. z o.o.</Nazwa>
+      <Nazwa>Firma Testowa Sp. z o.o.</Nazwa>
     </DaneIdentyfikacyjne>
     <Adres>
       <KodKraju>PL</KodKraju>
@@ -19,23 +19,24 @@
   </Podmiot1>
   <Podmiot2>
     <DaneIdentyfikacyjne>
-      <NIP>9876543210</NIP>
+      <NIP>1111111111</NIP>
       <Nazwa>Klient Testowy Sp. z o.o.</Nazwa>
     </DaneIdentyfikacyjne>
     <Adres>
       <KodKraju>PL</KodKraju>
-      <AdresL1>ul. Testowa 10, 30-001, Kraków</AdresL1>
+      <AdresL1>ul. Testowa 10, Kraków</AdresL1>
     </Adres>
     <JST>2</JST>
     <GV>2</GV>
   </Podmiot2>
   <Fa>
     <KodWaluty>PLN</KodWaluty>
-    <P_1>2026-01-20</P_1>
-    <P_2>ROZ-001</P_2>
-    <P_13_1>5000.00</P_13_1>
-    <P_14_1>1150.00</P_14_1>
-    <P_15>6150.00</P_15>
+    <P_1>2026-03-09</P_1>
+    <P_2>TEST-001</P_2>
+    <P_13_1>200.00</P_13_1>
+    <P_14_1>46.00</P_14_1>
+    <P_13_6_1>20.00</P_13_6_1>
+    <P_15>266.00</P_15>
     <Adnotacje>
       <P_16>2</P_16>
       <P_17>2</P_17>
@@ -52,28 +53,38 @@
         <P_PMarzyN>1</P_PMarzyN>
       </PMarzy>
     </Adnotacje>
-    <RodzajFaktury>ROZ</RodzajFaktury>
-    <FakturaZaliczkowa>
-      <NrKSeFFaZaliczkowej>9876543210-20260115-ABC123DEF456-01</NrKSeFFaZaliczkowej>
-    </FakturaZaliczkowa>
-    <DodatkowyOpis>
-      <Klucz>general</Klucz>
-      <Wartosc>This is a settlement invoice that finalizes the transaction including all previous advance payments.</Wartosc>
-    </DodatkowyOpis>
+    <RodzajFaktury>VAT</RodzajFaktury>
     <FaWiersz>
       <NrWierszaFa>1</NrWierszaFa>
-      <P_7>Project Completion - Final Invoice</P_7>
-      <P_8B>1</P_8B>
-      <P_9A>10000.00</P_9A>
-      <P_11>10000.00</P_11>
+      <P_7>Office Supplies</P_7>
+      <P_8B>2.0</P_8B>
+      <P_9A>100.00</P_9A>
+      <P_11>200.00</P_11>
       <P_12>23</P_12>
     </FaWiersz>
+    <FaWiersz>
+      <NrWierszaFa>2</NrWierszaFa>
+      <P_7>Shipping Cost</P_7>
+      <P_8B>20.0</P_8B>
+      <P_9A>1.00</P_9A>
+      <P_11>20.00</P_11>
+      <P_12>0 KR</P_12>
+    </FaWiersz>
     <Platnosc>
-      <ZnacznikZaplatyCzesciowej>1</ZnacznikZaplatyCzesciowej>
-      <ZaplataCzesciowa>
-        <KwotaZaplatyCzesciowej>6150.00</KwotaZaplatyCzesciowej>
-        <DataZaplatyCzesciowej>2026-01-20</DataZaplatyCzesciowej>
-      </ZaplataCzesciowa>
+      <TerminPlatnosci>
+        <Termin>2026-04-08</Termin>
+      </TerminPlatnosci>
+      <FormaPlatnosci>6</FormaPlatnosci>
+      <RachunekBankowy>
+        <NrRB>PL61109010140000071219812874</NrRB>
+        <SWIFT>BIGBPLPW</SWIFT>
+        <NazwaBanku>Bank Testowy S.A.</NazwaBanku>
+      </RachunekBankowy>
     </Platnosc>
+    <WarunkiTransakcji>
+      <Zamowienia>
+        <NrZamowienia>PO-2026-100</NrZamowienia>
+      </Zamowienia>
+    </WarunkiTransakcji>
   </Fa>
 </Faktura>

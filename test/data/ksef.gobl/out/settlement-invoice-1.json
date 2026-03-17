@@ -1,0 +1,430 @@
+{
+  "$schema": "https://gobl.org/draft-0/envelope",
+  "head": {
+    "uuid": "00000000-0000-0000-0000-000000000000",
+    "dig": {
+      "alg": "sha256",
+      "val": "0000000000000000000000000000000000000000000000000000000000000000"
+    }
+  },
+  "doc": {
+    "$schema": "https://gobl.org/draft-0/bill/invoice",
+    "$regime": "PL",
+    "$addons": [
+      "pl-favat-v3"
+    ],
+    "$tags": [
+      "settlement"
+    ],
+    "uuid": "00000000-0000-0000-0000-000000000000",
+    "type": "standard",
+    "code": "FSE/26/0000001",
+    "issue_date": "2026-03-02",
+    "currency": "PLN",
+    "tax": {
+      "prices_include": "VAT",
+      "rounding": "currency",
+      "ext": {
+        "pl-favat-invoice-type": "ROZ"
+      }
+    },
+    "supplier": {
+      "name": "Testowa Hurtownia S.A.",
+      "tax_id": {
+        "country": "PL",
+        "code": "1111111111"
+      },
+      "addresses": [
+        {
+          "street": "ul. Przykładowa 10/12 00-001 Warszawa",
+          "country": "PL"
+        }
+      ]
+    },
+    "customer": {
+      "name": "Odbiorca Testowy Sp. z o.o.",
+      "tax_id": {
+        "country": "PL",
+        "code": "2222222222"
+      },
+      "addresses": [
+        {
+          "street": "ul. Testowa 53 00-002 Warszawa",
+          "country": "PL"
+        }
+      ]
+    },
+    "lines": [
+      {
+        "i": 1,
+        "quantity": "1.00",
+        "item": {
+          "name": "Usługa pakowania - ECO",
+          "price": "4.95",
+          "unit": "szt"
+        },
+        "sum": "4.95",
+        "taxes": [
+          {
+            "cat": "VAT",
+            "key": "standard",
+            "rate": "general",
+            "percent": "23.0%",
+            "ext": {
+              "pl-favat-tax-category": "1"
+            }
+          }
+        ],
+        "total": "4.95"
+      },
+      {
+        "i": 2,
+        "quantity": "4.00",
+        "item": {
+          "name": "Napój aloesowy 500ml",
+          "price": "76.20",
+          "unit": "12pak"
+        },
+        "sum": "304.80",
+        "taxes": [
+          {
+            "cat": "VAT",
+            "key": "standard",
+            "rate": "super-reduced",
+            "percent": "5.0%",
+            "ext": {
+              "pl-favat-tax-category": "3"
+            }
+          }
+        ],
+        "total": "304.80"
+      },
+      {
+        "i": 3,
+        "quantity": "48.00",
+        "item": {
+          "name": "Shot witaminowy Odporność",
+          "price": "5.27",
+          "unit": "szt"
+        },
+        "sum": "252.96",
+        "taxes": [
+          {
+            "cat": "VAT",
+            "key": "standard",
+            "rate": "super-reduced",
+            "percent": "5.0%",
+            "ext": {
+              "pl-favat-tax-category": "3"
+            }
+          }
+        ],
+        "total": "252.96"
+      },
+      {
+        "i": 4,
+        "quantity": "10.00",
+        "item": {
+          "name": "Sok 100% grejpfrut 1L",
+          "price": "9.49",
+          "unit": "szt"
+        },
+        "sum": "94.90",
+        "taxes": [
+          {
+            "cat": "VAT",
+            "key": "standard",
+            "rate": "super-reduced",
+            "percent": "5.0%",
+            "ext": {
+              "pl-favat-tax-category": "3"
+            }
+          }
+        ],
+        "total": "94.90"
+      },
+      {
+        "i": 5,
+        "quantity": "20.00",
+        "item": {
+          "name": "Kabanosy drobiowe 100g",
+          "price": "7.59",
+          "unit": "szt"
+        },
+        "sum": "151.80",
+        "taxes": [
+          {
+            "cat": "VAT",
+            "key": "standard",
+            "rate": "super-reduced",
+            "percent": "5.0%",
+            "ext": {
+              "pl-favat-tax-category": "3"
+            }
+          }
+        ],
+        "total": "151.80"
+      },
+      {
+        "i": 6,
+        "quantity": "30.00",
+        "item": {
+          "name": "Shot witaminowy Uroda",
+          "price": "5.27",
+          "unit": "szt"
+        },
+        "sum": "158.10",
+        "taxes": [
+          {
+            "cat": "VAT",
+            "key": "standard",
+            "rate": "super-reduced",
+            "percent": "5.0%",
+            "ext": {
+              "pl-favat-tax-category": "3"
+            }
+          }
+        ],
+        "total": "158.10"
+      },
+      {
+        "i": 7,
+        "quantity": "20.00",
+        "item": {
+          "name": "Espresso z tonikiem 250ml",
+          "price": "8.54",
+          "unit": "szt"
+        },
+        "sum": "170.80",
+        "taxes": [
+          {
+            "cat": "VAT",
+            "key": "standard",
+            "rate": "super-reduced",
+            "percent": "5.0%",
+            "ext": {
+              "pl-favat-tax-category": "3"
+            }
+          }
+        ],
+        "total": "170.80"
+      },
+      {
+        "i": 8,
+        "quantity": "20.00",
+        "item": {
+          "name": "Lemoniada grejpfrutowa 330ml",
+          "price": "4.74",
+          "unit": "szt"
+        },
+        "sum": "94.80",
+        "taxes": [
+          {
+            "cat": "VAT",
+            "key": "standard",
+            "rate": "general",
+            "percent": "23.0%",
+            "ext": {
+              "pl-favat-tax-category": "1"
+            }
+          }
+        ],
+        "total": "94.80"
+      },
+      {
+        "i": 9,
+        "quantity": "20.00",
+        "item": {
+          "name": "Espresso z lemoniadą 250ml",
+          "price": "8.54",
+          "unit": "szt"
+        },
+        "sum": "170.80",
+        "taxes": [
+          {
+            "cat": "VAT",
+            "key": "standard",
+            "rate": "super-reduced",
+            "percent": "5.0%",
+            "ext": {
+              "pl-favat-tax-category": "3"
+            }
+          }
+        ],
+        "total": "170.80"
+      },
+      {
+        "i": 10,
+        "quantity": "20.00",
+        "item": {
+          "name": "Lemoniada owocowa 330ml",
+          "price": "4.74",
+          "unit": "szt"
+        },
+        "sum": "94.80",
+        "taxes": [
+          {
+            "cat": "VAT",
+            "key": "standard",
+            "rate": "general",
+            "percent": "23.0%",
+            "ext": {
+              "pl-favat-tax-category": "1"
+            }
+          }
+        ],
+        "total": "94.80"
+      },
+      {
+        "i": 11,
+        "quantity": "4.00",
+        "item": {
+          "name": "Sok multiwitamina PET 1L",
+          "price": "40.92",
+          "unit": "12pak"
+        },
+        "sum": "163.68",
+        "taxes": [
+          {
+            "cat": "VAT",
+            "key": "standard",
+            "rate": "super-reduced",
+            "percent": "5.0%",
+            "ext": {
+              "pl-favat-tax-category": "3"
+            }
+          }
+        ],
+        "total": "163.68"
+      },
+      {
+        "i": 12,
+        "quantity": "4.00",
+        "item": {
+          "name": "Sok pomarańczowy PET 1L",
+          "price": "40.92",
+          "unit": "12pak"
+        },
+        "sum": "163.68",
+        "taxes": [
+          {
+            "cat": "VAT",
+            "key": "standard",
+            "rate": "super-reduced",
+            "percent": "5.0%",
+            "ext": {
+              "pl-favat-tax-category": "3"
+            }
+          }
+        ],
+        "total": "163.68"
+      },
+      {
+        "i": 13,
+        "quantity": "4.00",
+        "item": {
+          "name": "Napój energetyczny ZERO tropikalny 250ml",
+          "price": "81.84",
+          "unit": "24pak"
+        },
+        "sum": "327.36",
+        "taxes": [
+          {
+            "cat": "VAT",
+            "key": "standard",
+            "rate": "general",
+            "percent": "23.0%",
+            "ext": {
+              "pl-favat-tax-category": "1"
+            }
+          }
+        ],
+        "total": "327.36"
+      }
+    ],
+    "payment": {
+      "terms": {
+        "due_dates": [
+          {
+            "date": "2026-02-28",
+            "amount": "2153.43",
+            "percent": "100%"
+          }
+        ],
+        "notes": "0 Dzień Wystawienie faktury"
+      },
+      "advances": [
+        {
+          "ref": "1111111111-20260301-AABB0000001A-01",
+          "description": "Payment 1111111111-20260301-AABB0000001A-01",
+          "amount": "2153.43"
+        }
+      ],
+      "instructions": {
+        "key": "online",
+        "credit_transfer": [
+          {
+            "number": "00111100002222000033334444"
+          }
+        ],
+        "ext": {
+          "pl-favat-payment-means": "7"
+        }
+      }
+    },
+    "totals": {
+      "sum": "2153.43",
+      "tax_included": "175.28",
+      "total": "1978.15",
+      "taxes": {
+        "categories": [
+          {
+            "code": "VAT",
+            "rates": [
+              {
+                "key": "standard",
+                "ext": {
+                  "pl-favat-tax-category": "1"
+                },
+                "base": "424.31",
+                "percent": "23.0%",
+                "amount": "97.59"
+              },
+              {
+                "key": "standard",
+                "ext": {
+                  "pl-favat-tax-category": "3"
+                },
+                "base": "1553.84",
+                "percent": "5.0%",
+                "amount": "77.69"
+              }
+            ],
+            "amount": "175.28"
+          }
+        ],
+        "sum": "175.28"
+      },
+      "tax": "175.28",
+      "total_with_tax": "2153.43",
+      "payable": "2153.43",
+      "advance": "2153.43",
+      "due": "0.00"
+    },
+    "notes": [
+      {
+        "text": "OK0001 Rodzaj opakowania CAN: Ilość opakowań = 96,00, kaucja za szt = 0,50, łączna wartość = 48,00"
+      },
+      {
+        "text": "OK0002 Rodzaj opakowania PET: Ilość opakowań = 96,00, kaucja za szt = 0,50, łączna wartość = 48,00"
+      },
+      {
+        "code": "Magazyn",
+        "text": "MG"
+      },
+      {
+        "text": "Faktura zaliczkowa: ZFS/26/0000100, kwota faktury = 2 249,43 (w tym kaucje 96,00 PLN) Zaliczka 23% wartość netto 424,32 VAT 97,59; Zaliczka 5% wartość netto 1 553,83 VAT 77,69;"
+      }
+    ]
+  }
+}

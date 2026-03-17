@@ -1,0 +1,358 @@
+{
+  "$schema": "https://gobl.org/draft-0/envelope",
+  "head": {
+    "uuid": "00000000-0000-0000-0000-000000000000",
+    "dig": {
+      "alg": "sha256",
+      "val": "0000000000000000000000000000000000000000000000000000000000000000"
+    }
+  },
+  "doc": {
+    "$schema": "https://gobl.org/draft-0/bill/invoice",
+    "$regime": "PL",
+    "$addons": [
+      "pl-favat-v3"
+    ],
+    "uuid": "00000000-0000-0000-0000-000000000000",
+    "type": "standard",
+    "code": "TEST/INV/001/2026/00001",
+    "issue_date": "2026-03-12",
+    "currency": "PLN",
+    "tax": {
+      "prices_include": "VAT",
+      "rounding": "currency",
+      "ext": {
+        "pl-favat-invoice-type": "VAT"
+      }
+    },
+    "supplier": {
+      "name": "EXAMPLE STORE SP. Z O.O.",
+      "tax_id": {
+        "country": "PL",
+        "code": "1111111111"
+      },
+      "addresses": [
+        {
+          "street": "TESTOWA 1 00-001 WARSZAWA",
+          "country": "PL"
+        }
+      ]
+    },
+    "customer": {
+      "name": "Buyer Company sp. z o.o.",
+      "tax_id": {
+        "country": "PL",
+        "code": "2222222222"
+      },
+      "addresses": [
+        {
+          "street": "Kraków 30-001 Floriańska 10",
+          "country": "PL"
+        }
+      ]
+    },
+    "lines": [
+      {
+        "i": 1,
+        "quantity": "2",
+        "item": {
+          "name": "Product 1",
+          "price": "9.98",
+          "unit": "Szt."
+        },
+        "sum": "19.96",
+        "taxes": [
+          {
+            "cat": "VAT",
+            "key": "standard",
+            "rate": "super-reduced",
+            "percent": "5.0%",
+            "ext": {
+              "pl-favat-tax-category": "3"
+            }
+          }
+        ],
+        "total": "19.96"
+      },
+      {
+        "i": 2,
+        "quantity": "1",
+        "item": {
+          "name": "Product 2",
+          "price": "3.58",
+          "unit": "Szt."
+        },
+        "sum": "3.58",
+        "taxes": [
+          {
+            "cat": "VAT",
+            "key": "standard",
+            "rate": "general",
+            "percent": "23.0%",
+            "ext": {
+              "pl-favat-tax-category": "1"
+            }
+          }
+        ],
+        "total": "3.58"
+      },
+      {
+        "i": 3,
+        "quantity": "1",
+        "item": {
+          "name": "Product 3",
+          "price": "5.79",
+          "unit": "Szt."
+        },
+        "sum": "5.79",
+        "taxes": [
+          {
+            "cat": "VAT",
+            "key": "standard",
+            "rate": "reduced",
+            "percent": "8.0%",
+            "ext": {
+              "pl-favat-tax-category": "2"
+            }
+          }
+        ],
+        "total": "5.79"
+      },
+      {
+        "i": 4,
+        "quantity": "1",
+        "item": {
+          "name": "Product 4",
+          "price": "5.79",
+          "unit": "Szt."
+        },
+        "sum": "5.79",
+        "discounts": [
+          {
+            "amount": "2.20"
+          }
+        ],
+        "taxes": [
+          {
+            "cat": "VAT",
+            "key": "standard",
+            "rate": "reduced",
+            "percent": "8.0%",
+            "ext": {
+              "pl-favat-tax-category": "2"
+            }
+          }
+        ],
+        "total": "3.59"
+      },
+      {
+        "i": 5,
+        "quantity": "2",
+        "item": {
+          "name": "Product 5",
+          "price": "5.98",
+          "unit": "Szt."
+        },
+        "sum": "11.96",
+        "discounts": [
+          {
+            "amount": "2.40"
+          }
+        ],
+        "taxes": [
+          {
+            "cat": "VAT",
+            "key": "standard",
+            "rate": "super-reduced",
+            "percent": "5.0%",
+            "ext": {
+              "pl-favat-tax-category": "3"
+            }
+          }
+        ],
+        "total": "9.56"
+      },
+      {
+        "i": 6,
+        "quantity": "2",
+        "item": {
+          "name": "Product 6",
+          "price": "5.55",
+          "unit": "Szt."
+        },
+        "sum": "11.10",
+        "discounts": [
+          {
+            "amount": "1.80"
+          }
+        ],
+        "taxes": [
+          {
+            "cat": "VAT",
+            "key": "standard",
+            "rate": "super-reduced",
+            "percent": "5.0%",
+            "ext": {
+              "pl-favat-tax-category": "3"
+            }
+          }
+        ],
+        "total": "9.30"
+      },
+      {
+        "i": 7,
+        "quantity": "3",
+        "item": {
+          "name": "Product 7",
+          "price": "6.34",
+          "unit": "Szt."
+        },
+        "sum": "19.02",
+        "discounts": [
+          {
+            "amount": "7.05"
+          }
+        ],
+        "taxes": [
+          {
+            "cat": "VAT",
+            "key": "standard",
+            "rate": "super-reduced",
+            "percent": "5.0%",
+            "ext": {
+              "pl-favat-tax-category": "3"
+            }
+          }
+        ],
+        "total": "11.97"
+      },
+      {
+        "i": 8,
+        "quantity": "4",
+        "item": {
+          "name": "Product 8",
+          "price": "4.37",
+          "unit": "Szt."
+        },
+        "sum": "17.48",
+        "discounts": [
+          {
+            "amount": "1.52"
+          }
+        ],
+        "taxes": [
+          {
+            "cat": "VAT",
+            "key": "standard",
+            "rate": "super-reduced",
+            "percent": "5.0%",
+            "ext": {
+              "pl-favat-tax-category": "3"
+            }
+          }
+        ],
+        "total": "15.96"
+      },
+      {
+        "i": 9,
+        "quantity": "1.946",
+        "item": {
+          "name": "Product 9",
+          "price": "6.98",
+          "unit": "Kg."
+        },
+        "sum": "13.58",
+        "discounts": [
+          {
+            "amount": "6.87"
+          }
+        ],
+        "taxes": [
+          {
+            "cat": "VAT",
+            "key": "standard",
+            "rate": "super-reduced",
+            "percent": "5.0%",
+            "ext": {
+              "pl-favat-tax-category": "3"
+            }
+          }
+        ],
+        "total": "6.71"
+      },
+      {
+        "i": 10,
+        "quantity": "2",
+        "item": {
+          "name": "Product 10",
+          "price": "5.31",
+          "unit": "Szt."
+        },
+        "sum": "10.62",
+        "discounts": [
+          {
+            "amount": "1.32"
+          }
+        ],
+        "taxes": [
+          {
+            "cat": "VAT",
+            "key": "standard",
+            "rate": "reduced",
+            "percent": "8.0%",
+            "ext": {
+              "pl-favat-tax-category": "2"
+            }
+          }
+        ],
+        "total": "9.30"
+      }
+    ],
+    "totals": {
+      "sum": "95.72",
+      "tax_included": "5.55",
+      "total": "90.17",
+      "taxes": {
+        "categories": [
+          {
+            "code": "VAT",
+            "rates": [
+              {
+                "key": "standard",
+                "ext": {
+                  "pl-favat-tax-category": "3"
+                },
+                "base": "69.96",
+                "percent": "5.0%",
+                "amount": "3.50"
+              },
+              {
+                "key": "standard",
+                "ext": {
+                  "pl-favat-tax-category": "1"
+                },
+                "base": "2.91",
+                "percent": "23.0%",
+                "amount": "0.67"
+              },
+              {
+                "key": "standard",
+                "ext": {
+                  "pl-favat-tax-category": "2"
+                },
+                "base": "17.29",
+                "percent": "8.0%",
+                "amount": "1.38"
+              }
+            ],
+            "amount": "5.55"
+          }
+        ],
+        "sum": "5.55"
+      },
+      "tax": "5.55",
+      "total_with_tax": "95.72",
+      "payable": "95.72"
+    }
+  }
+}

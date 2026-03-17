@@ -3,8 +3,10 @@ package ksef
 import (
 	"fmt"
 
+	"github.com/invopop/gobl/addons/pl/favat"
 	"github.com/invopop/gobl/bill"
 	"github.com/invopop/gobl/num"
+	"github.com/invopop/gobl/tax"
 )
 
 // RoundingError represents a rounding discrepancy that exceeded acceptable thresholds.
@@ -39,12 +41,17 @@ func AdjustRounding(inv *bill.Invoice, ksefTotalDue string) error {
 		return fmt.Errorf("parsing KSEF total amount: %w", err)
 	}
 
-	// Calculate the difference between the expected and the calculated totals
-	var calculatedTotal num.Amount
-	if inv.Totals.Due != nil && !inv.Totals.Due.IsZero() {
-		calculatedTotal = *inv.Totals.Due
-	} else {
-		calculatedTotal = inv.Totals.Payable
+	// Calculate the difference between the expected and the calculated totals.
+	// For settlement (ROZ) and prepayment (ZAL) invoices, P_15 represents
+	// the remaining amount (Due), not the full Payable. Use Due when it's
+	// non-zero, or when both Due and expected are zero (fully-settled ROZ
+	// where P_15=0). For standard invoices with partial payments, P_15 =
+	// Payable and the partial payment is just tracking info.
+	calculatedTotal := inv.Totals.Payable
+	if (inv.HasTags(favat.TagSettlement) || inv.HasTags(tax.TagPartial)) && inv.Totals.Due != nil {
+		if !inv.Totals.Due.IsZero() || expectedTotal.IsZero() {
+			calculatedTotal = *inv.Totals.Due
+		}
 	}
 
 	diff := expectedTotal.Subtract(calculatedTotal)

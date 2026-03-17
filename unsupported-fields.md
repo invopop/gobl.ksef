@@ -68,7 +68,7 @@ The following fields are now present in the structs but are not currently being 
 | `Fa>ZaliczkaCzesciowa>P_6Z` | `PaymentDate` | Date of receiving payment |
 | `Fa>ZaliczkaCzesciowa>P_15Z` | `PaymentAmount` | Payment amount |
 | `Fa>ZaliczkaCzesciowa>KursWalutyZW` | `CurrencyExchangeRate` | Currency exchange rate for tax calculation |
-| `Fa>FakturaZaliczkowa` | `AdvanceInvoices` | References to preceding advance invoices (for ROZ type) |
+| `Fa>FakturaZaliczkowa` | `AdvanceInvoices` | References to preceding advance invoices (for ROZ type). For settlement invoices without explicit `ZaplataCzesciowa`, used to derive advance payment amounts from the difference between line totals and P_15. |
 | `Fa>TP` | `TP` | Existing relationships between buyer and supplier of goods or services |
 | `Fa>ZwrotAkcyzy` | `ExciseTaxRefund` | Excise tax refund marker for farmers |
 

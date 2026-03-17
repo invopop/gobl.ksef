@@ -1,0 +1,188 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<Faktura xmlns="http://crd.gov.pl/wzor/2025/06/25/13775/">
+  <Naglowek>
+    <KodFormularza kodSystemowy="FA (3)" wersjaSchemy="1-0E">FA</KodFormularza>
+    <WariantFormularza>3</WariantFormularza>
+    <DataWytworzeniaFa>2026-03-12T09:18:32Z</DataWytworzeniaFa>
+    <SystemInfo>SmartKSeF-prod, ID: 00000000-0000-0000-0000-000000000001</SystemInfo>
+  </Naglowek>
+  <Podmiot1>
+    <DaneIdentyfikacyjne>
+      <NIP>1111111111</NIP>
+      <Nazwa>EXAMPLE STORE SP. Z O.O.</Nazwa>
+    </DaneIdentyfikacyjne>
+    <Adres>
+      <KodKraju>PL</KodKraju>
+      <AdresL1>TESTOWA 1</AdresL1>
+      <AdresL2>00-001 WARSZAWA</AdresL2>
+    </Adres>
+  </Podmiot1>
+  <Podmiot2>
+    <DaneIdentyfikacyjne>
+      <NIP>2222222222</NIP>
+      <Nazwa>Buyer Company sp. z o.o.</Nazwa>
+    </DaneIdentyfikacyjne>
+    <Adres>
+      <KodKraju>PL</KodKraju>
+      <AdresL1>Kraków 30-001</AdresL1>
+      <AdresL2>Floriańska 10</AdresL2>
+    </Adres>
+  </Podmiot2>
+  <Fa>
+    <KodWaluty>PLN</KodWaluty>
+    <P_1>2026-03-12</P_1>
+    <P_2>TEST/INV/001/2026/00001</P_2>
+    <P_6>2026-03-12</P_6>
+    <P_13_1>2.91</P_13_1>
+    <P_14_1>0.67</P_14_1>
+    <P_13_2>17.29</P_13_2>
+    <P_14_2>1.39</P_14_2>
+    <P_13_3>69.96</P_13_3>
+    <P_14_3>3.5</P_14_3>
+    <P_15>95.72</P_15>
+    <Adnotacje>
+      <P_16>2</P_16>
+      <P_17>2</P_17>
+      <P_18>2</P_18>
+      <P_18A>2</P_18A>
+      <Zwolnienie>
+        <P_19N>1</P_19N>
+      </Zwolnienie>
+      <NoweSrodkiTransportu>
+        <P_22N>1</P_22N>
+      </NoweSrodkiTransportu>
+      <P_23>2</P_23>
+      <PMarzy>
+        <P_PMarzyN>1</P_PMarzyN>
+      </PMarzy>
+    </Adnotacje>
+    <RodzajFaktury>VAT</RodzajFaktury>
+    <FaWiersz>
+      <NrWierszaFa>1</NrWierszaFa>
+      <UU_ID>100000001</UU_ID>
+      <P_7>Product 1</P_7>
+      <P_8A>Szt.</P_8A>
+      <P_8B>2</P_8B>
+      <P_9B>9.98</P_9B>
+      <P_10>0</P_10>
+      <P_11A>19.96</P_11A>
+      <P_11Vat>0.95</P_11Vat>
+      <P_12>5</P_12>
+    </FaWiersz>
+    <FaWiersz>
+      <NrWierszaFa>2</NrWierszaFa>
+      <UU_ID>100000002</UU_ID>
+      <P_7>Product 2</P_7>
+      <P_8A>Szt.</P_8A>
+      <P_8B>1</P_8B>
+      <P_9B>3.58</P_9B>
+      <P_10>0</P_10>
+      <P_11A>3.58</P_11A>
+      <P_11Vat>0.67</P_11Vat>
+      <P_12>23</P_12>
+    </FaWiersz>
+    <FaWiersz>
+      <NrWierszaFa>3</NrWierszaFa>
+      <UU_ID>100000003</UU_ID>
+      <P_7>Product 3</P_7>
+      <P_8A>Szt.</P_8A>
+      <P_8B>1</P_8B>
+      <P_9B>5.79</P_9B>
+      <P_10>0</P_10>
+      <P_11A>5.79</P_11A>
+      <P_11Vat>0.43</P_11Vat>
+      <P_12>8</P_12>
+    </FaWiersz>
+    <FaWiersz>
+      <NrWierszaFa>4</NrWierszaFa>
+      <UU_ID>100000004</UU_ID>
+      <P_7>Product 4</P_7>
+      <P_8A>Szt.</P_8A>
+      <P_8B>1</P_8B>
+      <P_9B>5.79</P_9B>
+      <P_10>2.2</P_10>
+      <P_11A>3.59</P_11A>
+      <P_11Vat>0.27</P_11Vat>
+      <P_12>8</P_12>
+    </FaWiersz>
+    <FaWiersz>
+      <NrWierszaFa>5</NrWierszaFa>
+      <UU_ID>100000005</UU_ID>
+      <P_7>Product 5</P_7>
+      <P_8A>Szt.</P_8A>
+      <P_8B>2</P_8B>
+      <P_9B>5.98</P_9B>
+      <P_10>2.4</P_10>
+      <P_11A>9.56</P_11A>
+      <P_11Vat>0.46</P_11Vat>
+      <P_12>5</P_12>
+    </FaWiersz>
+    <FaWiersz>
+      <NrWierszaFa>6</NrWierszaFa>
+      <UU_ID>100000006</UU_ID>
+      <P_7>Product 6</P_7>
+      <P_8A>Szt.</P_8A>
+      <P_8B>2</P_8B>
+      <P_9B>5.55</P_9B>
+      <P_10>1.8</P_10>
+      <P_11A>9.3</P_11A>
+      <P_11Vat>0.44</P_11Vat>
+      <P_12>5</P_12>
+    </FaWiersz>
+    <FaWiersz>
+      <NrWierszaFa>7</NrWierszaFa>
+      <UU_ID>100000007</UU_ID>
+      <P_7>Product 7</P_7>
+      <P_8A>Szt.</P_8A>
+      <P_8B>3</P_8B>
+      <P_9B>6.34</P_9B>
+      <P_10>7.05</P_10>
+      <P_11A>11.97</P_11A>
+      <P_11Vat>0.57</P_11Vat>
+      <P_12>5</P_12>
+    </FaWiersz>
+    <FaWiersz>
+      <NrWierszaFa>8</NrWierszaFa>
+      <UU_ID>100000008</UU_ID>
+      <P_7>Product 8</P_7>
+      <P_8A>Szt.</P_8A>
+      <P_8B>4</P_8B>
+      <P_9B>4.37</P_9B>
+      <P_10>1.52</P_10>
+      <P_11A>15.96</P_11A>
+      <P_11Vat>0.76</P_11Vat>
+      <P_12>5</P_12>
+    </FaWiersz>
+    <FaWiersz>
+      <NrWierszaFa>9</NrWierszaFa>
+      <UU_ID>100000009</UU_ID>
+      <P_7>Product 9</P_7>
+      <P_8A>Kg.</P_8A>
+      <P_8B>1.946</P_8B>
+      <P_9B>6.98</P_9B>
+      <P_10>6.87</P_10>
+      <P_11A>6.71</P_11A>
+      <P_11Vat>0.32</P_11Vat>
+      <P_12>5</P_12>
+    </FaWiersz>
+    <FaWiersz>
+      <NrWierszaFa>10</NrWierszaFa>
+      <UU_ID>100000010</UU_ID>
+      <P_7>Product 10</P_7>
+      <P_8A>Szt.</P_8A>
+      <P_8B>2</P_8B>
+      <P_9B>5.31</P_9B>
+      <P_10>1.32</P_10>
+      <P_11A>9.3</P_11A>
+      <P_11Vat>0.69</P_11Vat>
+      <P_12>8</P_12>
+    </FaWiersz>
+  </Fa>
+  <Stopka>
+    <Rejestry>
+      <KRS>0000000001</KRS>
+      <REGON>000000001</REGON>
+      <BDO>000000002</BDO>
+    </Rejestry>
+  </Stopka>
+</Faktura>

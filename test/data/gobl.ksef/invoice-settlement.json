@@ -84,6 +84,7 @@
 			"advances": [
 				{
 					"date": "2026-01-20",
+					"ref": "9876543210-20260115-ABC123DEF456-01",
 					"description": "Advance payment from ZAL/001",
 					"amount": "6150.00"
 				}

@@ -2,10 +2,12 @@ package ksef_test
 
 import (
 	"testing"
+	"time"
 
 	ksef "github.com/invopop/gobl.ksef"
 	"github.com/invopop/gobl/addons/pl/favat"
 	"github.com/invopop/gobl/bill"
+	"github.com/invopop/gobl/cal"
 	"github.com/invopop/gobl/cbc"
 	"github.com/invopop/gobl/currency"
 	"github.com/invopop/gobl/l10n"
@@ -251,13 +253,13 @@ func TestParseLinesSetsPricesInclude(t *testing.T) {
 				GV:  "2",
 			},
 			Inv: &ksef.Inv{
-				CurrencyCode:     "PLN",
-				IssueDate:        "2024-06-15",
-				SequentialNumber:  "FV-001",
-				TotalAmountDue:   "123.00",
-				InvoiceType:      "VAT",
+				CurrencyCode:        "PLN",
+				IssueDate:           "2024-06-15",
+				SequentialNumber:    "FV-001",
+				TotalAmountDue:      "123.00",
+				InvoiceType:         "VAT",
 				StandardRateNetSale: "100.00",
-				StandardRateTax:    "23.00",
+				StandardRateTax:     "23.00",
 				Annotations: &ksef.Annotations{
 					CashAccounting:                      "2",
 					SelfBilling:                         "2",
@@ -314,13 +316,13 @@ func TestParseLinesSetsPricesInclude(t *testing.T) {
 				GV:  "2",
 			},
 			Inv: &ksef.Inv{
-				CurrencyCode:     "PLN",
-				IssueDate:        "2024-06-15",
-				SequentialNumber:  "FV-001",
-				TotalAmountDue:   "123.00",
-				InvoiceType:      "VAT",
+				CurrencyCode:        "PLN",
+				IssueDate:           "2024-06-15",
+				SequentialNumber:    "FV-001",
+				TotalAmountDue:      "123.00",
+				InvoiceType:         "VAT",
 				StandardRateNetSale: "100.00",
-				StandardRateTax:    "23.00",
+				StandardRateTax:     "23.00",
 				Annotations: &ksef.Annotations{
 					CashAccounting:                      "2",
 					SelfBilling:                         "2",
@@ -380,14 +382,14 @@ func testCreditNoteDoc(lines []*ksef.Line, totalDue string) *ksef.Invoice {
 			GV:  "2",
 		},
 		Inv: &ksef.Inv{
-			CurrencyCode:       "PLN",
-			IssueDate:          "2026-01-20",
+			CurrencyCode:        "PLN",
+			IssueDate:           "2026-01-20",
 			SequentialNumber:    "KOR-TEST",
-			TotalAmountDue:     totalDue,
-			InvoiceType:        "KOR",
+			TotalAmountDue:      totalDue,
+			InvoiceType:         "KOR",
 			StandardRateNetSale: "-100.00",
-			StandardRateTax:    "-23.00",
-			CorrectionReason:   "Test correction",
+			StandardRateTax:     "-23.00",
+			CorrectionReason:    "Test correction",
 			CorrectedInv: []*ksef.CorrectedInv{
 				{IssueDate: "2026-01-15", SequentialNumber: "INV-001"},
 			},
@@ -474,17 +476,17 @@ func TestCreditNoteLineInversion(t *testing.T) {
 		assert.Contains(t, inv.Lines[1].Notes[0].Text, "Before correction")
 	})
 
-	t.Run("inverts discount amounts for non-StanPrzed lines", func(t *testing.T) {
-		// In KSeF credit notes (differences method), qty is negative, but
-		// unit discount is positive. ToGOBL multiplies discount * qty → negative.
-		// parseLines then inverts both qty and discount → both positive.
+	t.Run("keeps discount positive for non-StanPrzed lines", func(t *testing.T) {
+		// In KSeF credit notes (differences method), qty is negative but
+		// P_10 is always a positive total discount. parseLines inverts qty
+		// to positive; the discount stays positive as-is.
 		doc := testCreditNoteDoc([]*ksef.Line{
 			{
 				LineNumber:    1,
 				Name:          "Discounted Item",
 				Quantity:      "-2",
 				NetUnitPrice:  "100.00",
-				UnitDiscount:  "10.00",
+				Discount:      "20.00",
 				Measure:       "HUR",
 				VATRate:       "23",
 				NetPriceTotal: "-180.00",
@@ -497,7 +499,7 @@ func TestCreditNoteLineInversion(t *testing.T) {
 
 		// Quantity inverted from -2 to 2
 		assert.Equal(t, "2", inv.Lines[0].Quantity.String())
-		// Discount = 10.00 * (-2) = -20.00, then inverted to 20.00
+		// P_10 = 20.00 total discount, stays positive
 		require.Len(t, inv.Lines[0].Discounts, 1)
 		assert.Equal(t, "20.00", inv.Lines[0].Discounts[0].Amount.String())
 	})
@@ -523,13 +525,13 @@ func TestCreditNoteLineInversion(t *testing.T) {
 				GV:  "2",
 			},
 			Inv: &ksef.Inv{
-				CurrencyCode:       "PLN",
-				IssueDate:          "2026-01-20",
+				CurrencyCode:        "PLN",
+				IssueDate:           "2026-01-20",
 				SequentialNumber:    "FV-001",
-				TotalAmountDue:     "123.00",
-				InvoiceType:        "VAT",
+				TotalAmountDue:      "123.00",
+				InvoiceType:         "VAT",
 				StandardRateNetSale: "100.00",
-				StandardRateTax:    "23.00",
+				StandardRateTax:     "23.00",
 				Annotations: &ksef.Annotations{
 					CashAccounting:                      "2",
 					SelfBilling:                         "2",
@@ -591,10 +593,10 @@ func testPrepaymentDoc() *ksef.Invoice {
 			GV:  "2",
 		},
 		Inv: &ksef.Inv{
-			CurrencyCode:       "PLN",
-			IssueDate:          "2026-01-15",
+			CurrencyCode:        "PLN",
+			IssueDate:           "2026-01-15",
 			SequentialNumber:    "ZAL-001",
-			InvoiceType:        "ZAL",
+			InvoiceType:         "ZAL",
 			StandardRateNetSale: "1000.00",
 			StandardRateTax:     "230.00",
 			TotalAmountDue:      "1230.00",
@@ -1063,6 +1065,214 @@ func TestAdditionalDescriptionCodeValidation(t *testing.T) {
 	})
 }
 
+func TestParseAdditionalDescriptions(t *testing.T) {
+	// Helper: standard VAT invoice with 2 lines.
+	stdDoc := func() *ksef.Invoice {
+		return &ksef.Invoice{
+			Seller: &ksef.Seller{
+				NIP:  "1234567890",
+				Name: "Test Supplier",
+				Address: &ksef.Address{
+					CountryCode: "PL",
+					AddressL1:   "ul. Testowa 1 00-001 Warszawa",
+				},
+			},
+			Buyer: &ksef.Buyer{
+				NIP:  "9876543210",
+				Name: "Test Buyer",
+				Address: &ksef.Address{
+					CountryCode: "PL",
+					AddressL1:   "ul. Testowa 2 00-002 Warszawa",
+				},
+				JST: "2",
+				GV:  "2",
+			},
+			Inv: &ksef.Inv{
+				CurrencyCode:        "PLN",
+				IssueDate:           "2026-01-20",
+				SequentialNumber:    "FV-001",
+				TotalAmountDue:      "246.00",
+				InvoiceType:         "VAT",
+				StandardRateNetSale: "200.00",
+				StandardRateTax:     "46.00",
+				Annotations: &ksef.Annotations{
+					CashAccounting:                      "2",
+					SelfBilling:                         "2",
+					ReverseCharge:                       "2",
+					SplitPaymentMechanism:               "2",
+					SimplifiedProcedureBySecondTaxpayer: "2",
+					TaxExemption:                        &ksef.TaxExemption{NoExemption: "1"},
+					NewTransportMeans:                   &ksef.NewTransportMeans{NoNewTransportMeans: "1"},
+					MarginScheme:                        &ksef.MarginScheme{NoMarginScheme: "1"},
+				},
+				Lines: []*ksef.Line{
+					{LineNumber: 1, Name: "Item A", Quantity: "1", NetUnitPrice: "100.00", VATRate: "23"},
+					{LineNumber: 2, Name: "Item B", Quantity: "1", NetUnitPrice: "100.00", VATRate: "23"},
+				},
+			},
+		}
+	}
+
+	t.Run("NrWiersza routes note to correct line", func(t *testing.T) {
+		doc := stdDoc()
+		doc.Inv.AdditionalDescription = []*ksef.AdditionalDescriptionLine{
+			{LineNumber: "1", Key: "batch", Value: "LOT-001"},
+			{LineNumber: "2", Key: "batch", Value: "LOT-002"},
+		}
+
+		inv, err := doc.ToGOBL()
+		require.NoError(t, err)
+
+		// No invoice-level notes
+		assert.Empty(t, inv.Notes)
+
+		// Line 1 should have a note
+		require.Len(t, inv.Lines, 2)
+		require.Len(t, inv.Lines[0].Notes, 1)
+		assert.Equal(t, cbc.Code("batch"), inv.Lines[0].Notes[0].Code)
+		assert.Equal(t, "LOT-001", inv.Lines[0].Notes[0].Text)
+
+		// Line 2 should have a note
+		require.Len(t, inv.Lines[1].Notes, 1)
+		assert.Equal(t, cbc.Code("batch"), inv.Lines[1].Notes[0].Code)
+		assert.Equal(t, "LOT-002", inv.Lines[1].Notes[0].Text)
+	})
+
+	t.Run("without NrWiersza stays as invoice note", func(t *testing.T) {
+		doc := stdDoc()
+		doc.Inv.AdditionalDescription = []*ksef.AdditionalDescriptionLine{
+			{Key: "general", Value: "Invoice-level note"},
+		}
+
+		inv, err := doc.ToGOBL()
+		require.NoError(t, err)
+
+		require.Len(t, inv.Notes, 1)
+		assert.Equal(t, cbc.Code("general"), inv.Notes[0].Code)
+		assert.Equal(t, "Invoice-level note", inv.Notes[0].Text)
+
+		// No line notes
+		for _, line := range inv.Lines {
+			assert.Empty(t, line.Notes)
+		}
+	})
+
+	t.Run("NrWiersza referencing non-existent line falls back to invoice", func(t *testing.T) {
+		doc := stdDoc()
+		doc.Inv.AdditionalDescription = []*ksef.AdditionalDescriptionLine{
+			{LineNumber: "99", Key: "orphan", Value: "No such line"},
+		}
+
+		inv, err := doc.ToGOBL()
+		require.NoError(t, err)
+
+		// Should fall back to invoice-level note
+		require.Len(t, inv.Notes, 1)
+		assert.Equal(t, cbc.Code("orphan"), inv.Notes[0].Code)
+
+		// No line notes
+		for _, line := range inv.Lines {
+			assert.Empty(t, line.Notes)
+		}
+	})
+
+	t.Run("mixed NrWiersza and invoice-level notes", func(t *testing.T) {
+		doc := stdDoc()
+		doc.Inv.AdditionalDescription = []*ksef.AdditionalDescriptionLine{
+			{Key: "general", Value: "Top-level note"},
+			{LineNumber: "1", Key: "detail", Value: "Line 1 detail"},
+			{LineNumber: "2", Key: "detail", Value: "Line 2 detail"},
+			{Key: "footer", Value: "Another top-level"},
+		}
+
+		inv, err := doc.ToGOBL()
+		require.NoError(t, err)
+
+		// Invoice-level: 2 notes
+		require.Len(t, inv.Notes, 2)
+		assert.Equal(t, cbc.Code("general"), inv.Notes[0].Code)
+		assert.Equal(t, cbc.Code("footer"), inv.Notes[1].Code)
+
+		// Each line: 1 note
+		require.Len(t, inv.Lines[0].Notes, 1)
+		assert.Equal(t, "Line 1 detail", inv.Lines[0].Notes[0].Text)
+		require.Len(t, inv.Lines[1].Notes, 1)
+		assert.Equal(t, "Line 2 detail", inv.Lines[1].Notes[0].Text)
+	})
+}
+
+func TestNewFavatInvLineNotes(t *testing.T) {
+	baseInvoice := func() *bill.Invoice {
+		pct23 := num.MakePercentage(230, 3)
+		return &bill.Invoice{
+			Currency: currency.PLN,
+			Supplier: &org.Party{
+				TaxID: &tax.Identity{Country: l10n.PL.Tax()},
+			},
+			Tax: &bill.Tax{
+				Ext: tax.Extensions{
+					favat.ExtKeyInvoiceType: "VAT",
+				},
+			},
+			Lines: []*bill.Line{
+				{
+					Index:    1,
+					Quantity: num.MakeAmount(1, 0),
+					Item: &org.Item{
+						Name:  "Item A",
+						Price: num.NewAmount(10000, 2),
+					},
+					Total: num.NewAmount(10000, 2),
+					Taxes: tax.Set{
+						{
+							Category: tax.CategoryVAT,
+							Percent:  &pct23,
+							Ext:      tax.Extensions{favat.ExtKeyTaxCategory: "1"},
+						},
+					},
+				},
+			},
+			Totals: &bill.Totals{
+				Taxes: &tax.Total{},
+			},
+		}
+	}
+
+	t.Run("line notes exported as DodatkowyOpis with NrWiersza", func(t *testing.T) {
+		inv := baseInvoice()
+		inv.Lines[0].Notes = []*org.Note{
+			{Key: "batch", Text: "LOT-001"},
+		}
+
+		ksefInv := ksef.NewFavatInv(inv)
+
+		require.Len(t, ksefInv.AdditionalDescription, 1)
+		assert.Equal(t, "1", ksefInv.AdditionalDescription[0].LineNumber)
+		assert.Equal(t, "batch", ksefInv.AdditionalDescription[0].Key)
+		assert.Equal(t, "LOT-001", ksefInv.AdditionalDescription[0].Value)
+	})
+
+	t.Run("invoice and line notes combined", func(t *testing.T) {
+		inv := baseInvoice()
+		inv.Notes = []*org.Note{
+			{Key: "general", Text: "Invoice note"},
+		}
+		inv.Lines[0].Notes = []*org.Note{
+			{Key: "detail", Text: "Line note"},
+		}
+
+		ksefInv := ksef.NewFavatInv(inv)
+
+		require.Len(t, ksefInv.AdditionalDescription, 2)
+		// Invoice notes come first (no NrWiersza)
+		assert.Empty(t, ksefInv.AdditionalDescription[0].LineNumber)
+		assert.Equal(t, "general", ksefInv.AdditionalDescription[0].Key)
+		// Line notes come after (with NrWiersza)
+		assert.Equal(t, "1", ksefInv.AdditionalDescription[1].LineNumber)
+		assert.Equal(t, "detail", ksefInv.AdditionalDescription[1].Key)
+	})
+}
+
 func TestIsPrepaymentType(t *testing.T) {
 	// Prepayment types: test via ToGOBL that bypass is set
 	t.Run("ZAL sets bypass", func(t *testing.T) {
@@ -1090,7 +1300,7 @@ func TestIsPrepaymentType(t *testing.T) {
 		invType string
 	}{
 		{"VAT", "VAT"},
-		{"KOR", "KOR"},  // credit note needs matching TotalAmountDue
+		{"KOR", "KOR"}, // credit note needs matching TotalAmountDue
 		{"ROZ", "ROZ"},
 	}
 	for _, tt := range nonPrepayment {
@@ -1193,6 +1403,339 @@ func TestPrepaymentEndToEnd(t *testing.T) {
 	})
 }
 
+// testSettlementDoc builds a minimal ROZ settlement invoice for testing.
+func testSettlementDoc() *ksef.Invoice {
+	return &ksef.Invoice{
+		Seller: &ksef.Seller{
+			NIP:  "1234567890",
+			Name: "Test Supplier",
+			Address: &ksef.Address{
+				CountryCode: "PL",
+				AddressL1:   "ul. Testowa 1 00-001 Warszawa",
+			},
+		},
+		Buyer: &ksef.Buyer{
+			NIP:  "9876543210",
+			Name: "Test Buyer",
+			Address: &ksef.Address{
+				CountryCode: "PL",
+				AddressL1:   "ul. Testowa 2 00-002 Warszawa",
+			},
+			JST: "2",
+			GV:  "2",
+		},
+		Inv: &ksef.Inv{
+			CurrencyCode:     "PLN",
+			IssueDate:        "2026-01-20",
+			SequentialNumber: "ROZ-001",
+			InvoiceType:      "ROZ",
+			// Lines sum to 12300.00 (10000 net + 2300 VAT)
+			StandardRateNetSale: "8000.00",
+			StandardRateTax:     "1840.00",
+			TotalAmountDue:      "6150.00", // P_15: remaining after advance
+			Annotations: &ksef.Annotations{
+				CashAccounting:                      "2",
+				SelfBilling:                         "2",
+				ReverseCharge:                       "2",
+				SplitPaymentMechanism:               "2",
+				SimplifiedProcedureBySecondTaxpayer: "2",
+				TaxExemption:                        &ksef.TaxExemption{NoExemption: "1"},
+				NewTransportMeans:                   &ksef.NewTransportMeans{NoNewTransportMeans: "1"},
+				MarginScheme:                        &ksef.MarginScheme{NoMarginScheme: "1"},
+			},
+			AdvanceInvoices: []*ksef.AdvanceInvoiceRef{
+				{KSeFAdvanceInvoiceNo: "1234567890-20260101-ABC123-01"},
+			},
+			Lines: []*ksef.Line{
+				{
+					LineNumber:   1,
+					Name:         "Project Completion",
+					Quantity:     "1",
+					NetUnitPrice: "10000.00",
+					VATRate:      "23",
+				},
+			},
+		},
+	}
+}
+
+func TestDeriveSettlementAdvances(t *testing.T) {
+	t.Run("ROZ with advance refs derives advance from Payable - P_15", func(t *testing.T) {
+		doc := testSettlementDoc()
+		inv, err := doc.ToGOBL()
+		require.NoError(t, err)
+
+		// Should have an advance
+		require.NotNil(t, inv.Payment)
+		require.Len(t, inv.Payment.Advances, 1)
+
+		// Advance = Payable(12300) - P_15(6150) = 6150
+		assert.Equal(t, "6150.00", inv.Payment.Advances[0].Amount.String())
+		assert.Equal(t, "Payment 1234567890-20260101-ABC123-01", inv.Payment.Advances[0].Description)
+		assert.Equal(t, "1234567890-20260101-ABC123-01", inv.Payment.Advances[0].Ref)
+
+		// Due should equal P_15
+		require.NotNil(t, inv.Totals.Due)
+		assert.Equal(t, "6150.00", inv.Totals.Due.String())
+	})
+
+	t.Run("fully prepaid settlement (P_15=0)", func(t *testing.T) {
+		doc := testSettlementDoc()
+		doc.Inv.TotalAmountDue = "0.00"
+		doc.Inv.StandardRateNetSale = "0"
+		doc.Inv.StandardRateTax = "0"
+
+		inv, err := doc.ToGOBL()
+		require.NoError(t, err)
+
+		require.NotNil(t, inv.Payment)
+		require.Len(t, inv.Payment.Advances, 1)
+
+		// Advance should equal the full payable
+		assert.Equal(t, "12300.00", inv.Payment.Advances[0].Amount.String())
+
+		// Due should be 0
+		require.NotNil(t, inv.Totals.Due)
+		assert.Equal(t, "0.00", inv.Totals.Due.String())
+	})
+
+	t.Run("settlement with ZaplataCzesciowa is no-op", func(t *testing.T) {
+		doc := testSettlementDoc()
+		doc.Inv.Payment = &ksef.Payment{
+			AdvancePayments: []*ksef.AdvancePayment{
+				{
+					PaymentAmount: "6150.00",
+					PaymentDate:   "2026-01-20",
+				},
+			},
+		}
+
+		inv, err := doc.ToGOBL()
+		require.NoError(t, err)
+
+		// Should use the explicit ZaplataCzesciowa advance, not derive
+		require.NotNil(t, inv.Payment)
+		require.Len(t, inv.Payment.Advances, 1)
+		assert.Equal(t, "6150.00", inv.Payment.Advances[0].Amount.String())
+		// Ref should be empty (came from ZaplataCzesciowa, not derived)
+		assert.Empty(t, inv.Payment.Advances[0].Ref)
+	})
+
+	t.Run("non-settlement invoice is no-op", func(t *testing.T) {
+		doc := testSettlementDoc()
+		doc.Inv.InvoiceType = "VAT"
+		// For VAT type, P_15 = Payable (no advance deduction)
+		doc.Inv.TotalAmountDue = "12300.00"
+		doc.Inv.StandardRateNetSale = "10000.00"
+		doc.Inv.StandardRateTax = "2300.00"
+
+		inv, err := doc.ToGOBL()
+		require.NoError(t, err)
+
+		// Should not derive advances for VAT type
+		if inv.Payment != nil {
+			assert.Empty(t, inv.Payment.Advances)
+		}
+	})
+
+	t.Run("settlement without advance refs is no-op", func(t *testing.T) {
+		doc := testSettlementDoc()
+		doc.Inv.AdvanceInvoices = nil
+		// Without advance refs, P_15 must equal Payable
+		doc.Inv.TotalAmountDue = "12300.00"
+		doc.Inv.StandardRateNetSale = "10000.00"
+		doc.Inv.StandardRateTax = "2300.00"
+
+		inv, err := doc.ToGOBL()
+		require.NoError(t, err)
+
+		// No advance refs → no derived advances
+		if inv.Payment != nil {
+			assert.Empty(t, inv.Payment.Advances)
+		}
+	})
+
+	t.Run("multiple advance refs create separate advances", func(t *testing.T) {
+		doc := testSettlementDoc()
+		doc.Inv.AdvanceInvoices = []*ksef.AdvanceInvoiceRef{
+			{KSeFAdvanceInvoiceNo: "1234567890-20260101-AAA111-01"},
+			{KSeFAdvanceInvoiceNo: "1234567890-20260105-BBB222-02"},
+		}
+
+		inv, err := doc.ToGOBL()
+		require.NoError(t, err)
+
+		require.NotNil(t, inv.Payment)
+		require.Len(t, inv.Payment.Advances, 2)
+
+		// First advance carries the total amount
+		assert.Equal(t, "6150.00", inv.Payment.Advances[0].Amount.String())
+		assert.Equal(t, "1234567890-20260101-AAA111-01", inv.Payment.Advances[0].Ref)
+		assert.Equal(t, "Payment 1234567890-20260101-AAA111-01", inv.Payment.Advances[0].Description)
+
+		// Second advance has zero amount
+		assert.Equal(t, "0.00", inv.Payment.Advances[1].Amount.String())
+		assert.Equal(t, "1234567890-20260105-BBB222-02", inv.Payment.Advances[1].Ref)
+		assert.Equal(t, "Payment 1234567890-20260105-BBB222-02", inv.Payment.Advances[1].Description)
+	})
+}
+
+func TestAdjustSettlementTotals(t *testing.T) {
+	// Helper to build a GOBL settlement invoice for GOBL→KSeF tests.
+	// Fields are pre-populated as if Calculate() had already run.
+	pct23 := num.MakePercentage(230, 3)
+	advDate := cal.DateOf(time.Date(2026, 1, 1, 0, 0, 0, 0, time.UTC))
+	baseSettlementInvoice := func() *bill.Invoice {
+		due := num.MakeAmount(615000, 2)     // 6150.00
+		advance := num.MakeAmount(615000, 2) // 6150.00
+		return &bill.Invoice{
+			Currency: currency.PLN,
+			Supplier: &org.Party{
+				TaxID: &tax.Identity{Country: l10n.PL.Tax()},
+			},
+			Tax: &bill.Tax{
+				Ext: tax.Extensions{
+					favat.ExtKeyInvoiceType: "ROZ",
+				},
+			},
+			Lines: []*bill.Line{
+				{
+					Index:    1,
+					Quantity: num.MakeAmount(1, 0),
+					Item: &org.Item{
+						Name:  "Full order item",
+						Price: num.NewAmount(1000000, 2),
+					},
+					Total: num.NewAmount(1000000, 2),
+					Taxes: tax.Set{
+						{
+							Category: tax.CategoryVAT,
+							Percent:  &pct23,
+							Ext:      tax.Extensions{favat.ExtKeyTaxCategory: "1"},
+						},
+					},
+				},
+			},
+			Payment: &bill.PaymentDetails{
+				Advances: []*pay.Advance{
+					{
+						Date:        &advDate,
+						Ref:         "1234567890-20260101-AAA000BBB111-01",
+						Description: "Advance payment",
+						Amount:      num.MakeAmount(615000, 2),
+					},
+				},
+			},
+			Totals: &bill.Totals{
+				Sum:   num.MakeAmount(1000000, 2),
+				Total: num.MakeAmount(1000000, 2),
+				Taxes: &tax.Total{
+					Categories: []*tax.CategoryTotal{
+						{
+							Code: tax.CategoryVAT,
+							Rates: []*tax.RateTotal{
+								{
+									Key:     tax.KeyStandard,
+									Base:    num.MakeAmount(1000000, 2),
+									Percent: &pct23,
+									Amount:  num.MakeAmount(230000, 2),
+									Ext:     tax.Extensions{favat.ExtKeyTaxCategory: "1"},
+								},
+							},
+							Amount: num.MakeAmount(230000, 2),
+						},
+					},
+					Sum: num.MakeAmount(230000, 2),
+				},
+				Tax:          num.MakeAmount(230000, 2),
+				TotalWithTax: num.MakeAmount(1230000, 2),
+				Payable:      num.MakeAmount(1230000, 2),
+				Advances:     &advance,
+				Due:          &due,
+			},
+		}
+	}
+
+	t.Run("prorates P_13_X/P_14_X to remaining amounts", func(t *testing.T) {
+		inv := baseSettlementInvoice()
+		inv.Totals.Taxes.Categories[0].Rates[0].Amount = num.MakeAmount(230000, 2)
+		ksefInv := ksef.NewFavatInv(inv)
+
+		// P_15 = Due = 6150.00
+		assert.Equal(t, "6150.00", ksefInv.TotalAmountDue)
+
+		// P_13_1 should be prorated: 10000 * (6150/12300) = 5000.00
+		assert.Equal(t, "5000.00", ksefInv.StandardRateNetSale)
+
+		// P_14_1 should be prorated: 2300 * (6150/12300) = 1150.00
+		assert.Equal(t, "1150.00", ksefInv.StandardRateTax)
+
+		// FakturaZaliczkowa should be mapped from advance ref
+		require.Len(t, ksefInv.AdvanceInvoices, 1)
+		assert.Equal(t, "1234567890-20260101-AAA000BBB111-01", ksefInv.AdvanceInvoices[0].KSeFAdvanceInvoiceNo)
+
+		// Lines should still show full amount
+		require.Len(t, ksefInv.Lines, 1)
+		assert.Equal(t, "10000.00", ksefInv.Lines[0].NetPriceTotal)
+	})
+
+	t.Run("fully prepaid sets tax totals to zero", func(t *testing.T) {
+		inv := baseSettlementInvoice()
+		inv.Totals.Taxes.Categories[0].Rates[0].Amount = num.MakeAmount(230000, 2)
+		zero := num.MakeAmount(0, 2)
+		fullPayable := num.MakeAmount(1230000, 2)
+		inv.Totals.Due = &zero
+		inv.Totals.Advances = &fullPayable
+
+		ksefInv := ksef.NewFavatInv(inv)
+
+		assert.Equal(t, "0.00", ksefInv.TotalAmountDue)
+		assert.Equal(t, "0.00", ksefInv.StandardRateNetSale)
+		assert.Equal(t, "0.00", ksefInv.StandardRateTax)
+	})
+
+	t.Run("no advances does not adjust tax totals", func(t *testing.T) {
+		inv := baseSettlementInvoice()
+		inv.Totals.Taxes.Categories[0].Rates[0].Amount = num.MakeAmount(230000, 2)
+		inv.Payment = nil
+		inv.Totals.Due = nil
+		inv.Totals.Advances = nil
+
+		ksefInv := ksef.NewFavatInv(inv)
+
+		// Should use Payable since no Due
+		assert.Equal(t, "12300.00", ksefInv.TotalAmountDue)
+		// Tax totals should be unchanged (full order amounts)
+		assert.Equal(t, "10000.00", ksefInv.StandardRateNetSale)
+		assert.Equal(t, "2300.00", ksefInv.StandardRateTax)
+	})
+
+	t.Run("advance without ref does not emit FakturaZaliczkowa", func(t *testing.T) {
+		inv := baseSettlementInvoice()
+		inv.Totals.Taxes.Categories[0].Rates[0].Amount = num.MakeAmount(230000, 2)
+		inv.Payment.Advances[0].Ref = "" // no KSeF number
+
+		ksefInv := ksef.NewFavatInv(inv)
+
+		// No FakturaZaliczkowa
+		assert.Empty(t, ksefInv.AdvanceInvoices)
+		// But tax totals should still be prorated
+		assert.Equal(t, "5000.00", ksefInv.StandardRateNetSale)
+	})
+
+	t.Run("non-settlement with advances does not adjust", func(t *testing.T) {
+		inv := baseSettlementInvoice()
+		inv.Totals.Taxes.Categories[0].Rates[0].Amount = num.MakeAmount(230000, 2)
+		inv.Tax.Ext[favat.ExtKeyInvoiceType] = "VAT"
+
+		ksefInv := ksef.NewFavatInv(inv)
+
+		// Tax totals should be unchanged for non-settlement
+		assert.Equal(t, "10000.00", ksefInv.StandardRateNetSale)
+		assert.Equal(t, "2300.00", ksefInv.StandardRateTax)
+	})
+}
+
 // Ensure ordering is parsed for non-prepayment invoices too.
 func TestOrderingOnStandardInvoice(t *testing.T) {
 	doc := testPrepaymentDoc()
@@ -1220,4 +1763,3 @@ func TestOrderingOnStandardInvoice(t *testing.T) {
 	// And should have lines
 	require.Len(t, inv.Lines, 1)
 }
-

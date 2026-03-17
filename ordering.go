@@ -53,14 +53,23 @@ func newInvoicePeriod(ordering *bill.Ordering) *InvoicePeriod {
 	}
 }
 
-// newOrder converts ordering purchases to KSeF Order.
-// This is the inverse of parseOrderingLines().
+// newOrder converts ordering purchases to KSeF Order (Zamowienie).
+// This is the inverse of parseOrderingLines(). The Zamowienie element is only
+// generated when the purchase reference contains order-level data (payable
+// amount or tax breakdown), which is the case for ZAL/KOR_ZAL invoices.
+// Simple purchase order code references are handled by newTransactionConditions
+// as WarunkiTransakcji/Zamowienia instead.
 func newOrder(ordering *bill.Ordering) *Order {
 	if ordering == nil || len(ordering.Purchases) == 0 {
 		return nil
 	}
 
 	ref := ordering.Purchases[0]
+
+	// Only generate Zamowienie when order-level financial data is present
+	if ref.Payable == nil && ref.Tax == nil {
+		return nil
+	}
 
 	// Build Order
 	order := &Order{}

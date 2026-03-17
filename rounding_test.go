@@ -6,6 +6,7 @@ import (
 	ksef "github.com/invopop/gobl.ksef"
 	"github.com/invopop/gobl/addons/pl/favat"
 	"github.com/invopop/gobl/bill"
+	"github.com/invopop/gobl/cbc"
 	"github.com/invopop/gobl/currency"
 	"github.com/invopop/gobl/l10n"
 	"github.com/invopop/gobl/num"
@@ -348,11 +349,49 @@ func TestAdjustRounding(t *testing.T) {
 		err := inv.Calculate()
 		require.NoError(t, err)
 
-		// Use the due amount as KSEF total
+		// For standard invoices, P_15 = Payable (not Due)
+		ksefTotal := inv.Totals.Payable.String()
+
+		// Now test
+		inv2 := baseInvoice()
+		inv2.Payment = &bill.PaymentDetails{
+			Advances: []*pay.Advance{
+				{
+					Amount: advance,
+				},
+			},
+		}
+
+		err = ksef.AdjustRounding(inv2, ksefTotal)
+		require.NoError(t, err)
+
+		assert.Nil(t, inv2.Totals.Rounding)
+	})
+
+	t.Run("handles settlement invoice with advances", func(t *testing.T) {
+		inv := baseInvoice()
+		inv.Tags = tax.Tags{List: []cbc.Key{favat.TagSettlement}}
+
+		// Add advance payment
+		advance, _ := num.AmountFromString("100.00")
+		inv.Payment = &bill.PaymentDetails{
+			Advances: []*pay.Advance{
+				{
+					Amount: advance,
+				},
+			},
+		}
+
+		// Calculate first to know what the due amount will be
+		err := inv.Calculate()
+		require.NoError(t, err)
+
+		// For settlement invoices, P_15 = Due (the remaining amount after advances)
 		ksefTotal := inv.Totals.Due.String()
 
 		// Now test
 		inv2 := baseInvoice()
+		inv2.Tags = tax.Tags{List: []cbc.Key{favat.TagSettlement}}
 		inv2.Payment = &bill.PaymentDetails{
 			Advances: []*pay.Advance{
 				{
