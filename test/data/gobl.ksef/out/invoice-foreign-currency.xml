@@ -34,7 +34,6 @@
     <KodWaluty>EUR</KodWaluty>
     <P_1>2026-01-20</P_1>
     <P_2>INVOICE-002</P_2>
-    <KursWalutyZ>4.3120</KursWalutyZ>
     <P_13_1>1000.00</P_13_1>
     <P_14_1>230.00</P_14_1>
     <P_14_1W>991.76</P_14_1W>
@@ -42,6 +41,7 @@
     <P_14_2>60.00</P_14_2>
     <P_14_2W>258.72</P_14_2W>
     <P_15>2040.00</P_15>
+    <KursWalutyZ>4.3120</KursWalutyZ>
     <Adnotacje>
       <P_16>2</P_16>
       <P_17>2</P_17>
