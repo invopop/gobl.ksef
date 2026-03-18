@@ -11,6 +11,7 @@ import (
 	"github.com/invopop/gobl/bill"
 	"github.com/invopop/gobl/cal"
 	"github.com/invopop/gobl/cbc"
+	"github.com/invopop/gobl/currency"
 	"github.com/invopop/gobl/head"
 	"github.com/invopop/gobl/num"
 	"github.com/invopop/gobl/org"
@@ -197,7 +198,16 @@ func NewFavatInv(invoice *bill.Invoice) *Inv {
 		taxes = settlementTaxTotals(invoice.Totals)
 	}
 
-	inv.setTaxRates(taxes)
+	// Look for exchange rate from invoice currency to PLN
+	var xr *currency.ExchangeRate
+	if invoice.Currency != currency.PLN {
+		xr = currency.MatchExchangeRate(invoice.ExchangeRates, invoice.Currency, currency.PLN)
+		if xr != nil {
+			inv.ExchangeRate = xr.Amount.String()
+		}
+	}
+
+	inv.setTaxRates(taxes, xr)
 
 	if len(invoice.Notes) > 0 {
 		for _, note := range invoice.Notes {
@@ -282,7 +292,7 @@ func invoiceNumber(series cbc.Code, code cbc.Code) string {
 	return fmt.Sprintf("%s-%s", series, code)
 }
 
-func (inv *Inv) setTaxRates(taxes *tax.Total) {
+func (inv *Inv) setTaxRates(taxes *tax.Total, xr *currency.ExchangeRate) {
 	if taxes == nil {
 		return
 	}
@@ -296,16 +306,28 @@ func (inv *Inv) setTaxRates(taxes *tax.Total) {
 			case "1": // standard rate
 				inv.StandardRateNetSale = rate.Base.String()
 				inv.StandardRateTax = rate.Amount.String()
+				if xr != nil {
+					inv.StandardRateTaxConvertedToPln = xr.Convert(rate.Amount).String()
+				}
 			case "2": // reduced rate
 				inv.ReducedRateNetSale = rate.Base.String()
 				inv.ReducedRateTax = rate.Amount.String()
+				if xr != nil {
+					inv.ReducedRateTaxConvertedToPln = xr.Convert(rate.Amount).String()
+				}
 			case "3": // super reduced rate
 				inv.SuperReducedRateNetSale = rate.Base.String()
 				inv.SuperReducedRateTax = rate.Amount.String()
+				if xr != nil {
+					inv.SuperReducedRateTaxConvertedToPln = xr.Convert(rate.Amount).String()
+				}
 			case "4": // taxi rate
 				inv.TaxiRateNetSale = rate.Base.String()
 				inv.TaxiRateTax = rate.Amount.String()
-			case "5": // OSS rate
+				if xr != nil {
+					inv.TaxiRateTaxConvertedToPln = xr.Convert(rate.Amount).String()
+				}
+			case "5": // OSS rate (no PLN-converted variant in FA3 schema)
 				inv.OSSNetSale = rate.Base.String()
 				inv.OSSTax = rate.Amount.String()
 			case "6.1": // zero tax except intra-community supply
@@ -420,6 +442,19 @@ func (inv *Inv) parseInvoiceData(goblInv *bill.Invoice) error {
 			}
 			goblInv.Ordering.Period.End = end
 		}
+	}
+
+	// Map KursWalutyZ to ExchangeRates for foreign currency invoices
+	if inv.ExchangeRate != "" && goblInv.Currency != currency.PLN {
+		rate, err := num.AmountFromString(inv.ExchangeRate)
+		if err != nil {
+			return fmt.Errorf("parsing exchange rate: %w", err)
+		}
+		goblInv.ExchangeRates = append(goblInv.ExchangeRates, &currency.ExchangeRate{
+			From:   goblInv.Currency,
+			To:     currency.PLN,
+			Amount: rate,
+		})
 	}
 
 	// Parse annotations to tax extensions

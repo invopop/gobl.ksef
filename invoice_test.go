@@ -1763,3 +1763,296 @@ func TestOrderingOnStandardInvoice(t *testing.T) {
 	// And should have lines
 	require.Len(t, inv.Lines, 1)
 }
+
+func TestForeignCurrencyExchangeRate(t *testing.T) {
+	pct23 := num.MakePercentage(230, 3)
+	pct8 := num.MakePercentage(80, 3)
+
+	baseInvoice := func() *bill.Invoice {
+		return &bill.Invoice{
+			Currency: currency.EUR,
+			Supplier: &org.Party{
+				TaxID: &tax.Identity{Country: l10n.PL.Tax()},
+			},
+			Tax: &bill.Tax{
+				Ext: tax.Extensions{
+					favat.ExtKeyInvoiceType: "VAT",
+				},
+			},
+			ExchangeRates: []*currency.ExchangeRate{
+				{
+					From:   currency.EUR,
+					To:     currency.PLN,
+					Amount: num.MakeAmount(43120, 4), // 4.3120
+				},
+			},
+			Totals: &bill.Totals{
+				Payable: num.MakeAmount(204000, 2),
+				Taxes: &tax.Total{
+					Categories: []*tax.CategoryTotal{
+						{
+							Code: tax.CategoryVAT,
+							Rates: []*tax.RateTotal{
+								{
+									Key:     tax.KeyStandard,
+									Base:    num.MakeAmount(100000, 2),
+									Percent: &pct23,
+									Amount:  num.MakeAmount(23000, 2),
+									Ext:     tax.Extensions{favat.ExtKeyTaxCategory: "1"},
+								},
+								{
+									Key:     tax.KeyStandard,
+									Base:    num.MakeAmount(75000, 2),
+									Percent: &pct8,
+									Amount:  num.MakeAmount(6000, 2),
+									Ext:     tax.Extensions{favat.ExtKeyTaxCategory: "2"},
+								},
+							},
+						},
+					},
+				},
+			},
+		}
+	}
+
+	t.Run("sets KursWalutyZ from exchange rates", func(t *testing.T) {
+		inv := baseInvoice()
+		ksefInv := ksef.NewFavatInv(inv)
+
+		assert.Equal(t, "4.3120", ksefInv.ExchangeRate)
+	})
+
+	t.Run("converts standard rate tax to PLN", func(t *testing.T) {
+		inv := baseInvoice()
+		ksefInv := ksef.NewFavatInv(inv)
+
+		// 230.00 EUR * 4.3120 = 991.76 PLN
+		assert.Equal(t, "991.76", ksefInv.StandardRateTaxConvertedToPln)
+	})
+
+	t.Run("converts reduced rate tax to PLN", func(t *testing.T) {
+		inv := baseInvoice()
+		ksefInv := ksef.NewFavatInv(inv)
+
+		// 60.00 EUR * 4.3120 = 258.72 PLN
+		assert.Equal(t, "258.72", ksefInv.ReducedRateTaxConvertedToPln)
+	})
+
+	t.Run("does not set PLN conversion for PLN invoices", func(t *testing.T) {
+		inv := baseInvoice()
+		inv.Currency = currency.PLN
+		inv.ExchangeRates = nil
+
+		ksefInv := ksef.NewFavatInv(inv)
+
+		assert.Empty(t, ksefInv.ExchangeRate)
+		assert.Empty(t, ksefInv.StandardRateTaxConvertedToPln)
+		assert.Empty(t, ksefInv.ReducedRateTaxConvertedToPln)
+	})
+
+	t.Run("does not set PLN conversion without exchange rate", func(t *testing.T) {
+		inv := baseInvoice()
+		inv.ExchangeRates = nil
+
+		ksefInv := ksef.NewFavatInv(inv)
+
+		assert.Empty(t, ksefInv.ExchangeRate)
+		assert.Empty(t, ksefInv.StandardRateTaxConvertedToPln)
+		assert.Empty(t, ksefInv.ReducedRateTaxConvertedToPln)
+	})
+
+	t.Run("does not set P_14_5W for OSS rate", func(t *testing.T) {
+		inv := baseInvoice()
+		inv.Totals.Taxes.Categories[0].Rates = []*tax.RateTotal{
+			{
+				Key:    tax.KeyStandard,
+				Base:   num.MakeAmount(100000, 2),
+				Amount: num.MakeAmount(21000, 2),
+				Ext:    tax.Extensions{favat.ExtKeyTaxCategory: "5"},
+			},
+		}
+
+		ksefInv := ksef.NewFavatInv(inv)
+
+		assert.Equal(t, "1000.00", ksefInv.OSSNetSale)
+		assert.Equal(t, "210.00", ksefInv.OSSTax)
+		// No P_14_5W field exists in FA3 schema
+	})
+}
+
+func TestParseExchangeRate(t *testing.T) {
+	t.Run("KursWalutyZ mapped to ExchangeRates for foreign currency", func(t *testing.T) {
+		doc := &ksef.Invoice{
+			Seller: &ksef.Seller{
+				NIP:  "1234567890",
+				Name: "Test Supplier",
+				Address: &ksef.Address{
+					CountryCode: "PL",
+					AddressL1:   "ul. Testowa 1 00-001 Warszawa",
+				},
+			},
+			Buyer: &ksef.Buyer{
+				NIP:  "9876543210",
+				Name: "Test Buyer",
+				Address: &ksef.Address{
+					CountryCode: "PL",
+					AddressL1:   "ul. Testowa 2 00-002 Warszawa",
+				},
+				JST: "2",
+				GV:  "2",
+			},
+			Inv: &ksef.Inv{
+				CurrencyCode:       "EUR",
+				IssueDate:          "2026-01-20",
+				SequentialNumber:    "FV-001",
+				InvoiceType:        "VAT",
+				ExchangeRate:       "4.3120",
+				StandardRateNetSale: "1000.00",
+				StandardRateTax:     "230.00",
+				TotalAmountDue:      "1230.00",
+				Annotations: &ksef.Annotations{
+					CashAccounting:                      "2",
+					SelfBilling:                         "2",
+					ReverseCharge:                       "2",
+					SplitPaymentMechanism:               "2",
+					SimplifiedProcedureBySecondTaxpayer: "2",
+					TaxExemption:                        &ksef.TaxExemption{NoExemption: "1"},
+					NewTransportMeans:                   &ksef.NewTransportMeans{NoNewTransportMeans: "1"},
+					MarginScheme:                        &ksef.MarginScheme{NoMarginScheme: "1"},
+				},
+				Lines: []*ksef.Line{
+					{
+						LineNumber:   1,
+						Name:         "Item",
+						Quantity:     "1",
+						NetUnitPrice: "1000.00",
+						VATRate:      "23",
+					},
+				},
+			},
+		}
+
+		inv, err := doc.ToGOBL()
+		require.NoError(t, err)
+
+		assert.Equal(t, currency.EUR, inv.Currency)
+		require.Len(t, inv.ExchangeRates, 1)
+		assert.Equal(t, currency.EUR, inv.ExchangeRates[0].From)
+		assert.Equal(t, currency.PLN, inv.ExchangeRates[0].To)
+		assert.Equal(t, "4.3120", inv.ExchangeRates[0].Amount.String())
+	})
+
+	t.Run("no ExchangeRates for PLN invoice", func(t *testing.T) {
+		doc := &ksef.Invoice{
+			Seller: &ksef.Seller{
+				NIP:  "1234567890",
+				Name: "Test Supplier",
+				Address: &ksef.Address{
+					CountryCode: "PL",
+					AddressL1:   "ul. Testowa 1 00-001 Warszawa",
+				},
+			},
+			Buyer: &ksef.Buyer{
+				NIP:  "9876543210",
+				Name: "Test Buyer",
+				Address: &ksef.Address{
+					CountryCode: "PL",
+					AddressL1:   "ul. Testowa 2 00-002 Warszawa",
+				},
+				JST: "2",
+				GV:  "2",
+			},
+			Inv: &ksef.Inv{
+				CurrencyCode:       "PLN",
+				IssueDate:          "2026-01-20",
+				SequentialNumber:    "FV-001",
+				InvoiceType:        "VAT",
+				ExchangeRate:       "4.3120", // should be ignored for PLN
+				StandardRateNetSale: "1000.00",
+				StandardRateTax:     "230.00",
+				TotalAmountDue:      "1230.00",
+				Annotations: &ksef.Annotations{
+					CashAccounting:                      "2",
+					SelfBilling:                         "2",
+					ReverseCharge:                       "2",
+					SplitPaymentMechanism:               "2",
+					SimplifiedProcedureBySecondTaxpayer: "2",
+					TaxExemption:                        &ksef.TaxExemption{NoExemption: "1"},
+					NewTransportMeans:                   &ksef.NewTransportMeans{NoNewTransportMeans: "1"},
+					MarginScheme:                        &ksef.MarginScheme{NoMarginScheme: "1"},
+				},
+				Lines: []*ksef.Line{
+					{
+						LineNumber:   1,
+						Name:         "Item",
+						Quantity:     "1",
+						NetUnitPrice: "1000.00",
+						VATRate:      "23",
+					},
+				},
+			},
+		}
+
+		inv, err := doc.ToGOBL()
+		require.NoError(t, err)
+
+		assert.Equal(t, currency.PLN, inv.Currency)
+		assert.Empty(t, inv.ExchangeRates)
+	})
+
+	t.Run("no ExchangeRates when KursWalutyZ is empty", func(t *testing.T) {
+		doc := &ksef.Invoice{
+			Seller: &ksef.Seller{
+				NIP:  "1234567890",
+				Name: "Test Supplier",
+				Address: &ksef.Address{
+					CountryCode: "PL",
+					AddressL1:   "ul. Testowa 1 00-001 Warszawa",
+				},
+			},
+			Buyer: &ksef.Buyer{
+				NIP:  "9876543210",
+				Name: "Test Buyer",
+				Address: &ksef.Address{
+					CountryCode: "PL",
+					AddressL1:   "ul. Testowa 2 00-002 Warszawa",
+				},
+				JST: "2",
+				GV:  "2",
+			},
+			Inv: &ksef.Inv{
+				CurrencyCode:       "EUR",
+				IssueDate:          "2026-01-20",
+				SequentialNumber:    "FV-001",
+				InvoiceType:        "VAT",
+				StandardRateNetSale: "1000.00",
+				StandardRateTax:     "230.00",
+				TotalAmountDue:      "1230.00",
+				Annotations: &ksef.Annotations{
+					CashAccounting:                      "2",
+					SelfBilling:                         "2",
+					ReverseCharge:                       "2",
+					SplitPaymentMechanism:               "2",
+					SimplifiedProcedureBySecondTaxpayer: "2",
+					TaxExemption:                        &ksef.TaxExemption{NoExemption: "1"},
+					NewTransportMeans:                   &ksef.NewTransportMeans{NoNewTransportMeans: "1"},
+					MarginScheme:                        &ksef.MarginScheme{NoMarginScheme: "1"},
+				},
+				Lines: []*ksef.Line{
+					{
+						LineNumber:   1,
+						Name:         "Item",
+						Quantity:     "1",
+						NetUnitPrice: "1000.00",
+						VATRate:      "23",
+					},
+				},
+			},
+		}
+
+		inv, err := doc.ToGOBL()
+		require.NoError(t, err)
+
+		assert.Empty(t, inv.ExchangeRates)
+	})
+}
