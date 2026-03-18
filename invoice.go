@@ -30,7 +30,6 @@ type Inv struct {
 	WarehouseDocuments                 []string                     `xml:"WZ,omitempty"`
 	CompletionDate                     string                       `xml:"P_6,omitempty"`
 	Period                             *InvoicePeriod               `xml:"OkresFa,omitempty"`
-	ExchangeRate                       string                       `xml:"KursWalutyZ,omitempty"`
 	StandardRateNetSale                string                       `xml:"P_13_1,omitempty"`
 	StandardRateTax                    string                       `xml:"P_14_1,omitempty"`
 	StandardRateTaxConvertedToPln      string                       `xml:"P_14_1W,omitempty"`
@@ -54,6 +53,7 @@ type Inv struct {
 	DomesticReverseChargeNetSale       string                       `xml:"P_13_10,omitempty"`
 	MarginNetSale                      string                       `xml:"P_13_11,omitempty"`
 	TotalAmountDue                     string                       `xml:"P_15"`
+	ExchangeRate                       string                       `xml:"KursWalutyZ,omitempty"`
 	AmountBeforeCorrection             string                       `xml:"P_15ZK,omitempty"`
 	Annotations                        *Annotations                 `xml:"Adnotacje"`
 	InvoiceType                        string                       `xml:"RodzajFaktury"`
