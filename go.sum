@@ -31,8 +31,8 @@ github.com/invopop/jsonschema v0.13.0 h1:KvpoAJWEjR3uD9Kbm2HWJmqsEaHt8lBUpd0qHcI
 github.com/invopop/jsonschema v0.13.0/go.mod h1:ffZ5Km5SWWRAIN6wbDXItl95euhFz2uON45H2qjYt+0=
 github.com/invopop/validation v0.8.0 h1:e5hXHGnONHImgJdonIpNbctg1hlWy1ncaHoVIQ0JWuw=
 github.com/invopop/validation v0.8.0/go.mod h1:nLLeXYPGwUNfdCdJo7/q3yaHO62LSx/3ri7JvgKR9vg=
-github.com/invopop/xmldsig v0.11.1-0.20260311100557-88edb2ff7b11 h1:vBfMJhiycMJ/p0FydwkEAf275hkTWaPWNC4IysvZ2jQ=
-github.com/invopop/xmldsig v0.11.1-0.20260311100557-88edb2ff7b11/go.mod h1:oWDotOqdKbbwmfA1B057TVsNZW/V1XgoXsRgrW5by18=
+github.com/invopop/xmldsig v0.11.1-0.20260326094744-9e0661f20c42 h1:fSMRtvgiRnwh+/Js9735HU/KJzk1W4VbgTGx3qGV8Ic=
+github.com/invopop/xmldsig v0.11.1-0.20260326094744-9e0661f20c42/go.mod h1:oWDotOqdKbbwmfA1B057TVsNZW/V1XgoXsRgrW5by18=
 github.com/invopop/yaml v0.3.1 h1:f0+ZpmhfBSS4MhG+4HYseMdJhoeeopbSKbq5Rpeelso=
 github.com/invopop/yaml v0.3.1/go.mod h1:PMOp3nn4/12yEZUFfmOuNHJsZToEEOwoWsT+D81KkeA=
 github.com/joho/godotenv v1.5.1 h1:7eLL/+HRGLY0ldzfGMeQkb7vMd0as4CfYvUVzLqw0N0=

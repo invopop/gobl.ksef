@@ -7,6 +7,7 @@ import (
 
 	"github.com/beevik/etree"
 	"github.com/invopop/xmldsig"
+	"github.com/invopop/xmldsig/ksef"
 )
 
 var ErrCertificatePrivateKeyNotRSA = errors.New("certificate private key is not RSA, goxades only supports RSA")
@@ -50,7 +51,8 @@ func (c *Client) buildSignedAuthorizationRequest(challenge *authorizationChallen
 	// Sign
 	signature, err := xmldsig.Sign([]byte(unsignedXML),
 		xmldsig.WithCertificate(c.certificate),
-		xmldsig.WithKSeF(),
+		xmldsig.WithXMLDSigConfig(ksef.XMLDSigConfig()),
+		xmldsig.WithXAdESConfig(ksef.XAdESConfig()),
 	)
 	if err != nil {
 		return nil, err

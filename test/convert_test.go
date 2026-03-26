@@ -11,6 +11,7 @@ import (
 	"github.com/invopop/gobl"
 	ksef "github.com/invopop/gobl.ksef"
 	"github.com/invopop/xmldsig"
+	dsigksef "github.com/invopop/xmldsig/ksef"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
@@ -233,7 +234,8 @@ func signKSeFXML(t *testing.T, xmlData []byte, cert *xmldsig.Certificate, signin
 
 	signature, err := xmldsig.Sign(xmlData,
 		xmldsig.WithCertificate(cert),
-		xmldsig.WithKSeF(),
+		xmldsig.WithXMLDSigConfig(dsigksef.XMLDSigConfig()),
+		xmldsig.WithXAdESConfig(dsigksef.XAdESConfig()),
 		xmldsig.WithDocID("test"),
 		xmldsig.WithCurrentTime(func() time.Time { return signingTime }),
 	)
