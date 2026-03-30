@@ -36,6 +36,7 @@ func TestGOBLToKSeF(t *testing.T) {
 
 	inputDir := filepath.Join(GetDataPath(), "gobl.ksef")
 	outputDir := filepath.Join(GetDataPath(), "gobl.ksef", "out")
+	sigDir := filepath.Join(outputDir, "sig")
 
 	// Find all JSON input files
 	entries, err := os.ReadDir(inputDir)
@@ -71,7 +72,7 @@ func TestGOBLToKSeF(t *testing.T) {
 
 			baseName := name[:len(name)-len(filepath.Ext(name))]
 			outPath := filepath.Join(outputDir, baseName+".xml")
-			sigPath := filepath.Join(outputDir, baseName+".sig.xml")
+			sigPath := filepath.Join(sigDir, baseName+".xml")
 
 			if UpdateOut {
 				// Basic validation - just check we can parse it back
