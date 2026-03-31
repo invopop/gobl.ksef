@@ -1,0 +1,67 @@
+{
+  "$schema": "https://gobl.org/draft-0/envelope",
+  "head": {
+    "uuid": "00000000-0000-0000-0000-000000000000",
+    "dig": {
+      "alg": "sha256",
+      "val": "0000000000000000000000000000000000000000000000000000000000000000"
+    }
+  },
+  "doc": {
+    "$schema": "https://gobl.org/draft-0/bill/invoice",
+    "$regime": "PL",
+    "$addons": [
+      "pl-favat-v3"
+    ],
+    "uuid": "00000000-0000-0000-0000-000000000000",
+    "type": "credit-note",
+    "code": "KOR-TEST-002",
+    "issue_date": "2026-03-18",
+    "currency": "PLN",
+    "preceding": [
+      {
+        "issue_date": "2026-03-18",
+        "code": "INVOICE-TEST-002",
+        "reason": "Zmiana danych klienta"
+      }
+    ],
+    "tax": {
+      "rounding": "currency",
+      "ext": {
+        "pl-favat-invoice-type": "KOR"
+      }
+    },
+    "supplier": {
+      "name": "Testowa Firma Sp. z o.o.",
+      "tax_id": {
+        "country": "PL",
+        "code": "9876543210"
+      },
+      "addresses": [
+        {
+          "street": "ul. Główna 1, 00-001 Warszawa",
+          "country": "PL"
+        }
+      ]
+    },
+    "customer": {
+      "name": "Klient Testowy Sp. z o.o.",
+      "tax_id": {
+        "country": "PL",
+        "code": "9876543210"
+      },
+      "addresses": [
+        {
+          "street": "ul. Testowa 10, 30-001 Kraków",
+          "country": "PL"
+        }
+      ]
+    },
+    "totals": null,
+    "notes": [
+      {
+        "text": "Nr. rejestracyjny: XX 000XX"
+      }
+    ]
+  }
+}

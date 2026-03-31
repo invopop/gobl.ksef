@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Faktura
+	xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:etd="http://crd.gov.pl/xml/schematy/dziedzinowe/mf/2022/01/05/eD/DefinicjeTypy/"
+	xmlns="http://crd.gov.pl/wzor/2025/06/25/13775/">
+	<Naglowek>
+		<KodFormularza kodSystemowy="FA (3)" wersjaSchemy="1-0E">FA</KodFormularza>
+		<WariantFormularza>3</WariantFormularza>
+		<DataWytworzeniaFa>2026-03-18T12:32:22Z</DataWytworzeniaFa>
+		<SystemInfo>Invopop</SystemInfo>
+	</Naglowek>
+	<Podmiot1>
+		<DaneIdentyfikacyjne>
+			<NIP>9876543210</NIP>
+			<Nazwa>Testowa Firma Sp. z o.o.</Nazwa>
+		</DaneIdentyfikacyjne>
+		<Adres>
+			<KodKraju>PL</KodKraju>
+			<AdresL1>ul. Główna 1, 00-001 Warszawa</AdresL1>
+		</Adres>
+	</Podmiot1>
+	<Podmiot2>
+		<DaneIdentyfikacyjne>
+			<NIP>9876543210</NIP>
+			<Nazwa>Klient Testowy Sp. z o.o.</Nazwa>
+		</DaneIdentyfikacyjne>
+		<Adres>
+			<KodKraju>PL</KodKraju>
+			<AdresL1>ul. Testowa 10, 30-001 Kraków</AdresL1>
+		</Adres>
+		<JST>2</JST>
+		<GV>2</GV>
+	</Podmiot2>
+	<Fa>
+		<KodWaluty>PLN</KodWaluty>
+		<P_1>2026-03-18</P_1>
+		<P_2>KOR-TEST-002</P_2>
+		<P_6>2026-03-18</P_6>
+		<P_15>0.00</P_15>
+		<Adnotacje>
+			<P_16>2</P_16>
+			<P_17>2</P_17>
+			<P_18>2</P_18>
+			<P_18A>2</P_18A>
+			<Zwolnienie>
+				<P_19N>1</P_19N>
+			</Zwolnienie>
+			<NoweSrodkiTransportu>
+				<P_22N>1</P_22N>
+			</NoweSrodkiTransportu>
+			<P_23>2</P_23>
+			<PMarzy>
+				<P_PMarzyN>1</P_PMarzyN>
+			</PMarzy>
+		</Adnotacje>
+		<RodzajFaktury>KOR</RodzajFaktury>
+		<PrzyczynaKorekty>Zmiana danych klienta</PrzyczynaKorekty>
+		<DaneFaKorygowanej>
+			<DataWystFaKorygowanej>2026-03-18</DataWystFaKorygowanej>
+			<NrFaKorygowanej>INVOICE-TEST-002</NrFaKorygowanej>
+			<NrKSeFN>1</NrKSeFN>
+		</DaneFaKorygowanej>
+		<Podmiot2K>
+			<DaneIdentyfikacyjne>
+				<NIP>9876543210</NIP>
+				<Nazwa>Klient Testowy Sp. z o.o.</Nazwa>
+			</DaneIdentyfikacyjne>
+			<Adres>
+				<KodKraju>PL</KodKraju>
+				<AdresL1>ul. Testowa 10, 30-001 Kraków</AdresL1>
+			</Adres>
+		</Podmiot2K>
+		<DodatkowyOpis>
+			<Klucz>Nr. rejestracyjny</Klucz>
+			<Wartosc>XX 000XX</Wartosc>
+		</DodatkowyOpis>
+	</Fa>
+	<Stopka>
+		<Rejestry>
+			<BDO>000000001</BDO>
+		</Rejestry>
+	</Stopka>
+</Faktura>
