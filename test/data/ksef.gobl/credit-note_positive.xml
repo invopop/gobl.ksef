@@ -1,0 +1,92 @@
+<n0:Faktura
+	xmlns:n0="http://crd.gov.pl/wzor/2025/06/25/13775/">
+	<n0:Naglowek>
+		<n0:KodFormularza kodSystemowy="FA (3)" wersjaSchemy="1-0E">FA</n0:KodFormularza>
+		<n0:WariantFormularza>3</n0:WariantFormularza>
+		<n0:DataWytworzeniaFa>2026-03-26T20:40:29Z</n0:DataWytworzeniaFa>
+		<n0:SystemInfo>TEST FIXTURE — synthetic data, not production</n0:SystemInfo>
+	</n0:Naglowek>
+	<n0:Podmiot1>
+		<n0:DaneIdentyfikacyjne>
+			<n0:NIP>9876543210</n0:NIP>
+			<n0:Nazwa>TEST DATA — Example Supplier Sp. z o.o.</n0:Nazwa>
+		</n0:DaneIdentyfikacyjne>
+		<n0:Adres>
+			<n0:KodKraju>PL</n0:KodKraju>
+			<n0:AdresL1>1 Test Street, 00-001 Warsaw (fixture)</n0:AdresL1>
+		</n0:Adres>
+	</n0:Podmiot1>
+	<n0:Podmiot2>
+		<n0:DaneIdentyfikacyjne>
+			<n0:NIP>1111111111</n0:NIP>
+			<n0:Nazwa>TEST DATA — Example Buyer Sp. z o.o.</n0:Nazwa>
+		</n0:DaneIdentyfikacyjne>
+		<n0:Adres>
+			<n0:KodKraju>PL</n0:KodKraju>
+			<n0:AdresL1>10 Sample Avenue, 30-001 Krakow (fixture)</n0:AdresL1>
+		</n0:Adres>
+		<n0:NrKlienta>0000000001</n0:NrKlienta>
+		<n0:JST>2</n0:JST>
+		<n0:GV>2</n0:GV>
+	</n0:Podmiot2>
+	<n0:Fa>
+		<n0:KodWaluty>PLN</n0:KodWaluty>
+		<n0:P_1>2026-03-26</n0:P_1>
+		<n0:P_1M>Warsaw</n0:P_1M>
+		<n0:P_2>INV-KOR-0001</n0:P_2>
+		<n0:P_6>2025-12-01</n0:P_6>
+		<n0:P_13_1>-14670.94</n0:P_13_1>
+		<n0:P_14_1>-3374.32</n0:P_14_1>
+		<n0:P_15>-18045.26</n0:P_15>
+		<n0:Adnotacje>
+			<n0:P_16>2</n0:P_16>
+			<n0:P_17>2</n0:P_17>
+			<n0:P_18>2</n0:P_18>
+			<n0:P_18A>2</n0:P_18A>
+			<n0:Zwolnienie>
+				<n0:P_19N>1</n0:P_19N>
+			</n0:Zwolnienie>
+			<n0:NoweSrodkiTransportu>
+				<n0:P_22N>1</n0:P_22N>
+			</n0:NoweSrodkiTransportu>
+			<n0:P_23>2</n0:P_23>
+			<n0:PMarzy>
+				<n0:P_PMarzyN>1</n0:P_PMarzyN>
+			</n0:PMarzy>
+		</n0:Adnotacje>
+		<n0:RodzajFaktury>KOR</n0:RodzajFaktury>
+		<n0:DodatkowyOpis>
+			<n0:Klucz>Header note (test)</n0:Klucz>
+			<n0:Wartosc>TEST — Credit note for invoice INV-ORIG-0001 dated 01.12.2025&#xA;Reason: incorrect payer details (fixture)&#xA;&#xA;&#xA;Equipment maintenance services (test line)&#xA;-------------------&#xA;</n0:Wartosc>
+		</n0:DodatkowyOpis>
+		<n0:FaWiersz>
+			<n0:NrWierszaFa>1</n0:NrWierszaFa>
+			<n0:P_7>Device maintenance — test fixture</n0:P_7>
+			<n0:Indeks>000000000000000001</n0:Indeks>
+			<n0:CN>22222222</n0:CN>
+			<n0:P_8A>SZT</n0:P_8A>
+			<n0:P_8B>1.0</n0:P_8B>
+			<n0:P_9A>14670.94</n0:P_9A>
+			<n0:P_11>-14670.94</n0:P_11>
+			<n0:P_12>23</n0:P_12>
+		</n0:FaWiersz>
+		<n0:WarunkiTransakcji>
+			<n0:Umowy>
+				<n0:DataUmowy>2026-03-26</n0:DataUmowy>
+				<n0:NrUmowy>UM-2026-000001</n0:NrUmowy>
+			</n0:Umowy>
+			<n0:WarunkiDostawy>DDP — buyer premises (test)</n0:WarunkiDostawy>
+		</n0:WarunkiTransakcji>
+	</n0:Fa>
+	<n0:Stopka>
+		<n0:Informacje>
+			<n0:StopkaFaktury>Share capital 1 000 000,00 PLN (test fixture)</n0:StopkaFaktury>
+		</n0:Informacje>
+		<n0:Rejestry>
+			<n0:PelnaNazwa>TEST DATA — Example Supplier Sp. z o.o.</n0:PelnaNazwa>
+			<n0:KRS>0000000001</n0:KRS>
+			<n0:REGON>000000000</n0:REGON>
+			<n0:BDO>000000000</n0:BDO>
+		</n0:Rejestry>
+	</n0:Stopka>
+</n0:Faktura>

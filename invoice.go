@@ -649,15 +649,20 @@ func (inv *Inv) parseLines(goblInv *bill.Invoice) error {
 		// For credit notes: invert non-StanPrzed lines to positive GOBL convention.
 		// StanPrzed lines represent the before-correction state and stay as-is
 		// (they are the amounts being credited back to the customer).
+		// Note: sometimes P_8B is positive but P_11 is negative, so we check P_11 not just P_8B.
 		if isCreditNote {
 			if ksefLine.BeforeCorrectionMarker == 1 {
 				line.Notes = append(line.Notes, &org.Note{
 					Text: "Before correction (stan przed korektą)",
 				})
 			} else {
-				line.Quantity = line.Quantity.Invert()
-				// P_10 is always a positive total discount amount in KSeF,
-				// no inversion needed — GOBL also expects positive discounts.
+				if strings.HasPrefix(ksefLine.NetPriceTotal, "-") {
+					line.Quantity = line.Quantity.Abs()
+				} else {
+					line.Quantity = line.Quantity.Invert()
+					// P_10 is always a positive total discount amount in KSeF,
+					// no inversion needed — GOBL also expects positive discounts.
+				}
 			}
 		}
 

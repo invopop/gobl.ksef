@@ -1,0 +1,118 @@
+{
+  "$schema": "https://gobl.org/draft-0/envelope",
+  "head": {
+    "uuid": "00000000-0000-0000-0000-000000000000",
+    "dig": {
+      "alg": "sha256",
+      "val": "0000000000000000000000000000000000000000000000000000000000000000"
+    }
+  },
+  "doc": {
+    "$schema": "https://gobl.org/draft-0/bill/invoice",
+    "$regime": "PL",
+    "$addons": [
+      "pl-favat-v3"
+    ],
+    "uuid": "00000000-0000-0000-0000-000000000000",
+    "type": "credit-note",
+    "code": "INV-KOR-0001",
+    "issue_date": "2026-03-26",
+    "currency": "PLN",
+    "tax": {
+      "rounding": "currency",
+      "ext": {
+        "pl-favat-invoice-type": "KOR"
+      }
+    },
+    "supplier": {
+      "name": "TEST DATA — Example Supplier Sp. z o.o.",
+      "tax_id": {
+        "country": "PL",
+        "code": "9876543210"
+      },
+      "addresses": [
+        {
+          "street": "1 Test Street, 00-001 Warsaw (fixture)",
+          "country": "PL"
+        }
+      ]
+    },
+    "customer": {
+      "name": "TEST DATA — Example Buyer Sp. z o.o.",
+      "tax_id": {
+        "country": "PL",
+        "code": "1111111111"
+      },
+      "addresses": [
+        {
+          "street": "10 Sample Avenue, 30-001 Krakow (fixture)",
+          "country": "PL"
+        }
+      ]
+    },
+    "lines": [
+      {
+        "i": 1,
+        "quantity": "1.0",
+        "item": {
+          "name": "Device maintenance — test fixture",
+          "price": "14670.94",
+          "unit": "SZT"
+        },
+        "sum": "14670.94",
+        "taxes": [
+          {
+            "cat": "VAT",
+            "key": "standard",
+            "rate": "general",
+            "percent": "23.0%",
+            "ext": {
+              "pl-favat-tax-category": "1"
+            }
+          }
+        ],
+        "total": "14670.94"
+      }
+    ],
+    "ordering": {
+      "contracts": [
+        {
+          "issue_date": "2026-03-26",
+          "code": "UM-2026-000001"
+        }
+      ]
+    },
+    "totals": {
+      "sum": "14670.94",
+      "total": "14670.94",
+      "taxes": {
+        "categories": [
+          {
+            "code": "VAT",
+            "rates": [
+              {
+                "key": "standard",
+                "ext": {
+                  "pl-favat-tax-category": "1"
+                },
+                "base": "14670.94",
+                "percent": "23.0%",
+                "amount": "3374.32"
+              }
+            ],
+            "amount": "3374.32"
+          }
+        ],
+        "sum": "3374.32"
+      },
+      "tax": "3374.32",
+      "total_with_tax": "18045.26",
+      "payable": "18045.26"
+    },
+    "notes": [
+      {
+        "text": "Header note (test): TEST — Credit note for invoice INV-ORIG-0001 dated 01.12.2025\nReason: incorrect payer details (fixture)\n\n\nEquipment maintenance services (test line)\n-------------------\n"
+      }
+    ]
+  }
+}
