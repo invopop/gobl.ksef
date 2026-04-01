@@ -1,0 +1,83 @@
+{
+  "$schema": "https://gobl.org/draft-0/envelope",
+  "head": {
+    "uuid": "00000000-0000-0000-0000-000000000000",
+    "dig": {
+      "alg": "sha256",
+      "val": "0000000000000000000000000000000000000000000000000000000000000000"
+    }
+  },
+  "doc": {
+    "$schema": "https://gobl.org/draft-0/bill/invoice",
+    "$regime": "PL",
+    "$addons": [
+      "pl-favat-v3"
+    ],
+    "uuid": "00000000-0000-0000-0000-000000000000",
+    "type": "credit-note",
+    "code": "KOR-TEST-001",
+    "issue_date": "2026-03-26",
+    "currency": "PLN",
+    "preceding": [
+      {
+        "issue_date": "2026-03-26",
+        "code": "INVOICE-TEST-001",
+        "reason": "Pomyłka w cenie, stawce, kwocie podatku",
+        "stamps": [
+          {
+            "prv": "favat-ksef-number",
+            "val": "9876543210-20260326-ABCDEF000000-01"
+          }
+        ]
+      }
+    ],
+    "tax": {
+      "rounding": "currency",
+      "ext": {
+        "pl-favat-invoice-type": "KOR"
+      }
+    },
+    "supplier": {
+      "name": "Testowa Firma Sp. z o.o.",
+      "tax_id": {
+        "country": "PL",
+        "code": "9876543210"
+      },
+      "addresses": [
+        {
+          "street": "ul. Główna 1 00-001 Warszawa",
+          "country": "PL"
+        }
+      ]
+    },
+    "customer": {
+      "name": "Klient Testowy Sp. z o.o.",
+      "tax_id": {
+        "country": "PL",
+        "code": "9876543210"
+      },
+      "addresses": [
+        {
+          "street": "ul. Testowa 10 30-001 Kraków",
+          "country": "PL"
+        }
+      ]
+    },
+    "payment": {
+      "instructions": {
+        "key": "credit-transfer",
+        "credit_transfer": [
+          {
+            "bic": "TESTPLPWXXX",
+            "number": "11114020040000350281087111",
+            "name": "Test Bank"
+          }
+        ],
+        "ext": {
+          "pl-favat-payment-means": "6"
+        }
+      }
+    },
+    "totals": null
+  }
+}

@@ -31,14 +31,20 @@ func AdjustRounding(inv *bill.Invoice, ksefTotalDue string) error {
 		return err
 	}
 
-	if inv.Totals == nil {
-		return fmt.Errorf("invoice totals are nil after calculation")
-	}
-
 	// Parse the KSEF total amount
 	expectedTotal, err := parseAmount(ksefTotalDue)
 	if err != nil {
 		return fmt.Errorf("parsing KSEF total amount: %w", err)
+	}
+
+	if inv.Totals == nil {
+		// No totals after calculationh. This happens for header-only corrections
+		// (e.g. KOR with no lines). If the expected total is also zero,
+		// there's nothing to adjust.
+		if expectedTotal.IsZero() {
+			return nil
+		}
+		return fmt.Errorf("invoice totals are nil after calculation")
 	}
 
 	// Calculate the difference between the expected and the calculated totals.
