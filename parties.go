@@ -113,10 +113,14 @@ func newAddress(address *org.Address) *Address {
 // NewFavatSeller converts a GOBL Party into a KSeF seller
 func NewFavatSeller(supplier *org.Party) *Seller {
 	seller := &Seller{
-		VATPrefix: supplier.TaxID.Country.String(),
-		Address:   newAddress(supplier.Addresses[0]),
-		NIP:       string(supplier.TaxID.Code),
-		Name:      supplier.Name,
+		Name: supplier.Name,
+	}
+	if supplier.TaxID != nil {
+		seller.VATPrefix = supplier.TaxID.Country.String()
+		seller.NIP = string(supplier.TaxID.Code)
+	}
+	if len(supplier.Addresses) > 0 {
+		seller.Address = newAddress(supplier.Addresses[0])
 	}
 	if len(supplier.Telephones) > 0 {
 		seller.Contact = &ContactDetails{
