@@ -233,6 +233,57 @@ func TestNewFavatSeller(t *testing.T) {
 
 		assert.Equal(t, "first@testcompany.pl", seller.Contact.Email)
 	})
+
+	t.Run("nil TaxID does not panic", func(t *testing.T) {
+		supplier := &org.Party{
+			Name: "Test Company Sp. z o.o.",
+			Addresses: []*org.Address{
+				{
+					Street:   "ul. Testowa",
+					Number:   "123",
+					Code:     "00-001",
+					Locality: "Warszawa",
+					Country:  l10n.PL.ISO(),
+				},
+			},
+		}
+
+		seller := ksef.NewFavatSeller(supplier)
+
+		assert.Empty(t, seller.VATPrefix)
+		assert.Empty(t, seller.NIP)
+		assert.Equal(t, "Test Company Sp. z o.o.", seller.Name)
+		assert.NotNil(t, seller.Address)
+	})
+
+	t.Run("no addresses does not panic", func(t *testing.T) {
+		supplier := &org.Party{
+			Name: "Test Company Sp. z o.o.",
+			TaxID: &tax.Identity{
+				Country: l10n.PL.Tax(),
+				Code:    "1234567890",
+			},
+		}
+
+		seller := ksef.NewFavatSeller(supplier)
+
+		assert.Equal(t, "PL", seller.VATPrefix)
+		assert.Equal(t, "1234567890", seller.NIP)
+		assert.Nil(t, seller.Address)
+	})
+
+	t.Run("nil TaxID and no addresses does not panic", func(t *testing.T) {
+		supplier := &org.Party{
+			Name: "Test Company Sp. z o.o.",
+		}
+
+		seller := ksef.NewFavatSeller(supplier)
+
+		assert.Empty(t, seller.VATPrefix)
+		assert.Empty(t, seller.NIP)
+		assert.Nil(t, seller.Address)
+		assert.Equal(t, "Test Company Sp. z o.o.", seller.Name)
+	})
 }
 
 func TestNewFavatBuyer(t *testing.T) {
