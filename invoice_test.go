@@ -1902,11 +1902,11 @@ func TestParseExchangeRate(t *testing.T) {
 				GV:  "2",
 			},
 			Inv: &ksef.Inv{
-				CurrencyCode:       "EUR",
-				IssueDate:          "2026-01-20",
+				CurrencyCode:        "EUR",
+				IssueDate:           "2026-01-20",
 				SequentialNumber:    "FV-001",
-				InvoiceType:        "VAT",
-				ExchangeRate:       "4.3120",
+				InvoiceType:         "VAT",
+				ExchangeRate:        "4.3120",
 				StandardRateNetSale: "1000.00",
 				StandardRateTax:     "230.00",
 				TotalAmountDue:      "1230.00",
@@ -1963,11 +1963,11 @@ func TestParseExchangeRate(t *testing.T) {
 				GV:  "2",
 			},
 			Inv: &ksef.Inv{
-				CurrencyCode:       "PLN",
-				IssueDate:          "2026-01-20",
+				CurrencyCode:        "PLN",
+				IssueDate:           "2026-01-20",
 				SequentialNumber:    "FV-001",
-				InvoiceType:        "VAT",
-				ExchangeRate:       "4.3120", // should be ignored for PLN
+				InvoiceType:         "VAT",
+				ExchangeRate:        "4.3120", // should be ignored for PLN
 				StandardRateNetSale: "1000.00",
 				StandardRateTax:     "230.00",
 				TotalAmountDue:      "1230.00",
@@ -2021,10 +2021,10 @@ func TestParseExchangeRate(t *testing.T) {
 				GV:  "2",
 			},
 			Inv: &ksef.Inv{
-				CurrencyCode:       "EUR",
-				IssueDate:          "2026-01-20",
+				CurrencyCode:        "EUR",
+				IssueDate:           "2026-01-20",
 				SequentialNumber:    "FV-001",
-				InvoiceType:        "VAT",
+				InvoiceType:         "VAT",
 				StandardRateNetSale: "1000.00",
 				StandardRateTax:     "230.00",
 				TotalAmountDue:      "1230.00",
@@ -2055,4 +2055,25 @@ func TestParseExchangeRate(t *testing.T) {
 
 		assert.Empty(t, inv.ExchangeRates)
 	})
+}
+
+func TestNoteCodeAsKey(t *testing.T) {
+	inv := &bill.Invoice{
+		Currency: currency.PLN,
+		Supplier: &org.Party{
+			TaxID: &tax.Identity{Country: l10n.PL.Tax()},
+		},
+		Tax: &bill.Tax{
+			Ext: tax.Extensions{favat.ExtKeyInvoiceType: "VAT"},
+		},
+		Totals: &bill.Totals{Taxes: &tax.Total{}},
+		Notes: []*org.Note{
+			{Code: "ABC123", Text: "Note with code only"},
+		},
+	}
+
+	result := ksef.NewFavatInv(inv)
+
+	require.Len(t, result.AdditionalDescription, 1)
+	assert.Equal(t, "ABC123", result.AdditionalDescription[0].Key)
 }
