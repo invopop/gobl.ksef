@@ -212,7 +212,7 @@ func NewFavatInv(invoice *bill.Invoice) *Inv {
 	if len(invoice.Notes) > 0 {
 		for _, note := range invoice.Notes {
 			inv.AdditionalDescription = append(inv.AdditionalDescription, &AdditionalDescriptionLine{
-				Key:   note.Key.String(),
+				Key:   noteKey(note),
 				Value: note.Text,
 			})
 		}
@@ -223,7 +223,7 @@ func NewFavatInv(invoice *bill.Invoice) *Inv {
 		for _, note := range line.Notes {
 			inv.AdditionalDescription = append(inv.AdditionalDescription, &AdditionalDescriptionLine{
 				LineNumber: strconv.Itoa(line.Index),
-				Key:        note.Key.String(),
+				Key:        noteKey(note),
 				Value:      note.Text,
 			})
 		}
@@ -815,4 +815,11 @@ func (inv *Inv) parsePrepaymentTotals(goblInv *bill.Invoice) error {
 
 	goblInv.Totals = totals
 	return nil
+}
+
+func noteKey(note *org.Note) string {
+	if note.Key != "" {
+		return note.Key.String()
+	}
+	return note.Code.String()
 }
