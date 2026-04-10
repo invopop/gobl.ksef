@@ -13,6 +13,9 @@
     "$addons": [
       "pl-favat-v3"
     ],
+    "$tags": [
+      "bypass"
+    ],
     "uuid": "00000000-0000-0000-0000-000000000000",
     "type": "standard",
     "code": "TEST/INV/001/2026/00001",
@@ -129,7 +132,7 @@
         "sum": "5.79",
         "discounts": [
           {
-            "amount": "2.20"
+            "amount": "2.2"
           }
         ],
         "taxes": [
@@ -156,7 +159,7 @@
         "sum": "11.96",
         "discounts": [
           {
-            "amount": "2.40"
+            "amount": "2.4"
           }
         ],
         "taxes": [
@@ -180,10 +183,10 @@
           "price": "5.55",
           "unit": "Szt."
         },
-        "sum": "11.10",
+        "sum": "11.1",
         "discounts": [
           {
-            "amount": "1.80"
+            "amount": "1.8"
           }
         ],
         "taxes": [
@@ -197,7 +200,7 @@
             }
           }
         ],
-        "total": "9.30"
+        "total": "9.3"
       },
       {
         "i": 7,
@@ -288,7 +291,7 @@
           "price": "5.31",
           "unit": "Szt."
         },
-        "sum": "10.62",
+        "sum": "10.6",
         "discounts": [
           {
             "amount": "1.32"
@@ -305,27 +308,17 @@
             }
           }
         ],
-        "total": "9.30"
+        "total": "9.3"
       }
     ],
     "totals": {
-      "sum": "95.72",
-      "tax_included": "5.55",
-      "total": "90.17",
+      "sum": "90.16",
+      "total": "90.16",
       "taxes": {
         "categories": [
           {
             "code": "VAT",
             "rates": [
-              {
-                "key": "standard",
-                "ext": {
-                  "pl-favat-tax-category": "3"
-                },
-                "base": "69.96",
-                "percent": "5.0%",
-                "amount": "3.50"
-              },
               {
                 "key": "standard",
                 "ext": {
@@ -342,15 +335,24 @@
                 },
                 "base": "17.29",
                 "percent": "8.0%",
-                "amount": "1.38"
+                "amount": "1.39"
+              },
+              {
+                "key": "standard",
+                "ext": {
+                  "pl-favat-tax-category": "3"
+                },
+                "base": "69.96",
+                "percent": "5.0%",
+                "amount": "3.5"
               }
             ],
-            "amount": "5.55"
+            "amount": "5.56"
           }
         ],
-        "sum": "5.55"
+        "sum": "5.56"
       },
-      "tax": "5.55",
+      "tax": "5.56",
       "total_with_tax": "95.72",
       "payable": "95.72"
     }

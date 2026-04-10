@@ -13,6 +13,9 @@
     "$addons": [
       "pl-favat-v3"
     ],
+    "$tags": [
+      "bypass"
+    ],
     "uuid": "00000000-0000-0000-0000-000000000000",
     "type": "credit-note",
     "code": "KOR-TEST-001",
@@ -78,6 +81,12 @@
         }
       }
     },
-    "totals": null
+    "totals": {
+      "sum": "0",
+      "total": "0",
+      "tax": "0",
+      "total_with_tax": "0",
+      "payable": "0"
+    }
   }
 }

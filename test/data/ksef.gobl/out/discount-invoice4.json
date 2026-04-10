@@ -1,0 +1,1108 @@
+{
+  "$schema": "https://gobl.org/draft-0/envelope",
+  "head": {
+    "uuid": "00000000-0000-0000-0000-000000000000",
+    "dig": {
+      "alg": "sha256",
+      "val": "0000000000000000000000000000000000000000000000000000000000000000"
+    }
+  },
+  "doc": {
+    "$schema": "https://gobl.org/draft-0/bill/invoice",
+    "$regime": "PL",
+    "$addons": [
+      "pl-favat-v3"
+    ],
+    "$tags": [
+      "bypass"
+    ],
+    "uuid": "00000000-0000-0000-0000-000000000000",
+    "type": "standard",
+    "code": "BC10970080",
+    "issue_date": "2026-04-04",
+    "currency": "PLN",
+    "tax": {
+      "rounding": "currency",
+      "ext": {
+        "pl-favat-invoice-type": "VAT"
+      }
+    },
+    "supplier": {
+      "name": "Kurier Fikcyjny Sp. z o.o.",
+      "tax_id": {
+        "country": "PL",
+        "code": "5555555555"
+      },
+      "addresses": [
+        {
+          "street": "ul. Kurierska 5 02-274 Warszawa",
+          "country": "PL"
+        }
+      ]
+    },
+    "customer": {
+      "name": "Nabywca Fikcyjny D Sp. z o.o.",
+      "tax_id": {
+        "country": "PL",
+        "code": "6666666666"
+      },
+      "addresses": [
+        {
+          "street": "ul. Zakupowa 64 00-825 Warszawa",
+          "country": "PL"
+        }
+      ]
+    },
+    "lines": [
+      {
+        "i": 1,
+        "quantity": "33",
+        "item": {
+          "name": "Usługa kurierska krajowa",
+          "price": "11.16",
+          "unit": "szt."
+        },
+        "sum": "365.52",
+        "discounts": [
+          {
+            "amount": "0.08636364"
+          }
+        ],
+        "taxes": [
+          {
+            "cat": "VAT",
+            "key": "standard",
+            "rate": "general",
+            "percent": "23.0%",
+            "ext": {
+              "pl-favat-tax-category": "1"
+            }
+          }
+        ],
+        "total": "365.43"
+      },
+      {
+        "i": 2,
+        "quantity": "32",
+        "item": {
+          "name": "Usługa kurierska krajowa",
+          "price": "11.31",
+          "unit": "szt."
+        },
+        "sum": "359.21",
+        "discounts": [
+          {
+            "amount": "0.0875"
+          }
+        ],
+        "taxes": [
+          {
+            "cat": "VAT",
+            "key": "standard",
+            "rate": "general",
+            "percent": "23.0%",
+            "ext": {
+              "pl-favat-tax-category": "1"
+            }
+          }
+        ],
+        "total": "359.12"
+      },
+      {
+        "i": 3,
+        "quantity": "4175",
+        "item": {
+          "name": "Usługa kurierska krajowa",
+          "price": "11.66",
+          "unit": "szt."
+        },
+        "sum": "48303.84",
+        "discounts": [
+          {
+            "amount": "0.09023952"
+          }
+        ],
+        "taxes": [
+          {
+            "cat": "VAT",
+            "key": "standard",
+            "rate": "general",
+            "percent": "23.0%",
+            "ext": {
+              "pl-favat-tax-category": "1"
+            }
+          }
+        ],
+        "total": "48303.75"
+      },
+      {
+        "i": 4,
+        "quantity": "6",
+        "item": {
+          "name": "Usługa kurierska krajowa",
+          "price": "12.86",
+          "unit": "szt."
+        },
+        "sum": "76.66",
+        "discounts": [
+          {
+            "amount": "0.1"
+          }
+        ],
+        "taxes": [
+          {
+            "cat": "VAT",
+            "key": "standard",
+            "rate": "general",
+            "percent": "23.0%",
+            "ext": {
+              "pl-favat-tax-category": "1"
+            }
+          }
+        ],
+        "total": "76.56"
+      },
+      {
+        "i": 5,
+        "quantity": "56",
+        "item": {
+          "name": "Usługa kurierska krajowa",
+          "price": "12.87",
+          "unit": "szt."
+        },
+        "sum": "715.24",
+        "discounts": [
+          {
+            "amount": "0.09964286"
+          }
+        ],
+        "taxes": [
+          {
+            "cat": "VAT",
+            "key": "standard",
+            "rate": "general",
+            "percent": "23.0%",
+            "ext": {
+              "pl-favat-tax-category": "1"
+            }
+          }
+        ],
+        "total": "715.14"
+      },
+      {
+        "i": 6,
+        "quantity": "28",
+        "item": {
+          "name": "Usługa kurierska krajowa",
+          "price": "13.02",
+          "unit": "szt."
+        },
+        "sum": "361.84",
+        "discounts": [
+          {
+            "amount": "0.10071429"
+          }
+        ],
+        "taxes": [
+          {
+            "cat": "VAT",
+            "key": "standard",
+            "rate": "general",
+            "percent": "23.0%",
+            "ext": {
+              "pl-favat-tax-category": "1"
+            }
+          }
+        ],
+        "total": "361.74"
+      },
+      {
+        "i": 7,
+        "quantity": "8839",
+        "item": {
+          "name": "Usługa kurierska krajowa",
+          "price": "13.37",
+          "unit": "szt."
+        },
+        "sum": "117262.91",
+        "discounts": [
+          {
+            "amount": "0.10347551"
+          }
+        ],
+        "taxes": [
+          {
+            "cat": "VAT",
+            "key": "standard",
+            "rate": "general",
+            "percent": "23.0%",
+            "ext": {
+              "pl-favat-tax-category": "1"
+            }
+          }
+        ],
+        "total": "117262.81"
+      },
+      {
+        "i": 8,
+        "quantity": "3836",
+        "item": {
+          "name": "Usługa kurierska krajowa",
+          "price": "13.52",
+          "unit": "szt."
+        },
+        "sum": "51461.44",
+        "discounts": [
+          {
+            "amount": "0.10463504"
+          }
+        ],
+        "taxes": [
+          {
+            "cat": "VAT",
+            "key": "standard",
+            "rate": "general",
+            "percent": "23.0%",
+            "ext": {
+              "pl-favat-tax-category": "1"
+            }
+          }
+        ],
+        "total": "51461.34"
+      },
+      {
+        "i": 9,
+        "quantity": "16",
+        "item": {
+          "name": "Usługa kurierska krajowa",
+          "price": "13.96",
+          "unit": "szt."
+        },
+        "sum": "221.74",
+        "discounts": [
+          {
+            "amount": "0.108125"
+          }
+        ],
+        "taxes": [
+          {
+            "cat": "VAT",
+            "key": "standard",
+            "rate": "general",
+            "percent": "23.0%",
+            "ext": {
+              "pl-favat-tax-category": "1"
+            }
+          }
+        ],
+        "total": "221.63"
+      },
+      {
+        "i": 10,
+        "quantity": "2352",
+        "item": {
+          "name": "Usługa kurierska krajowa",
+          "price": "14.46",
+          "unit": "szt."
+        },
+        "sum": "33746.82",
+        "discounts": [
+          {
+            "amount": "0.11190901"
+          }
+        ],
+        "taxes": [
+          {
+            "cat": "VAT",
+            "key": "standard",
+            "rate": "general",
+            "percent": "23.0%",
+            "ext": {
+              "pl-favat-tax-category": "1"
+            }
+          }
+        ],
+        "total": "33746.71"
+      },
+      {
+        "i": 11,
+        "quantity": "23",
+        "item": {
+          "name": "Usługa kurierska krajowa",
+          "price": "14.57",
+          "unit": "szt."
+        },
+        "sum": "332.63",
+        "discounts": [
+          {
+            "amount": "0.1126087"
+          }
+        ],
+        "taxes": [
+          {
+            "cat": "VAT",
+            "key": "standard",
+            "rate": "general",
+            "percent": "23.0%",
+            "ext": {
+              "pl-favat-tax-category": "1"
+            }
+          }
+        ],
+        "total": "332.52"
+      },
+      {
+        "i": 12,
+        "quantity": "6",
+        "item": {
+          "name": "Usługa kurierska krajowa",
+          "price": "14.66",
+          "unit": "szt."
+        },
+        "sum": "87.39",
+        "discounts": [
+          {
+            "amount": "0.11333333"
+          }
+        ],
+        "taxes": [
+          {
+            "cat": "VAT",
+            "key": "standard",
+            "rate": "general",
+            "percent": "23.0%",
+            "ext": {
+              "pl-favat-tax-category": "1"
+            }
+          }
+        ],
+        "total": "87.28"
+      },
+      {
+        "i": 13,
+        "quantity": "9",
+        "item": {
+          "name": "Usługa kurierska krajowa",
+          "price": "14.72",
+          "unit": "szt."
+        },
+        "sum": "131.56",
+        "discounts": [
+          {
+            "amount": "0.11444444"
+          }
+        ],
+        "taxes": [
+          {
+            "cat": "VAT",
+            "key": "standard",
+            "rate": "general",
+            "percent": "23.0%",
+            "ext": {
+              "pl-favat-tax-category": "1"
+            }
+          }
+        ],
+        "total": "131.45"
+      },
+      {
+        "i": 14,
+        "quantity": "5",
+        "item": {
+          "name": "Usługa kurierska krajowa",
+          "price": "15.66",
+          "unit": "szt."
+        },
+        "sum": "77.81",
+        "discounts": [
+          {
+            "amount": "0.122"
+          }
+        ],
+        "taxes": [
+          {
+            "cat": "VAT",
+            "key": "standard",
+            "rate": "general",
+            "percent": "23.0%",
+            "ext": {
+              "pl-favat-tax-category": "1"
+            }
+          }
+        ],
+        "total": "77.69"
+      },
+      {
+        "i": 15,
+        "quantity": "9",
+        "item": {
+          "name": "Usługa kurierska krajowa",
+          "price": "16.37",
+          "unit": "szt."
+        },
+        "sum": "146.32",
+        "discounts": [
+          {
+            "amount": "0.12666667"
+          }
+        ],
+        "taxes": [
+          {
+            "cat": "VAT",
+            "key": "standard",
+            "rate": "general",
+            "percent": "23.0%",
+            "ext": {
+              "pl-favat-tax-category": "1"
+            }
+          }
+        ],
+        "total": "146.19"
+      },
+      {
+        "i": 16,
+        "quantity": "2",
+        "item": {
+          "name": "Usługa kurierska krajowa",
+          "price": "16.52",
+          "unit": "szt."
+        },
+        "sum": "32.91",
+        "discounts": [
+          {
+            "amount": "0.13"
+          }
+        ],
+        "taxes": [
+          {
+            "cat": "VAT",
+            "key": "standard",
+            "rate": "general",
+            "percent": "23.0%",
+            "ext": {
+              "pl-favat-tax-category": "1"
+            }
+          }
+        ],
+        "total": "32.78"
+      },
+      {
+        "i": 17,
+        "quantity": "1",
+        "item": {
+          "name": "Usługa kurierska krajowa",
+          "price": "16.66",
+          "unit": "szt."
+        },
+        "sum": "16.66",
+        "discounts": [
+          {
+            "amount": "0.13"
+          }
+        ],
+        "taxes": [
+          {
+            "cat": "VAT",
+            "key": "standard",
+            "rate": "general",
+            "percent": "23.0%",
+            "ext": {
+              "pl-favat-tax-category": "1"
+            }
+          }
+        ],
+        "total": "16.53"
+      },
+      {
+        "i": 18,
+        "quantity": "9",
+        "item": {
+          "name": "Usługa kurierska krajowa",
+          "price": "17.25",
+          "unit": "szt."
+        },
+        "sum": "154.18",
+        "discounts": [
+          {
+            "amount": "0.13333333"
+          }
+        ],
+        "taxes": [
+          {
+            "cat": "VAT",
+            "key": "standard",
+            "rate": "general",
+            "percent": "23.0%",
+            "ext": {
+              "pl-favat-tax-category": "1"
+            }
+          }
+        ],
+        "total": "154.05"
+      },
+      {
+        "i": 19,
+        "quantity": "3",
+        "item": {
+          "name": "Usługa kurierska krajowa",
+          "price": "17.46",
+          "unit": "szt."
+        },
+        "sum": "52.11",
+        "discounts": [
+          {
+            "amount": "0.13666667"
+          }
+        ],
+        "taxes": [
+          {
+            "cat": "VAT",
+            "key": "standard",
+            "rate": "general",
+            "percent": "23.0%",
+            "ext": {
+              "pl-favat-tax-category": "1"
+            }
+          }
+        ],
+        "total": "51.97"
+      },
+      {
+        "i": 20,
+        "quantity": "1",
+        "item": {
+          "name": "Usługa kurierska krajowa",
+          "price": "17.57",
+          "unit": "szt."
+        },
+        "sum": "17.57",
+        "discounts": [
+          {
+            "amount": "0.14"
+          }
+        ],
+        "taxes": [
+          {
+            "cat": "VAT",
+            "key": "standard",
+            "rate": "general",
+            "percent": "23.0%",
+            "ext": {
+              "pl-favat-tax-category": "1"
+            }
+          }
+        ],
+        "total": "17.43"
+      },
+      {
+        "i": 21,
+        "quantity": "1",
+        "item": {
+          "name": "Usługa kurierska krajowa",
+          "price": "18.47",
+          "unit": "szt."
+        },
+        "sum": "18.47",
+        "discounts": [
+          {
+            "amount": "0.14"
+          }
+        ],
+        "taxes": [
+          {
+            "cat": "VAT",
+            "key": "standard",
+            "rate": "general",
+            "percent": "23.0%",
+            "ext": {
+              "pl-favat-tax-category": "1"
+            }
+          }
+        ],
+        "total": "18.33"
+      },
+      {
+        "i": 22,
+        "quantity": "2",
+        "item": {
+          "name": "Usługa kurierska krajowa",
+          "price": "20.66",
+          "unit": "szt."
+        },
+        "sum": "41",
+        "discounts": [
+          {
+            "amount": "0.16"
+          }
+        ],
+        "taxes": [
+          {
+            "cat": "VAT",
+            "key": "standard",
+            "rate": "general",
+            "percent": "23.0%",
+            "ext": {
+              "pl-favat-tax-category": "1"
+            }
+          }
+        ],
+        "total": "41"
+      },
+      {
+        "i": 23,
+        "quantity": "4",
+        "item": {
+          "name": "Usługa kurierska krajowa",
+          "price": "21.16",
+          "unit": "szt."
+        },
+        "sum": "84.15",
+        "discounts": [
+          {
+            "amount": "0.165"
+          }
+        ],
+        "taxes": [
+          {
+            "cat": "VAT",
+            "key": "standard",
+            "rate": "general",
+            "percent": "23.0%",
+            "ext": {
+              "pl-favat-tax-category": "1"
+            }
+          }
+        ],
+        "total": "83.98"
+      },
+      {
+        "i": 24,
+        "quantity": "2",
+        "item": {
+          "name": "Usługa kurierska krajowa",
+          "price": "22.37",
+          "unit": "szt."
+        },
+        "sum": "44.57",
+        "discounts": [
+          {
+            "amount": "0.175"
+          }
+        ],
+        "taxes": [
+          {
+            "cat": "VAT",
+            "key": "standard",
+            "rate": "general",
+            "percent": "23.0%",
+            "ext": {
+              "pl-favat-tax-category": "1"
+            }
+          }
+        ],
+        "total": "44.39"
+      },
+      {
+        "i": 25,
+        "quantity": "1",
+        "item": {
+          "name": "Usługa kurierska krajowa",
+          "price": "22.52",
+          "unit": "szt."
+        },
+        "sum": "22.52",
+        "discounts": [
+          {
+            "amount": "0.17"
+          }
+        ],
+        "taxes": [
+          {
+            "cat": "VAT",
+            "key": "standard",
+            "rate": "general",
+            "percent": "23.0%",
+            "ext": {
+              "pl-favat-tax-category": "1"
+            }
+          }
+        ],
+        "total": "22.35"
+      },
+      {
+        "i": 26,
+        "quantity": "3",
+        "item": {
+          "name": "Usługa kurierska krajowa",
+          "price": "22.87",
+          "unit": "szt."
+        },
+        "sum": "68.26",
+        "discounts": [
+          {
+            "amount": "0.17666667"
+          }
+        ],
+        "taxes": [
+          {
+            "cat": "VAT",
+            "key": "standard",
+            "rate": "general",
+            "percent": "23.0%",
+            "ext": {
+              "pl-favat-tax-category": "1"
+            }
+          }
+        ],
+        "total": "68.08"
+      },
+      {
+        "i": 27,
+        "quantity": "12",
+        "item": {
+          "name": "Usługa kurierska krajowa",
+          "price": "23.37",
+          "unit": "szt."
+        },
+        "sum": "278.45",
+        "discounts": [
+          {
+            "amount": "0.18083333"
+          }
+        ],
+        "taxes": [
+          {
+            "cat": "VAT",
+            "key": "standard",
+            "rate": "general",
+            "percent": "23.0%",
+            "ext": {
+              "pl-favat-tax-category": "1"
+            }
+          }
+        ],
+        "total": "278.27"
+      },
+      {
+        "i": 28,
+        "quantity": "1",
+        "item": {
+          "name": "Usługa kurierska krajowa",
+          "price": "23.46",
+          "unit": "szt."
+        },
+        "sum": "23.46",
+        "discounts": [
+          {
+            "amount": "0.18"
+          }
+        ],
+        "taxes": [
+          {
+            "cat": "VAT",
+            "key": "standard",
+            "rate": "general",
+            "percent": "23.0%",
+            "ext": {
+              "pl-favat-tax-category": "1"
+            }
+          }
+        ],
+        "total": "23.28"
+      },
+      {
+        "i": 29,
+        "quantity": "5",
+        "item": {
+          "name": "Usługa kurierska krajowa",
+          "price": "23.52",
+          "unit": "szt."
+        },
+        "sum": "116.87",
+        "discounts": [
+          {
+            "amount": "0.182"
+          }
+        ],
+        "taxes": [
+          {
+            "cat": "VAT",
+            "key": "standard",
+            "rate": "general",
+            "percent": "23.0%",
+            "ext": {
+              "pl-favat-tax-category": "1"
+            }
+          }
+        ],
+        "total": "116.69"
+      },
+      {
+        "i": 30,
+        "quantity": "1",
+        "item": {
+          "name": "Usługa kurierska krajowa",
+          "price": "23.57",
+          "unit": "szt."
+        },
+        "sum": "23.57",
+        "discounts": [
+          {
+            "amount": "0.18"
+          }
+        ],
+        "taxes": [
+          {
+            "cat": "VAT",
+            "key": "standard",
+            "rate": "general",
+            "percent": "23.0%",
+            "ext": {
+              "pl-favat-tax-category": "1"
+            }
+          }
+        ],
+        "total": "23.39"
+      },
+      {
+        "i": 31,
+        "quantity": "5",
+        "item": {
+          "name": "Usługa kurierska krajowa",
+          "price": "24.46",
+          "unit": "szt."
+        },
+        "sum": "121.54",
+        "discounts": [
+          {
+            "amount": "0.19"
+          }
+        ],
+        "taxes": [
+          {
+            "cat": "VAT",
+            "key": "standard",
+            "rate": "general",
+            "percent": "23.0%",
+            "ext": {
+              "pl-favat-tax-category": "1"
+            }
+          }
+        ],
+        "total": "121.35"
+      },
+      {
+        "i": 32,
+        "quantity": "1",
+        "item": {
+          "name": "Usługa kurierska krajowa",
+          "price": "40.77",
+          "unit": "szt."
+        },
+        "sum": "40.77",
+        "discounts": [
+          {
+            "amount": "0.32"
+          }
+        ],
+        "taxes": [
+          {
+            "cat": "VAT",
+            "key": "standard",
+            "rate": "general",
+            "percent": "23.0%",
+            "ext": {
+              "pl-favat-tax-category": "1"
+            }
+          }
+        ],
+        "total": "40.45"
+      },
+      {
+        "i": 33,
+        "quantity": "2",
+        "item": {
+          "name": "Usługa kurierska krajowa",
+          "price": "43.37",
+          "unit": "szt."
+        },
+        "sum": "86.41",
+        "discounts": [
+          {
+            "amount": "0.335"
+          }
+        ],
+        "taxes": [
+          {
+            "cat": "VAT",
+            "key": "standard",
+            "rate": "general",
+            "percent": "23.0%",
+            "ext": {
+              "pl-favat-tax-category": "1"
+            }
+          }
+        ],
+        "total": "86.07"
+      },
+      {
+        "i": 34,
+        "quantity": "1",
+        "item": {
+          "name": "Usługa kurierska krajowa",
+          "price": "47.25",
+          "unit": "szt."
+        },
+        "sum": "47.25",
+        "discounts": [
+          {
+            "amount": "0.37"
+          }
+        ],
+        "taxes": [
+          {
+            "cat": "VAT",
+            "key": "standard",
+            "rate": "general",
+            "percent": "23.0%",
+            "ext": {
+              "pl-favat-tax-category": "1"
+            }
+          }
+        ],
+        "total": "46.88"
+      },
+      {
+        "i": 35,
+        "quantity": "1",
+        "item": {
+          "name": "Usługa kurierska krajowa",
+          "price": "78.49",
+          "unit": "szt."
+        },
+        "sum": "78.49",
+        "discounts": [
+          {
+            "amount": "0.61"
+          }
+        ],
+        "taxes": [
+          {
+            "cat": "VAT",
+            "key": "standard",
+            "rate": "general",
+            "percent": "23.0%",
+            "ext": {
+              "pl-favat-tax-category": "1"
+            }
+          }
+        ],
+        "total": "77.88"
+      },
+      {
+        "i": 36,
+        "quantity": "1",
+        "item": {
+          "name": "Usługa kurierska krajowa",
+          "price": "188.81",
+          "unit": "szt."
+        },
+        "sum": "188.81",
+        "discounts": [
+          {
+            "amount": "1.46"
+          }
+        ],
+        "taxes": [
+          {
+            "cat": "VAT",
+            "key": "standard",
+            "rate": "general",
+            "percent": "23.0%",
+            "ext": {
+              "pl-favat-tax-category": "1"
+            }
+          }
+        ],
+        "total": "187.35"
+      },
+      {
+        "i": 37,
+        "quantity": "1",
+        "item": {
+          "name": "Spedycja międzynarodowa",
+          "price": "1224.5",
+          "unit": "szt."
+        },
+        "sum": "1224.50",
+        "discounts": [
+          {
+            "amount": "9.48"
+          }
+        ],
+        "taxes": [
+          {
+            "cat": "VAT",
+            "key": "standard",
+            "rate": "general",
+            "percent": "23.0%",
+            "ext": {
+              "pl-favat-tax-category": "1"
+            }
+          }
+        ],
+        "total": "1215.02"
+      }
+    ],
+    "payment": {
+      "terms": {
+        "due_dates": [
+          {
+            "date": "2026-04-30",
+            "amount": "0",
+            "percent": "100%"
+          }
+        ]
+      },
+      "instructions": {
+        "key": "credit-transfer",
+        "credit_transfer": [
+          {
+            "bic": "TESTPLPX",
+            "number": "PL00555500006666000077778888"
+          }
+        ],
+        "ext": {
+          "pl-favat-payment-means": "6"
+        }
+      }
+    },
+    "totals": {
+      "sum": "256416.88",
+      "total": "256416.88",
+      "taxes": {
+        "categories": [
+          {
+            "code": "VAT",
+            "rates": [
+              {
+                "key": "standard",
+                "ext": {
+                  "pl-favat-tax-category": "1"
+                },
+                "base": "256416.88",
+                "percent": "23.0%",
+                "amount": "58975.86"
+              }
+            ],
+            "amount": "58975.86"
+          }
+        ],
+        "sum": "58975.86"
+      },
+      "tax": "58975.86",
+      "total_with_tax": "315392.74",
+      "payable": "315392.74"
+    }
+  }
+}

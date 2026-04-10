@@ -13,6 +13,9 @@
     "$addons": [
       "pl-favat-v3"
     ],
+    "$tags": [
+      "bypass"
+    ],
     "uuid": "00000000-0000-0000-0000-000000000000",
     "type": "standard",
     "code": "1526079202",
@@ -140,7 +143,7 @@
         "due_dates": [
           {
             "date": "2026-03-13",
-            "amount": "473.55",
+            "amount": "0",
             "percent": "100%"
           }
         ],

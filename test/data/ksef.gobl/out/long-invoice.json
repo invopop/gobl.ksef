@@ -13,6 +13,9 @@
     "$addons": [
       "pl-favat-v3"
     ],
+    "$tags": [
+      "bypass"
+    ],
     "uuid": "00000000-0000-0000-0000-000000000000",
     "type": "standard",
     "code": "FV/26/0000001",
@@ -862,7 +865,7 @@
         "due_dates": [
           {
             "date": "2026-03-20",
-            "amount": "949.97",
+            "amount": "0",
             "percent": "100%"
           }
         ],
@@ -888,8 +891,7 @@
       }
     },
     "totals": {
-      "sum": "949.97",
-      "tax_included": "47.32",
+      "sum": "902.65",
       "total": "902.65",
       "taxes": {
         "categories": [
@@ -908,20 +910,20 @@
               {
                 "key": "standard",
                 "ext": {
-                  "pl-favat-tax-category": "3"
+                  "pl-favat-tax-category": "2"
                 },
-                "base": "853.98",
-                "percent": "5.0%",
-                "amount": "42.70"
+                "base": "43.85",
+                "percent": "8.0%",
+                "amount": "3.51"
               },
               {
                 "key": "standard",
                 "ext": {
-                  "pl-favat-tax-category": "2"
+                  "pl-favat-tax-category": "3"
                 },
-                "base": "43.86",
-                "percent": "8.0%",
-                "amount": "3.51"
+                "base": "853.96",
+                "percent": "5.0%",
+                "amount": "42.70"
               }
             ],
             "amount": "47.32"

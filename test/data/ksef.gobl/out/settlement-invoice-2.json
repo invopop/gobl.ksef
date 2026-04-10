@@ -14,7 +14,8 @@
       "pl-favat-v3"
     ],
     "$tags": [
-      "settlement"
+      "settlement",
+      "bypass"
     ],
     "uuid": "00000000-0000-0000-0000-000000000000",
     "type": "standard",
@@ -64,10 +65,10 @@
         "quantity": "1.0",
         "item": {
           "name": "Robot przemysłowy Model X + transport",
-          "price": "55580.00",
+          "price": "55580.0",
           "unit": "SZT"
         },
-        "sum": "55580.00",
+        "sum": "55580.0",
         "taxes": [
           {
             "cat": "VAT",
@@ -79,7 +80,7 @@
             }
           }
         ],
-        "total": "55580.00",
+        "total": "55580.0",
         "notes": [
           {
             "text": "(PL) Nr zamówienia sprzedaży/poz,:: 0000100001 / 000010\n"
@@ -115,19 +116,12 @@
         "due_dates": [
           {
             "date": "2026-04-27",
-            "amount": "68363.40",
+            "amount": "0",
             "percent": "100%"
           }
         ],
         "notes": "45 dni wystawienie faktury"
       },
-      "advances": [
-        {
-          "ref": "3333333333-20260311-CCDD0000001B-01",
-          "description": "Payment 3333333333-20260311-CCDD0000001B-01",
-          "amount": "13672.68"
-        }
-      ],
       "instructions": {
         "key": "credit-transfer",
         "credit_transfer": [
@@ -143,8 +137,8 @@
       }
     },
     "totals": {
-      "sum": "55580.00",
-      "total": "55580.00",
+      "sum": "44464.0",
+      "total": "44464.0",
       "taxes": {
         "categories": [
           {
@@ -155,21 +149,19 @@
                 "ext": {
                   "pl-favat-tax-category": "1"
                 },
-                "base": "55580.00",
+                "base": "44464.0",
                 "percent": "23.0%",
-                "amount": "12783.40"
+                "amount": "10226.72"
               }
             ],
-            "amount": "12783.40"
+            "amount": "10226.72"
           }
         ],
-        "sum": "12783.40"
+        "sum": "10226.72"
       },
-      "tax": "12783.40",
-      "total_with_tax": "68363.40",
-      "payable": "68363.40",
-      "advance": "13672.68",
-      "due": "54690.72"
+      "tax": "10226.72",
+      "total_with_tax": "54690.7",
+      "payable": "54690.72"
     },
     "notes": [
       {

@@ -18,25 +18,9 @@
     ],
     "uuid": "00000000-0000-0000-0000-000000000000",
     "type": "credit-note",
-    "code": "KOR-001",
-    "issue_date": "2026-01-20",
+    "code": "KOR-TEST-001",
+    "issue_date": "2026-03-26",
     "currency": "PLN",
-    "preceding": [
-      {
-        "issue_date": "2026-01-20",
-        "code": "INVOICE-001",
-        "reason": "Price correction",
-        "stamps": [
-          {
-            "prv": "favat-ksef-number",
-            "val": "8126178616-20260122-0100A0039876-89"
-          }
-        ],
-        "ext": {
-          "pl-favat-effective-date": "1"
-        }
-      }
-    ],
     "tax": {
       "rounding": "currency",
       "ext": {
@@ -44,27 +28,27 @@
       }
     },
     "supplier": {
-      "name": "Testowa Firma Sp. z o.o.",
+      "name": "Producent Fikcyjny Sp. z o.o.",
       "tax_id": {
         "country": "PL",
-        "code": "9876543210"
+        "code": "7777777777"
       },
       "addresses": [
         {
-          "street": "ul. Główna 1, 00-001, Warsaw",
+          "street": "ul. Produkcyjna 7 05-090 Warszawa",
           "country": "PL"
         }
       ]
     },
     "customer": {
-      "name": "Klient Testowy Sp. z o.o.",
+      "name": "Nabywca Fikcyjny E Sp. z o.o.",
       "tax_id": {
         "country": "PL",
-        "code": "9876543210"
+        "code": "8888888888"
       },
       "addresses": [
         {
-          "street": "ul. Testowa 10, 30-001, Kraków",
+          "street": "ul. Testowa 33 80-536 Gdańsk",
           "country": "PL"
         }
       ]
@@ -72,13 +56,13 @@
     "lines": [
       {
         "i": 1,
-        "quantity": "10",
+        "quantity": "-1.0",
         "item": {
-          "name": "Software Development Services",
-          "price": "10.00",
-          "unit": "HUR"
+          "name": "Utrz.db s.tech.",
+          "price": "14670.94",
+          "unit": "SZT"
         },
-        "sum": "100.00",
+        "sum": "14670.94",
         "taxes": [
           {
             "cat": "VAT",
@@ -90,12 +74,20 @@
             }
           }
         ],
-        "total": "100.00"
+        "total": "14670.94"
       }
     ],
+    "ordering": {
+      "contracts": [
+        {
+          "issue_date": "2026-03-26",
+          "code": "UM-TEST-001"
+        }
+      ]
+    },
     "totals": {
-      "sum": "100.00",
-      "total": "100.00",
+      "sum": "14670.94",
+      "total": "14670.94",
       "taxes": {
         "categories": [
           {
@@ -106,19 +98,24 @@
                 "ext": {
                   "pl-favat-tax-category": "1"
                 },
-                "base": "100.00",
+                "base": "14670.94",
                 "percent": "23.0%",
-                "amount": "23.00"
+                "amount": "3374.32"
               }
             ],
-            "amount": "23.00"
+            "amount": "3374.32"
           }
         ],
-        "sum": "23.00"
+        "sum": "3374.32"
       },
-      "tax": "23.00",
-      "total_with_tax": "123.00",
-      "payable": "123.00"
-    }
+      "tax": "3374.32",
+      "total_with_tax": "18045.26",
+      "payable": "18045.26"
+    },
+    "notes": [
+      {
+        "text": "Nota nagłówka: Korekta do faktury FV-TEST-001 z dnia 01.12.2025\nPowód korekty - błędne dane płatnika\n"
+      }
+    ]
   }
 }

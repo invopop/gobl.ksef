@@ -602,24 +602,13 @@ func parseInvoiceType(invType string) (cbc.Key, []cbc.Key) {
 	}
 }
 
-// isPrepaymentType returns true for advance invoice types (ZAL or KOR_ZAL).
-func (inv *Inv) isPrepaymentType() bool {
-	return inv.InvoiceType == "ZAL" || inv.InvoiceType == "KOR_ZAL"
-}
-
-// isSettlementType returns true for settlement invoice types (ROZ or KOR_ROZ).
-func (inv *Inv) isSettlementType() bool {
-	return inv.InvoiceType == "ROZ" || inv.InvoiceType == "KOR_ROZ"
-}
-
 // parseLines converts KSEF lines to GOBL lines.
 func (inv *Inv) parseLines(goblInv *bill.Invoice) error {
+	// Always use bypass mode: totals are set directly from KSeF fields
+	// and Calculate() is never called.
+	goblInv.Tags.List = append(goblInv.Tags.List, tax.TagBypass)
+
 	if len(inv.Lines) == 0 {
-		if inv.isPrepaymentType() {
-			// Prepayment invoices without FaWiersz lines use bypass mode:
-			// totals are set directly from tax summary fields (P_13_X/P_14_X).
-			goblInv.Tags.List = append(goblInv.Tags.List, tax.TagBypass)
-		}
 		return nil
 	}
 
@@ -644,11 +633,12 @@ func (inv *Inv) parseLines(goblInv *bill.Invoice) error {
 	// pure-net, pure-gross, and mixed invoices without any invoice-level flag.
 	isCreditNote := goblInv.Type == bill.InvoiceTypeCreditNote
 	hasGrossPricing := false
-	for _, ksefLine := range inv.Lines {
+	for i, ksefLine := range inv.Lines {
 		line, err := ksefLine.ToGOBL()
 		if err != nil {
 			return fmt.Errorf("parsing line %d: %w", ksefLine.LineNumber, err)
 		}
+		line.Index = i + 1 // normally set by Calculate(), but bypass skips it
 
 		// For credit notes: invert non-StanPrzed lines to positive GOBL convention.
 		// StanPrzed lines represent the before-correction state and stay as-is
@@ -660,6 +650,14 @@ func (inv *Inv) parseLines(goblInv *bill.Invoice) error {
 				})
 			} else {
 				line.Quantity = line.Quantity.Invert()
+				if line.Sum != nil {
+					s := line.Sum.Invert()
+					line.Sum = &s
+				}
+				if line.Total != nil {
+					t := line.Total.Invert()
+					line.Total = &t
+				}
 				// P_10 is always a positive total discount amount in KSeF,
 				// no inversion needed — GOBL also expects positive discounts.
 			}
@@ -686,12 +684,10 @@ func (inv *Inv) parseLines(goblInv *bill.Invoice) error {
 	return nil
 }
 
-// parsePrepaymentTotals builds bill.Totals directly from the invoice-level
+// parseTotals builds bill.Totals directly from the invoice-level
 // tax summary fields (P_13_X / P_14_X / P_15). The invoice must have the
 // bypass tag set so that Calculate() does not overwrite these totals.
-// The resulting invoice will not pass GOBL validation (no lines), which
-// is acceptable for this edge case.
-func (inv *Inv) parsePrepaymentTotals(goblInv *bill.Invoice) error {
+func (inv *Inv) parseTotals(goblInv *bill.Invoice) error {
 	// Each entry maps a P_13_X / P_14_X pair to a tax category.
 	// Well-known percentages are set when the rate is unambiguous;
 	// otherwise only the amounts are included.
@@ -738,7 +734,7 @@ func (inv *Inv) parsePrepaymentTotals(goblInv *bill.Invoice) error {
 
 		netAmt, err := parseAmount(e.net)
 		if err != nil {
-			return fmt.Errorf("parsing prepayment net for category %s: %w", e.category, err)
+			return fmt.Errorf("parsing net total for category %s: %w", e.category, err)
 		}
 		if isCreditNote {
 			netAmt = netAmt.Invert()
@@ -756,7 +752,7 @@ func (inv *Inv) parsePrepaymentTotals(goblInv *bill.Invoice) error {
 		if e.tax != "" {
 			taxAmt, err := parseAmount(e.tax)
 			if err != nil {
-				return fmt.Errorf("parsing prepayment tax for category %s: %w", e.category, err)
+				return fmt.Errorf("parsing tax total for category %s: %w", e.category, err)
 			}
 			if isCreditNote {
 				taxAmt = taxAmt.Invert()
