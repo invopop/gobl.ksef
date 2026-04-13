@@ -813,6 +813,15 @@ func (inv *Inv) parseTotals(goblInv *bill.Invoice) error {
 		totals.Due = &due
 	}
 
+	// Fill due-date amounts from Payable × Percent (normally done by Calculate).
+	if goblInv.Payment != nil && goblInv.Payment.Terms != nil {
+		for _, dd := range goblInv.Payment.Terms.DueDates {
+			if dd.Percent != nil {
+				dd.Amount = dd.Percent.Of(totals.Payable)
+			}
+		}
+	}
+
 	goblInv.Totals = totals
 	return nil
 }

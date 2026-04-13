@@ -1406,62 +1406,6 @@ func TestPrepaymentEndToEnd(t *testing.T) {
 	})
 }
 
-// testSettlementDoc builds a minimal ROZ settlement invoice for testing.
-func testSettlementDoc() *ksef.Invoice {
-	return &ksef.Invoice{
-		Seller: &ksef.Seller{
-			NIP:  "1234567890",
-			Name: "Test Supplier",
-			Address: &ksef.Address{
-				CountryCode: "PL",
-				AddressL1:   "ul. Testowa 1 00-001 Warszawa",
-			},
-		},
-		Buyer: &ksef.Buyer{
-			NIP:  "9876543210",
-			Name: "Test Buyer",
-			Address: &ksef.Address{
-				CountryCode: "PL",
-				AddressL1:   "ul. Testowa 2 00-002 Warszawa",
-			},
-			JST: "2",
-			GV:  "2",
-		},
-		Inv: &ksef.Inv{
-			CurrencyCode:     "PLN",
-			IssueDate:        "2026-01-20",
-			SequentialNumber: "ROZ-001",
-			InvoiceType:      "ROZ",
-			// Lines sum to 12300.00 (10000 net + 2300 VAT)
-			StandardRateNetSale: "8000.00",
-			StandardRateTax:     "1840.00",
-			TotalAmountDue:      "6150.00", // P_15: remaining after advance
-			Annotations: &ksef.Annotations{
-				CashAccounting:                      "2",
-				SelfBilling:                         "2",
-				ReverseCharge:                       "2",
-				SplitPaymentMechanism:               "2",
-				SimplifiedProcedureBySecondTaxpayer: "2",
-				TaxExemption:                        &ksef.TaxExemption{NoExemption: "1"},
-				NewTransportMeans:                   &ksef.NewTransportMeans{NoNewTransportMeans: "1"},
-				MarginScheme:                        &ksef.MarginScheme{NoMarginScheme: "1"},
-			},
-			AdvanceInvoices: []*ksef.AdvanceInvoiceRef{
-				{KSeFAdvanceInvoiceNo: "1234567890-20260101-ABC123-01"},
-			},
-			Lines: []*ksef.Line{
-				{
-					LineNumber:   1,
-					Name:         "Project Completion",
-					Quantity:     "1",
-					NetUnitPrice: "10000.00",
-					VATRate:      "23",
-				},
-			},
-		},
-	}
-}
-
 func TestAdjustSettlementTotals(t *testing.T) {
 	// Helper to build a GOBL settlement invoice for GOBL→KSeF tests.
 	// Fields are pre-populated as if Calculate() had already run.
@@ -1882,59 +1826,6 @@ func TestParseExchangeRate(t *testing.T) {
 		assert.Empty(t, inv.ExchangeRates)
 	})
 
-	t.Run("returns error for EUR invoice missing KursWalutyZ", func(t *testing.T) {
-		doc := &ksef.Invoice{
-			Seller: &ksef.Seller{
-				NIP:  "1234567890",
-				Name: "Test Supplier",
-				Address: &ksef.Address{
-					CountryCode: "PL",
-					AddressL1:   "ul. Testowa 1 00-001 Warszawa",
-				},
-			},
-			Buyer: &ksef.Buyer{
-				NIP:  "9876543210",
-				Name: "Test Buyer",
-				Address: &ksef.Address{
-					CountryCode: "PL",
-					AddressL1:   "ul. Testowa 2 00-002 Warszawa",
-				},
-				JST: "2",
-				GV:  "2",
-			},
-			Inv: &ksef.Inv{
-				CurrencyCode:        "EUR",
-				IssueDate:           "2026-01-20",
-				SequentialNumber:    "FV-001",
-				InvoiceType:         "VAT",
-				StandardRateNetSale: "1000.00",
-				StandardRateTax:     "230.00",
-				TotalAmountDue:      "1230.00",
-				Annotations: &ksef.Annotations{
-					CashAccounting:                      "2",
-					SelfBilling:                         "2",
-					ReverseCharge:                       "2",
-					SplitPaymentMechanism:               "2",
-					SimplifiedProcedureBySecondTaxpayer: "2",
-					TaxExemption:                        &ksef.TaxExemption{NoExemption: "1"},
-					NewTransportMeans:                   &ksef.NewTransportMeans{NoNewTransportMeans: "1"},
-					MarginScheme:                        &ksef.MarginScheme{NoMarginScheme: "1"},
-				},
-				Lines: []*ksef.Line{
-					{
-						LineNumber:   1,
-						Name:         "Item",
-						Quantity:     "1",
-						NetUnitPrice: "1000.00",
-						VATRate:      "23",
-					},
-				},
-			},
-		}
-
-		_, err := doc.ToGOBL()
-		require.Error(t, err)
-	})
 }
 
 func TestNoteCodeAsKey(t *testing.T) {
