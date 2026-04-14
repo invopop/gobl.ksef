@@ -176,6 +176,10 @@ func NewFavatInv(invoice *bill.Invoice) *Inv {
 		Payment:          NewPayment(invoice.Payment, invoice.Totals),
 	}
 
+	if invoice.OperationDate != nil {
+		inv.CompletionDate = invoice.OperationDate.String()
+	}
+
 	if invoice.Totals.Due != nil {
 		inv.TotalAmountDue = invoice.Totals.Due.String()
 	} else {
