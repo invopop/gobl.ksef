@@ -61,7 +61,7 @@ func TestNewCorrectedInv(t *testing.T) {
 			Code: "001",
 			Stamps: []*head.Stamp{
 				{
-					Provider: favat.StampKSEFNumber,
+					Provider: favat.StampKSeFNumber,
 					Value:    "1234567890-20251220-ABC123-FF",
 				},
 			},
@@ -113,7 +113,7 @@ func TestNewCorrectedInv(t *testing.T) {
 					Value:    "some-value",
 				},
 				{
-					Provider: favat.StampKSEFNumber,
+					Provider: favat.StampKSeFNumber,
 					Value:    "ksef-number-123",
 				},
 				{

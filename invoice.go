@@ -497,7 +497,7 @@ func (inv *Inv) parseInvoiceData(goblInv *bill.Invoice) error {
 			if corr.KsefNumberPresent == 1 && corr.KsefNumber != "" {
 				preceding.Stamps = []*head.Stamp{
 					{
-						Provider: favat.StampKSEFNumber,
+						Provider: favat.StampKSeFNumber,
 						Value:    corr.KsefNumber,
 					},
 				}

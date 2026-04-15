@@ -370,6 +370,7 @@ func TestAdjustRounding(t *testing.T) {
 
 	t.Run("handles settlement invoice with advances", func(t *testing.T) {
 		inv := baseInvoice()
+		inv.Addons = tax.WithAddons(favat.V3)
 		inv.Tags = tax.Tags{List: []cbc.Key{favat.TagSettlement}}
 
 		// Add advance payment
@@ -391,6 +392,7 @@ func TestAdjustRounding(t *testing.T) {
 
 		// Now test
 		inv2 := baseInvoice()
+		inv2.Addons = tax.WithAddons(favat.V3)
 		inv2.Tags = tax.Tags{List: []cbc.Key{favat.TagSettlement}}
 		inv2.Payment = &bill.PaymentDetails{
 			Advances: []*pay.Advance{

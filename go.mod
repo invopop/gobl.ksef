@@ -7,7 +7,7 @@ toolchain go1.24.3
 require (
 	github.com/beevik/etree v1.6.0
 	github.com/go-resty/resty/v2 v2.16.5
-	github.com/invopop/gobl v0.307.0
+	github.com/invopop/gobl v0.400.1
 	github.com/invopop/xmldsig v0.13.0
 	github.com/joho/godotenv v1.5.1
 	github.com/spf13/cobra v1.9.1
@@ -16,9 +16,10 @@ require (
 
 require (
 	github.com/bahlo/generic-list-go v0.2.0 // indirect
-	github.com/buger/jsonparser v1.1.1 // indirect
+	github.com/buger/jsonparser v1.1.2 // indirect
 	github.com/davecgh/go-spew v1.1.1 // indirect
-	github.com/go-jose/go-jose/v4 v4.1.0 // indirect
+	github.com/expr-lang/expr v1.17.8 // indirect
+	github.com/go-jose/go-jose/v4 v4.1.4 // indirect
 	github.com/inconshreveable/mousetrap v1.1.0 // indirect
 	github.com/invopop/yaml v0.3.1 // indirect
 	github.com/jonboulle/clockwork v0.5.0 // indirect
@@ -39,9 +40,9 @@ require (
 	github.com/Masterminds/semver/v3 v3.3.1 // indirect
 	github.com/asaskevich/govalidator v0.0.0-20230301143203-a9d515a09cc2 // indirect
 	github.com/google/uuid v1.6.0 // indirect
-	github.com/invopop/jsonschema v0.13.0 // indirect
-	github.com/invopop/validation v0.8.0 // indirect
+	github.com/invopop/jsonschema v0.13.1-0.20260331224545-b36d455c19d3 // indirect
 	github.com/stretchr/testify v1.11.1
 )
 
 // replace github.com/invopop/xmldsig => ../xmldsig
+// replace github.com/invopop/gobl => ../gobl
