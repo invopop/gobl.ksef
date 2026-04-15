@@ -146,7 +146,7 @@ func NewFavatBuyer(customer *org.Party) *Buyer {
 		return buyer
 	}
 
-	if customer.TaxID == nil {
+	if customer.TaxID == nil || len(customer.TaxID.Code) == 0 {
 		// No tax ID — consumer or company without identifier
 		buyer.NoID = 1
 	} else if customer.TaxID.Country == l10n.PL.Tax() {
@@ -157,13 +157,9 @@ func NewFavatBuyer(customer *org.Party) *Buyer {
 		buyer.UECode = string(customer.TaxID.Country)
 		buyer.UEVatNumber = string(customer.TaxID.Code)
 	} else {
-		// Third-country buyer
-		if len(customer.TaxID.Code) > 0 {
-			buyer.CountryCode = string(customer.TaxID.Country)
-			buyer.IDNumber = string(customer.TaxID.Code)
-		} else {
-			buyer.NoID = 1
-		}
+		// Third-country buyer with known tax ID
+		buyer.CountryCode = string(customer.TaxID.Country)
+		buyer.IDNumber = string(customer.TaxID.Code)
 	}
 
 	if len(customer.Addresses) > 0 {
@@ -322,11 +318,8 @@ func (s *Seller) ToGOBL() *org.Party {
 // ToGOBL converts a KSEF Buyer to a GOBL Party (customer).
 func (b *Buyer) ToGOBL() *org.Party {
 	// Check if buyer has no ID
-	if b.NoID == 1 {
-		if b.Name == "" {
-			return nil
-		}
-		return &org.Party{Name: b.Name}
+	if b.NoID == 1 && b.Name == "" {
+		return nil
 	}
 
 	party := &org.Party{
