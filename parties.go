@@ -317,8 +317,7 @@ func (s *Seller) ToGOBL() *org.Party {
 
 // ToGOBL converts a KSEF Buyer to a GOBL Party (customer).
 func (b *Buyer) ToGOBL() *org.Party {
-	// Check if buyer has no ID
-	if b.NoID == 1 && b.Name == "" {
+	if b.NoID == 1 && b.Name == "" && b.Address == nil && b.Contact == nil {
 		return nil
 	}
 
@@ -326,25 +325,27 @@ func (b *Buyer) ToGOBL() *org.Party {
 		Name: b.Name,
 	}
 
-	// Parse tax ID
-	if b.NIP != "" {
-		party.TaxID = &tax.Identity{
-			Country: l10n.PL.Tax(),
-			Code:    cbc.Code(b.NIP),
-		}
-	} else if b.UEVatNumber != "" && b.UECode != "" {
-		party.TaxID = &tax.Identity{
-			Country: l10n.Code(b.UECode).Tax(),
-			Code:    cbc.Code(b.UEVatNumber),
-		}
-	} else if b.IDNumber != "" {
-		country := l10n.PL.Tax()
-		if b.CountryCode != "" {
-			country = l10n.Code(b.CountryCode).Tax()
-		}
-		party.TaxID = &tax.Identity{
-			Country: country,
-			Code:    cbc.Code(b.IDNumber),
+	// Parse tax ID — skip when NoID is set
+	if b.NoID != 1 {
+		if b.NIP != "" {
+			party.TaxID = &tax.Identity{
+				Country: l10n.PL.Tax(),
+				Code:    cbc.Code(b.NIP),
+			}
+		} else if b.UEVatNumber != "" && b.UECode != "" {
+			party.TaxID = &tax.Identity{
+				Country: l10n.Code(b.UECode).Tax(),
+				Code:    cbc.Code(b.UEVatNumber),
+			}
+		} else if b.IDNumber != "" {
+			country := l10n.PL.Tax()
+			if b.CountryCode != "" {
+				country = l10n.Code(b.CountryCode).Tax()
+			}
+			party.TaxID = &tax.Identity{
+				Country: country,
+				Code:    cbc.Code(b.IDNumber),
+			}
 		}
 	}
 
