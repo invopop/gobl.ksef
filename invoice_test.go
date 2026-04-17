@@ -2000,7 +2000,7 @@ func TestParseExchangeRate(t *testing.T) {
 		assert.Empty(t, inv.ExchangeRates)
 	})
 
-	t.Run("no ExchangeRates when KursWalutyZ is empty", func(t *testing.T) {
+	t.Run("returns error for EUR invoice missing KursWalutyZ", func(t *testing.T) {
 		doc := &ksef.Invoice{
 			Seller: &ksef.Seller{
 				NIP:  "1234567890",

@@ -6,6 +6,7 @@ import (
 	"crypto/sha256"
 	"encoding/base64"
 	"fmt"
+	"net/http"
 	"time"
 )
 
@@ -369,4 +370,26 @@ func (s *UploadSession) ListUploadedInvoices(ctx context.Context) ([]UploadedInv
 	}
 
 	return allInvoices, nil
+}
+
+// DownloadUPO downloads the UPO (official receipt confirmation) XML using the
+// pre-signed URL provided by KSeF in the UploadedInvoice response.
+func (inv *UploadedInvoice) DownloadUPO(ctx context.Context, c *Client) ([]byte, error) {
+	if inv == nil {
+		return nil, fmt.Errorf("uploaded invoice is nil")
+	}
+	if inv.UpoDownloadURL == "" {
+		return nil, fmt.Errorf("UPO download URL is not available")
+	}
+
+	resp, err := c.client.R().SetContext(ctx).Get(inv.UpoDownloadURL)
+	if err != nil {
+		return nil, err
+	}
+
+	if resp.StatusCode() != http.StatusOK {
+		return nil, fmt.Errorf("unexpected status downloading UPO: %d", resp.StatusCode())
+	}
+
+	return resp.Body(), nil
 }

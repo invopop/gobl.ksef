@@ -963,7 +963,7 @@ func TestBuyerToGOBL(t *testing.T) {
 		assert.Equal(t, "12-3456789", string(party.TaxID.Code))
 	})
 
-	t.Run("converts buyer with NoID set to nil", func(t *testing.T) {
+	t.Run("returns nil for buyer with NoID=1 and no identifying info", func(t *testing.T) {
 		buyer := &ksef.Buyer{
 			NoID: 1,
 		}

@@ -7,7 +7,7 @@ toolchain go1.24.3
 require (
 	github.com/beevik/etree v1.6.0
 	github.com/go-resty/resty/v2 v2.16.5
-	github.com/invopop/gobl v0.400.1
+	github.com/invopop/gobl v0.401.0
 	github.com/invopop/xmldsig v0.13.0
 	github.com/joho/godotenv v1.5.1
 	github.com/spf13/cobra v1.9.1
