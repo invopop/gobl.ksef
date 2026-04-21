@@ -418,7 +418,7 @@ func TestNewFavatBuyer(t *testing.T) {
 		assert.Equal(t, 0, buyer.NoID)
 	})
 
-	t.Run("non-EU business entity without tax code sets only CountryCode", func(t *testing.T) {
+	t.Run("non-EU business entity without tax code sets NoID", func(t *testing.T) {
 		customer := &org.Party{
 			Name: "US Corporation Inc.",
 			TaxID: &tax.Identity{
@@ -438,7 +438,8 @@ func TestNewFavatBuyer(t *testing.T) {
 
 		buyer := ksef.NewFavatBuyer(customer)
 
-		assert.Equal(t, "US", buyer.CountryCode)
+		assert.Equal(t, 1, buyer.NoID)
+		assert.Empty(t, buyer.CountryCode)
 		assert.Empty(t, buyer.IDNumber)
 	})
 
@@ -1063,10 +1064,9 @@ func TestBuyerToGOBL(t *testing.T) {
 		assert.Equal(t, "12-3456789", string(party.TaxID.Code))
 	})
 
-	t.Run("converts buyer with NoID set to nil", func(t *testing.T) {
+	t.Run("returns nil for buyer with NoID=1 and no identifying info", func(t *testing.T) {
 		buyer := &ksef.Buyer{
 			NoID: 1,
-			Name: "Consumer",
 		}
 
 		party := buyer.ToGOBL()

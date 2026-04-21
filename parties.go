@@ -150,22 +150,20 @@ func NewFavatBuyer(customer *org.Party) *Buyer {
 		return buyer
 	}
 
-	if customer.TaxID == nil {
-		// Buyer is a private individual
+	if customer.TaxID == nil || len(customer.TaxID.Code) == 0 {
+		// No tax ID — consumer or company without identifier
 		buyer.NoID = 1
 	} else if customer.TaxID.Country == l10n.PL.Tax() {
-		// Buyer is a Polish business entity
+		// Polish buyer
 		buyer.NIP = string(customer.TaxID.Code)
 	} else if l10n.Union(l10n.EU).HasMember(customer.TaxID.Country.Code()) {
-		// Buyer is an EU business entity (non-Polish)
+		// EU buyer (non-Polish)
 		buyer.UECode = string(customer.TaxID.Country)
 		buyer.UEVatNumber = string(customer.TaxID.Code)
 	} else {
-		// Buyer is a business entity from outside the EU
+		// Third-country buyer with known tax ID
 		buyer.CountryCode = string(customer.TaxID.Country)
-		if len(customer.TaxID.Code) > 0 {
-			buyer.IDNumber = string(customer.TaxID.Code)
-		}
+		buyer.IDNumber = string(customer.TaxID.Code)
 	}
 
 	if len(customer.Addresses) > 0 {
@@ -323,8 +321,7 @@ func (s *Seller) ToGOBL() *org.Party {
 
 // ToGOBL converts a KSEF Buyer to a GOBL Party (customer).
 func (b *Buyer) ToGOBL() *org.Party {
-	// Check if buyer has no ID (simplified invoice)
-	if b.NoID == 1 {
+	if b.NoID == 1 && b.Name == "" && b.Address == nil && b.Contact == nil {
 		return nil
 	}
 
@@ -332,25 +329,27 @@ func (b *Buyer) ToGOBL() *org.Party {
 		Name: b.Name,
 	}
 
-	// Parse tax ID
-	if b.NIP != "" {
-		party.TaxID = &tax.Identity{
-			Country: l10n.PL.Tax(),
-			Code:    cbc.Code(b.NIP),
-		}
-	} else if b.UEVatNumber != "" && b.UECode != "" {
-		party.TaxID = &tax.Identity{
-			Country: l10n.Code(b.UECode).Tax(),
-			Code:    cbc.Code(b.UEVatNumber),
-		}
-	} else if b.IDNumber != "" {
-		country := l10n.PL.Tax()
-		if b.CountryCode != "" {
-			country = l10n.Code(b.CountryCode).Tax()
-		}
-		party.TaxID = &tax.Identity{
-			Country: country,
-			Code:    cbc.Code(b.IDNumber),
+	// Parse tax ID — skip when NoID is set
+	if b.NoID != 1 {
+		if b.NIP != "" {
+			party.TaxID = &tax.Identity{
+				Country: l10n.PL.Tax(),
+				Code:    cbc.Code(b.NIP),
+			}
+		} else if b.UEVatNumber != "" && b.UECode != "" {
+			party.TaxID = &tax.Identity{
+				Country: l10n.Code(b.UECode).Tax(),
+				Code:    cbc.Code(b.UEVatNumber),
+			}
+		} else if b.IDNumber != "" {
+			country := l10n.PL.Tax()
+			if b.CountryCode != "" {
+				country = l10n.Code(b.CountryCode).Tax()
+			}
+			party.TaxID = &tax.Identity{
+				Country: country,
+				Code:    cbc.Code(b.IDNumber),
+			}
 		}
 	}
 

@@ -30,7 +30,7 @@ func NewCorrectedInv(prc *org.DocumentRef) *CorrectedInv {
 		inv.IssueDate = prc.IssueDate.String()
 	}
 
-	if id := findStamp(prc.Stamps, favat.StampKSEFNumber); id != -1 {
+	if id := findStamp(prc.Stamps, favat.StampKSeFNumber); id != -1 {
 		inv.KsefNumberPresent = 1
 		inv.KsefNumber = prc.Stamps[id].Value
 	} else {
