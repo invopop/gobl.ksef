@@ -12,7 +12,7 @@ import (
 // Address defines the XML structure for KSeF addresses
 type Address struct {
 	CountryCode string `xml:"KodKraju"`
-	AddressL1   string `xml:"AdresL1"`
+	AddressL1   string `xml:"AdresL1,omitempty"`
 	AddressL2   string `xml:"AdresL2,omitempty"`
 	GLN         string `xml:"GLN,omitempty"` // Global Location Number
 }

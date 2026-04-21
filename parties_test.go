@@ -1,6 +1,7 @@
 package ksef_test
 
 import (
+	"encoding/xml"
 	"strings"
 	"testing"
 
@@ -11,6 +12,7 @@ import (
 	"github.com/invopop/gobl/org"
 	"github.com/invopop/gobl/tax"
 	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 )
 
 func TestNewFavatSeller(t *testing.T) {
@@ -284,6 +286,30 @@ func TestNewFavatSeller(t *testing.T) {
 		assert.Nil(t, seller.Address)
 		assert.Equal(t, "Test Company Sp. z o.o.", seller.Name)
 	})
+
+	t.Run("address with only country does not emit empty AdresL1 in XML", func(t *testing.T) {
+		supplier := &org.Party{
+			Name: "Test Company Sp. z o.o.",
+			TaxID: &tax.Identity{
+				Country: l10n.PL.Tax(),
+				Code:    "1234567890",
+			},
+			Addresses: []*org.Address{
+				{
+					Country: l10n.PL.ISO(),
+				},
+			},
+		}
+
+		seller := ksef.NewFavatSeller(supplier)
+
+		assert.NotNil(t, seller.Address)
+		assert.Equal(t, "PL", seller.Address.CountryCode)
+
+		data, err := xml.Marshal(seller.Address)
+		require.NoError(t, err)
+		assert.NotContains(t, string(data), "<AdresL1></AdresL1>")
+	})
 }
 
 func TestNewFavatBuyer(t *testing.T) {
@@ -539,6 +565,30 @@ func TestNewFavatBuyer(t *testing.T) {
 
 		assert.Equal(t, "2", buyer.JST)
 		assert.Equal(t, "2", buyer.GV)
+	})
+
+	t.Run("address with only country does not emit empty AdresL1 in XML", func(t *testing.T) {
+		customer := &org.Party{
+			Name: "German Company GmbH",
+			TaxID: &tax.Identity{
+				Country: l10n.DE.Tax(),
+				Code:    "123456789",
+			},
+			Addresses: []*org.Address{
+				{
+					Country: l10n.DE.ISO(),
+				},
+			},
+		}
+
+		buyer := ksef.NewFavatBuyer(customer)
+
+		assert.NotNil(t, buyer.Address)
+		assert.Equal(t, "DE", buyer.Address.CountryCode)
+
+		data, err := xml.Marshal(buyer.Address)
+		require.NoError(t, err)
+		assert.NotContains(t, string(data), "<AdresL1></AdresL1>")
 	})
 
 	t.Run("Spanish EU business entity", func(t *testing.T) {
