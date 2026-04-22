@@ -124,6 +124,9 @@ func NewPayment(pay *bill.PaymentDetails, totals *bill.Totals) *Payment {
 			if advances[0].Date != nil {
 				payment.PaymentDate = advances[0].Date.String()
 			}
+			if code := advances[0].Ext.Get(favat.ExtKeyPaymentMeans).String(); code != "" {
+				payment.PaymentMean = code
+			}
 		} else {
 			if totals.Due.IsZero() {
 				// Invoice already paid in full in multiple payments
