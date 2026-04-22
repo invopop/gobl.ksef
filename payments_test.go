@@ -199,6 +199,45 @@ func TestNewPayment(t *testing.T) {
 		assert.Equal(t, result, pay)
 	})
 
+	t.Run("single advance with payment means should set FormaPlatnosci", func(t *testing.T) {
+		x := time.Date(2023, time.July, 28, 0, 0, 0, 0, time.UTC)
+		d := cal.DateOf(x)
+		amt, err := num.AmountFromString("245.890")
+		require.NoError(t, err)
+		zero, err := num.AmountFromString("0")
+		require.NoError(t, err)
+
+		payment := &bill.PaymentDetails{
+			Advances: []*pay.Advance{{
+				Date:   &d,
+				Amount: amt,
+				Ext: tax.Extensions{
+					favat.ExtKeyPaymentMeans: "1", // cash
+				},
+			}},
+		}
+		totals := &bill.Totals{
+			Due:      &zero,
+			Advances: &amt,
+		}
+		pay := ksef.NewPayment(payment, totals)
+		result := &ksef.Payment{
+			PaidMarker:             "1",
+			PaymentDate:            d.String(),
+			PartiallyPaidMarker:    "",
+			AdvancePayments:        []*ksef.AdvancePayment{},
+			DueDates:               []*ksef.DueDate{},
+			PaymentMean:            "1",
+			OtherPaymentMeanMarker: "",
+			OtherPaymentMean:       "",
+			BankAccounts:           []*ksef.BankAccount(nil),
+			FactorBankAccounts:     []*ksef.BankAccount(nil),
+			Discount:               (*ksef.Discount)(nil),
+		}
+
+		assert.Equal(t, result, pay)
+	})
+
 	t.Run("multiple advances sets partially paid marker and advance fields", func(t *testing.T) {
 		// Partially paid in advance
 		x := time.Date(2023, time.July, 28, 0, 0, 0, 0, time.UTC)
