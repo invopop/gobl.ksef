@@ -172,7 +172,7 @@ func NewFavatInv(invoice *bill.Invoice) *Inv {
 		Period:           newInvoicePeriod(invoice.Ordering),
 		SequentialNumber: invoiceNumber(invoice.Series, invoice.Code),
 		Annotations:      newAnnotations(invoice),
-		Lines:            NewLines(invoice.Lines),
+		Lines:            NewLinesForInvoice(invoice),
 		Payment:          NewPayment(invoice.Payment, invoice.Totals),
 	}
 
@@ -294,6 +294,10 @@ func invoiceNumber(series cbc.Code, code cbc.Code) string {
 		return code.String()
 	}
 	return fmt.Sprintf("%s-%s", series, code)
+}
+
+func invoicePricesIncludeVAT(invoice *bill.Invoice) bool {
+	return invoice.Tax != nil && invoice.Tax.PricesInclude == tax.CategoryVAT
 }
 
 func (inv *Inv) setTaxRates(taxes *tax.Total, xr *currency.ExchangeRate) {
