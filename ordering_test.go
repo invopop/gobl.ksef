@@ -25,9 +25,9 @@ func orderingBaseInvoice() *bill.Invoice {
 			},
 		},
 		Tax: &bill.Tax{
-			Ext: tax.Extensions{
+			Ext: tax.ExtensionsOf(tax.ExtMap{
 				"pl-favat-invoice-type": "ZAL",
-			},
+			}),
 		},
 		Totals: &bill.Totals{
 			Taxes: &tax.Total{},

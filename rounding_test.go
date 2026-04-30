@@ -101,9 +101,9 @@ func TestAdjustRounding(t *testing.T) {
 				},
 			},
 			Tax: &bill.Tax{
-				Ext: tax.Extensions{
+				Ext: tax.ExtensionsOf(tax.ExtMap{
 					favat.ExtKeyInvoiceType: "VAT",
-				},
+				}),
 			},
 		}
 	}
@@ -162,9 +162,9 @@ func TestAdjustRounding(t *testing.T) {
 				},
 			},
 			Tax: &bill.Tax{
-				Ext: tax.Extensions{
+				Ext: tax.ExtensionsOf(tax.ExtMap{
 					favat.ExtKeyInvoiceType: "VAT",
-				},
+				}),
 			},
 		}
 
@@ -207,9 +207,9 @@ func TestAdjustRounding(t *testing.T) {
 				},
 			},
 			Tax: &bill.Tax{
-				Ext: tax.Extensions{
+				Ext: tax.ExtensionsOf(tax.ExtMap{
 					favat.ExtKeyInvoiceType: "VAT",
-				},
+				}),
 			},
 		}
 
@@ -257,9 +257,9 @@ func TestAdjustRounding(t *testing.T) {
 				},
 			},
 			Tax: &bill.Tax{
-				Ext: tax.Extensions{
+				Ext: tax.ExtensionsOf(tax.ExtMap{
 					favat.ExtKeyInvoiceType: "VAT",
-				},
+				}),
 			},
 		}
 
@@ -302,9 +302,9 @@ func TestAdjustRounding(t *testing.T) {
 				},
 			},
 			Tax: &bill.Tax{
-				Ext: tax.Extensions{
+				Ext: tax.ExtensionsOf(tax.ExtMap{
 					favat.ExtKeyInvoiceType: "VAT",
-				},
+				}),
 			},
 		}
 
@@ -455,9 +455,9 @@ func TestAdjustRounding(t *testing.T) {
 				},
 			},
 			Tax: &bill.Tax{
-				Ext: tax.Extensions{
+				Ext: tax.ExtensionsOf(tax.ExtMap{
 					favat.ExtKeyInvoiceType: "VAT",
-				},
+				}),
 			},
 		}
 

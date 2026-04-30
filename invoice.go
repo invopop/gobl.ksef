@@ -186,7 +186,7 @@ func NewFavatInv(invoice *bill.Invoice) *Inv {
 		inv.TotalAmountDue = invoice.Totals.Payable.String()
 	}
 
-	if invoice.Tax != nil && invoice.Tax.Ext != nil {
+	if invoice.Tax != nil && !invoice.Tax.Ext.IsZero() {
 		inv.InvoiceType = invoice.Tax.Ext.Get(favat.ExtKeyInvoiceType).String()
 	}
 
@@ -494,9 +494,9 @@ func (inv *Inv) parseInvoiceData(goblInv *bill.Invoice) error {
 				preceding.Reason = inv.CorrectionReason
 			}
 			if inv.CorrectionType != "" {
-				preceding.Ext = tax.Extensions{
+				preceding.Ext = tax.ExtensionsOf(tax.ExtMap{
 					favat.ExtKeyEffectiveDate: cbc.Code(inv.CorrectionType),
-				}
+				})
 			}
 			if corr.KsefNumberPresent == 1 && corr.KsefNumber != "" {
 				preceding.Stamps = []*head.Stamp{
@@ -748,9 +748,9 @@ func (inv *Inv) parsePrepaymentTotals(goblInv *bill.Invoice) error {
 			Key:     e.key,
 			Base:    netAmt,
 			Percent: e.percent,
-			Ext: tax.Extensions{
+			Ext: tax.ExtensionsOf(tax.ExtMap{
 				favat.ExtKeyTaxCategory: e.category,
-			},
+			}),
 		}
 
 		if e.tax != "" {

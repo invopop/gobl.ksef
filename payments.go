@@ -166,13 +166,13 @@ func (inv *Inv) parsePayment(goblInv *bill.Invoice) error {
 	// Parse payment instructions
 	if inv.Payment.PaymentMean != "" || len(inv.Payment.BankAccounts) > 0 {
 		payment.Instructions = &pay.Instructions{
-			Ext: make(tax.Extensions),
+			Ext: tax.MakeExtensions(),
 		}
 
 		// Parse payment means
 		if inv.Payment.PaymentMean != "" {
 			payment.Instructions.Key = ParsePaymentMeansCode(inv.Payment.PaymentMean)
-			payment.Instructions.Ext[favat.ExtKeyPaymentMeans] = cbc.Code(inv.Payment.PaymentMean)
+			payment.Instructions.Ext = payment.Instructions.Ext.Set(favat.ExtKeyPaymentMeans, cbc.Code(inv.Payment.PaymentMean))
 		} else if inv.Payment.OtherPaymentMeanMarker == "1" {
 			payment.Instructions.Key = cbc.Key(inv.Payment.OtherPaymentMean)
 		} else if len(inv.Payment.BankAccounts) > 0 {
@@ -248,9 +248,9 @@ func (inv *Inv) parsePayment(goblInv *bill.Invoice) error {
 		}
 		if inv.Payment.PaymentMean != "" {
 			advance.Key = ParsePaymentMeansCode(inv.Payment.PaymentMean)
-			advance.Ext = tax.Extensions{
+			advance.Ext = tax.ExtensionsOf(tax.ExtMap{
 				favat.ExtKeyPaymentMeans: cbc.Code(inv.Payment.PaymentMean),
-			}
+			})
 		}
 		payment.Advances = []*pay.Advance{advance}
 	}
@@ -261,7 +261,7 @@ func (inv *Inv) parsePayment(goblInv *bill.Invoice) error {
 		for _, adv := range inv.Payment.AdvancePayments {
 			advance := &pay.Advance{
 				Description: "Advance payment", // GOBL requires a description
-				Ext:         make(tax.Extensions),
+				Ext:         tax.MakeExtensions(),
 			}
 			if adv.PaymentAmount != "" {
 				amt, err := parseAmount(adv.PaymentAmount)
@@ -281,7 +281,7 @@ func (inv *Inv) parsePayment(goblInv *bill.Invoice) error {
 				advance.Date = &date
 			}
 			if adv.PaymentMean != "" {
-				advance.Ext[favat.ExtKeyPaymentMeans] = cbc.Code(adv.PaymentMean)
+				advance.Ext = advance.Ext.Set(favat.ExtKeyPaymentMeans, cbc.Code(adv.PaymentMean))
 			}
 			payment.Advances = append(payment.Advances, advance)
 		}

@@ -314,7 +314,7 @@ func TestLineToGOBL(t *testing.T) {
 		require.NoError(t, err)
 		assert.Len(t, line.Taxes, 1)
 		assert.Equal(t, tax.KeyExempt, line.Taxes[0].Key)
-		assert.Equal(t, "7", string(line.Taxes[0].Ext[favat.ExtKeyTaxCategory]))
+		assert.Equal(t, "7", string(line.Taxes[0].Ext.Get(favat.ExtKeyTaxCategory)))
 	})
 
 	t.Run("handles intra-community supply", func(t *testing.T) {
@@ -332,7 +332,7 @@ func TestLineToGOBL(t *testing.T) {
 		require.NoError(t, err)
 		assert.Len(t, line.Taxes, 1)
 		assert.Equal(t, tax.KeyIntraCommunity, line.Taxes[0].Key)
-		assert.Equal(t, "6.2", string(line.Taxes[0].Ext[favat.ExtKeyTaxCategory]))
+		assert.Equal(t, "6.2", string(line.Taxes[0].Ext.Get(favat.ExtKeyTaxCategory)))
 	})
 
 	t.Run("handles export supply", func(t *testing.T) {
@@ -350,7 +350,7 @@ func TestLineToGOBL(t *testing.T) {
 		require.NoError(t, err)
 		assert.Len(t, line.Taxes, 1)
 		assert.Equal(t, tax.KeyExport, line.Taxes[0].Key)
-		assert.Equal(t, "6.3", string(line.Taxes[0].Ext[favat.ExtKeyTaxCategory]))
+		assert.Equal(t, "6.3", string(line.Taxes[0].Ext.Get(favat.ExtKeyTaxCategory)))
 	})
 
 	t.Run("handles reverse charge", func(t *testing.T) {
@@ -368,7 +368,7 @@ func TestLineToGOBL(t *testing.T) {
 		require.NoError(t, err)
 		assert.Len(t, line.Taxes, 1)
 		assert.Equal(t, tax.KeyReverseCharge, line.Taxes[0].Key)
-		assert.Equal(t, "9", string(line.Taxes[0].Ext[favat.ExtKeyTaxCategory]))
+		assert.Equal(t, "9", string(line.Taxes[0].Ext.Get(favat.ExtKeyTaxCategory)))
 	})
 
 	t.Run("handles domestic reverse charge", func(t *testing.T) {
@@ -386,7 +386,7 @@ func TestLineToGOBL(t *testing.T) {
 		require.NoError(t, err)
 		assert.Len(t, line.Taxes, 1)
 		assert.Equal(t, tax.KeyReverseCharge, line.Taxes[0].Key)
-		assert.Equal(t, "10", string(line.Taxes[0].Ext[favat.ExtKeyTaxCategory]))
+		assert.Equal(t, "10", string(line.Taxes[0].Ext.Get(favat.ExtKeyTaxCategory)))
 	})
 
 	t.Run("handles reduced rate 8%", func(t *testing.T) {
