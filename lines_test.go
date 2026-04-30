@@ -201,6 +201,44 @@ func TestNewLines(t *testing.T) {
 		require.Len(t, result, 1)
 		assert.Equal(t, "40.00", result[0].Discount) // total line discount: 20.00 + 20.00 = 40.00
 	})
+
+	t.Run("emits gross fields when prices_include=VAT", func(t *testing.T) {
+		// Mews-style: GOBL invoice has tax.prices_include=VAT, so item price
+		// and line total are gross. KSeF receives them via P_9B/P_11A
+		// (art. 106e(7)-(8)) instead of the net P_9A/P_11.
+		price, _ := num.AmountFromString("35.00")
+		qty, _ := num.AmountFromString("1")
+		total, _ := num.AmountFromString("35.00")
+
+		invoice := &bill.Invoice{
+			Tax: &bill.Tax{PricesInclude: tax.CategoryVAT},
+			Lines: []*bill.Line{
+				{
+					Index:    1,
+					Quantity: qty,
+					Item: &org.Item{
+						Name:  "Starogdańskie 0.75l",
+						Price: &price,
+					},
+					Total: &total,
+					Taxes: tax.Set{
+						&tax.Combo{
+							Category: tax.CategoryVAT,
+							Percent:  num.NewPercentage(23, 2),
+						},
+					},
+				},
+			},
+		}
+
+		result := ksef.NewLinesForInvoice(invoice)
+
+		require.Len(t, result, 1)
+		assert.Equal(t, "35.00", result[0].GrossUnitPrice)
+		assert.Equal(t, "35.00", result[0].GrossPriceTotal)
+		assert.Empty(t, result[0].NetUnitPrice)
+		assert.Empty(t, result[0].NetPriceTotal)
+	})
 }
 
 func TestLineToGOBL(t *testing.T) {

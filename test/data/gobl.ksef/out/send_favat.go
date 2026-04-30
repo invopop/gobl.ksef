@@ -13,7 +13,7 @@ import (
 func main() {
 	// ===== CONFIGURATION - EDIT THIS SECTION =====
 	// XML file to send (in the same folder as this script)
-	xmlFile := "invoice-prepayment.xml"
+	xmlFile := "invoice-prices-include-vat.xml"
 
 	// KSeF authentication details
 	nip := "8126178616"
