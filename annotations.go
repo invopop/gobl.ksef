@@ -159,34 +159,34 @@ func (inv *Inv) parseAnnotations(goblInv *bill.Invoice) {
 	}
 
 	goblInv.Tax = &bill.Tax{
-		Ext: make(tax.Extensions),
+		Ext: tax.MakeExtensions(),
 	}
 
 	// Set invoice type extension
 	if inv.InvoiceType != "" {
-		goblInv.Tax.Ext[favat.ExtKeyInvoiceType] = cbc.Code(inv.InvoiceType)
+		goblInv.Tax.Ext = goblInv.Tax.Ext.Set(favat.ExtKeyInvoiceType, cbc.Code(inv.InvoiceType))
 	}
 
 	// Cash accounting
 	if inv.Annotations.CashAccounting == "1" {
-		goblInv.Tax.Ext[favat.ExtKeyCashAccounting] = "1"
+		goblInv.Tax.Ext = goblInv.Tax.Ext.Set(favat.ExtKeyCashAccounting, "1")
 	}
 
 	// Self billing
 	if inv.Annotations.SelfBilling == "1" {
-		goblInv.Tax.Ext[favat.ExtKeySelfBilling] = "1"
+		goblInv.Tax.Ext = goblInv.Tax.Ext.Set(favat.ExtKeySelfBilling, "1")
 		goblInv.Tags.List = append(goblInv.Tags.List, tax.TagSelfBilled)
 	}
 
 	// Reverse charge
 	if inv.Annotations.ReverseCharge == "1" {
-		goblInv.Tax.Ext[favat.ExtKeyReverseCharge] = "1"
+		goblInv.Tax.Ext = goblInv.Tax.Ext.Set(favat.ExtKeyReverseCharge, "1")
 		goblInv.Tags.List = append(goblInv.Tags.List, tax.TagReverseCharge)
 	}
 
 	// Split payment
 	if inv.Annotations.SplitPaymentMechanism == "1" {
-		goblInv.Tax.Ext[favat.ExtKeySplitPayment] = "1"
+		goblInv.Tax.Ext = goblInv.Tax.Ext.Set(favat.ExtKeySplitPayment, "1")
 	}
 
 	// Tax exemption
@@ -206,7 +206,7 @@ func (inv *Inv) parseAnnotations(goblInv *bill.Invoice) {
 		}
 
 		if exemptionCode != "" {
-			goblInv.Tax.Ext[favat.ExtKeyExemption] = cbc.Code(exemptionCode)
+			goblInv.Tax.Ext = goblInv.Tax.Ext.Set(favat.ExtKeyExemption, cbc.Code(exemptionCode))
 
 			if goblInv.Notes == nil {
 				goblInv.Notes = []*org.Note{}
@@ -234,7 +234,7 @@ func (inv *Inv) parseAnnotations(goblInv *bill.Invoice) {
 		}
 
 		if marginCode != "" {
-			goblInv.Tax.Ext[favat.ExtKeyMarginScheme] = cbc.Code(marginCode)
+			goblInv.Tax.Ext = goblInv.Tax.Ext.Set(favat.ExtKeyMarginScheme, cbc.Code(marginCode))
 		}
 	}
 }

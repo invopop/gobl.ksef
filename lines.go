@@ -217,9 +217,9 @@ func (l *Line) ToGOBL() (*bill.Line, error) {
 			Key:      taxInfo.Key,
 			Rate:     taxInfo.Rate,
 			Percent:  taxInfo.Percent,
-			Ext: tax.Extensions{
+			Ext: tax.ExtensionsOf(tax.ExtMap{
 				favat.ExtKeyTaxCategory: taxInfo.TaxCategory,
-			},
+			}),
 		}
 		line.Taxes = tax.Set{taxCombo}
 	}
