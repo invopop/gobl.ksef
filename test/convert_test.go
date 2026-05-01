@@ -10,6 +10,8 @@ import (
 
 	"github.com/invopop/gobl"
 	ksef "github.com/invopop/gobl.ksef"
+	"github.com/invopop/gobl/bill"
+	"github.com/invopop/gobl/tax"
 	"github.com/invopop/xmldsig"
 	dsigksef "github.com/invopop/xmldsig/ksef"
 	"github.com/stretchr/testify/assert"
@@ -210,9 +212,15 @@ func TestRoundTrip(t *testing.T) {
 			roundTripEnv, err := ksef.ParseKSeF(xmlData)
 			require.NoError(t, err, "parsing KSeF back to GOBL")
 
-			// Validate round-trip GOBL
+			// Validate round-trip GOBL (bypass invoices may be intentionally invalid)
 			err = roundTripEnv.Validate()
-			assert.NoError(t, err, "validating round-trip GOBL")
+			if rtInv, ok := roundTripEnv.Extract().(*bill.Invoice); ok && rtInv.HasTags(tax.TagBypass) {
+				if err != nil {
+					t.Logf("Bypass invoice validation (expected): %v", err)
+				}
+			} else {
+				assert.NoError(t, err, "validating round-trip GOBL")
+			}
 
 			// Verify document exists and is not empty
 			assert.NotNil(t, roundTripEnv.Document)

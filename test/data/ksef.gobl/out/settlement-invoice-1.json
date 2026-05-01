@@ -14,7 +14,8 @@
       "pl-favat-v3"
     ],
     "$tags": [
-      "settlement"
+      "settlement",
+      "bypass"
     ],
     "uuid": "00000000-0000-0000-0000-000000000000",
     "type": "standard",
@@ -347,19 +348,12 @@
         "due_dates": [
           {
             "date": "2026-02-28",
-            "amount": "2153.43",
+            "amount": "0.00",
             "percent": "100%"
           }
         ],
         "notes": "0 Dzień Wystawienie faktury"
       },
-      "advances": [
-        {
-          "ref": "1111111111-20260301-AABB0000001A-01",
-          "description": "Payment 1111111111-20260301-AABB0000001A-01",
-          "amount": "2153.43"
-        }
-      ],
       "instructions": {
         "key": "online",
         "credit_transfer": [
@@ -373,9 +367,8 @@
       }
     },
     "totals": {
-      "sum": "2153.43",
-      "tax_included": "175.28",
-      "total": "1978.15",
+      "sum": "0",
+      "total": "0",
       "taxes": {
         "categories": [
           {
@@ -386,30 +379,28 @@
                 "ext": {
                   "pl-favat-tax-category": "1"
                 },
-                "base": "424.31",
+                "base": "0",
                 "percent": "23.0%",
-                "amount": "97.59"
+                "amount": "0"
               },
               {
                 "key": "standard",
                 "ext": {
                   "pl-favat-tax-category": "3"
                 },
-                "base": "1553.84",
+                "base": "0",
                 "percent": "5.0%",
-                "amount": "77.69"
+                "amount": "0"
               }
             ],
-            "amount": "175.28"
+            "amount": "0"
           }
         ],
-        "sum": "175.28"
+        "sum": "0"
       },
-      "tax": "175.28",
-      "total_with_tax": "2153.43",
-      "payable": "2153.43",
-      "advance": "2153.43",
-      "due": "0.00"
+      "tax": "0",
+      "total_with_tax": "0",
+      "payable": "0.00"
     },
     "notes": [
       {

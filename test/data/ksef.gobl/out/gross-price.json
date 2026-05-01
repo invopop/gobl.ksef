@@ -13,6 +13,9 @@
     "$addons": [
       "pl-favat-v3"
     ],
+    "$tags": [
+      "bypass"
+    ],
     "uuid": "00000000-0000-0000-0000-000000000000",
     "type": "standard",
     "code": "FV-001/2024/06",
@@ -60,7 +63,6 @@
           "price": "309.9900",
           "unit": "HUR"
         },
-        "sum": "309.99",
         "taxes": [
           {
             "cat": "VAT",
@@ -71,8 +73,7 @@
               "pl-favat-tax-category": "1"
             }
           }
-        ],
-        "total": "309.99"
+        ]
       },
       {
         "i": 2,
@@ -82,7 +83,6 @@
           "price": "0.9900",
           "unit": "HUR"
         },
-        "sum": "0.99",
         "taxes": [
           {
             "cat": "VAT",
@@ -93,8 +93,7 @@
               "pl-favat-tax-category": "1"
             }
           }
-        ],
-        "total": "0.99"
+        ]
       },
       {
         "i": 3,
@@ -104,7 +103,6 @@
           "price": "10.9900",
           "unit": "HUR"
         },
-        "sum": "10.99",
         "taxes": [
           {
             "cat": "VAT",
@@ -115,8 +113,7 @@
               "pl-favat-tax-category": "1"
             }
           }
-        ],
-        "total": "10.99"
+        ]
       }
     ],
     "payment": {
@@ -139,9 +136,8 @@
       }
     },
     "totals": {
-      "sum": "321.97",
-      "tax_included": "60.20",
-      "total": "261.77",
+      "sum": "261.76",
+      "total": "261.76",
       "taxes": {
         "categories": [
           {
@@ -154,15 +150,42 @@
                 },
                 "base": "261.76",
                 "percent": "23.0%",
-                "amount": "60.20"
+                "amount": "60.21"
+              },
+              {
+                "key": "standard",
+                "ext": {
+                  "pl-favat-tax-category": "2"
+                },
+                "base": "0.00",
+                "percent": "8.0%",
+                "amount": "0.00"
+              },
+              {
+                "key": "standard",
+                "ext": {
+                  "pl-favat-tax-category": "3"
+                },
+                "base": "0.00",
+                "percent": "5.0%",
+                "amount": "0.00"
+              },
+              {
+                "key": "zero",
+                "ext": {
+                  "pl-favat-tax-category": "6.1"
+                },
+                "base": "0.00",
+                "percent": "0.0%",
+                "amount": "0"
               }
             ],
-            "amount": "60.20"
+            "amount": "60.21"
           }
         ],
-        "sum": "60.20"
+        "sum": "60.21"
       },
-      "tax": "60.20",
+      "tax": "60.21",
       "total_with_tax": "321.97",
       "payable": "321.97",
       "advance": "321.97",

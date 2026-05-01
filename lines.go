@@ -225,6 +225,36 @@ func (l *Line) ToGOBL() (*bill.Line, error) {
 		}
 	}
 
+	// Set line sum and total directly from KSeF.
+	// Sum = total + discount (before discounts), Total = P_11 or P_11A (after discounts).
+	if l.NetPriceTotal != "" {
+		total, err := parseAmount(l.NetPriceTotal)
+		if err != nil {
+			return nil, err
+		}
+		sum := total
+		if len(line.Discounts) > 0 {
+			for _, d := range line.Discounts {
+				sum = sum.Add(d.Amount)
+			}
+		}
+		line.Sum = &sum
+		line.Total = &total
+	} else if l.GrossPriceTotal != "" {
+		total, err := parseAmount(l.GrossPriceTotal)
+		if err != nil {
+			return nil, err
+		}
+		sum := total
+		if len(line.Discounts) > 0 {
+			for _, d := range line.Discounts {
+				sum = sum.Add(d.Amount)
+			}
+		}
+		line.Sum = &sum
+		line.Total = &total
+	}
+
 	// Parse VAT rate and create tax combo
 	var rateStr string
 	if l.OSSTaxRate != "" {

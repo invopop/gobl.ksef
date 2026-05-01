@@ -17,54 +17,38 @@
       "bypass"
     ],
     "uuid": "00000000-0000-0000-0000-000000000000",
-    "type": "credit-note",
-    "code": "KOR-001",
-    "issue_date": "2026-01-20",
+    "type": "standard",
+    "code": "INV-PL000025",
+    "issue_date": "2026-02-02",
     "currency": "PLN",
-    "preceding": [
-      {
-        "issue_date": "2026-01-20",
-        "code": "INVOICE-001",
-        "reason": "Price correction",
-        "stamps": [
-          {
-            "prv": "favat-ksef-number",
-            "val": "8126178616-20260122-0100A0039876-89"
-          }
-        ],
-        "ext": {
-          "pl-favat-effective-date": "1"
-        }
-      }
-    ],
     "tax": {
       "rounding": "currency",
       "ext": {
-        "pl-favat-invoice-type": "KOR"
+        "pl-favat-invoice-type": "VAT"
       }
     },
     "supplier": {
-      "name": "Testowa Firma Sp. z o.o.",
+      "name": "Sprzedawca Fikcyjny Sp. z o.o.",
       "tax_id": {
         "country": "PL",
-        "code": "9876543210"
+        "code": "1111111111"
       },
       "addresses": [
         {
-          "street": "ul. Główna 1, 00-001, Warsaw",
+          "street": "ul. Sprzedażowa 2, 00-950 Warszawa",
           "country": "PL"
         }
       ]
     },
     "customer": {
-      "name": "Klient Testowy Sp. z o.o.",
+      "name": "Nabywca Fikcyjny B",
       "tax_id": {
         "country": "PL",
-        "code": "9876543210"
+        "code": "2222222222"
       },
       "addresses": [
         {
-          "street": "ul. Testowa 10, 30-001, Kraków",
+          "street": "ul. Zakupowa 1, 00-950 Warszawa",
           "country": "PL"
         }
       ]
@@ -72,13 +56,18 @@
     "lines": [
       {
         "i": 1,
-        "quantity": "10",
+        "quantity": "20",
         "item": {
-          "name": "Software Development Services",
-          "price": "10.00",
+          "name": "Development services",
+          "price": "90.00",
           "unit": "HUR"
         },
-        "sum": "100.00",
+        "sum": "1629.00",
+        "discounts": [
+          {
+            "amount": "9.00"
+          }
+        ],
         "taxes": [
           {
             "cat": "VAT",
@@ -90,12 +79,23 @@
             }
           }
         ],
-        "total": "100.00"
+        "total": "1620.00"
       }
     ],
+    "payment": {
+      "terms": {
+        "due_dates": [
+          {
+            "date": "2026-12-05",
+            "amount": "1992.60",
+            "percent": "100%"
+          }
+        ]
+      }
+    },
     "totals": {
-      "sum": "100.00",
-      "total": "100.00",
+      "sum": "1620.00",
+      "total": "1620.00",
       "taxes": {
         "categories": [
           {
@@ -106,19 +106,19 @@
                 "ext": {
                   "pl-favat-tax-category": "1"
                 },
-                "base": "100.00",
+                "base": "1620.00",
                 "percent": "23.0%",
-                "amount": "23.00"
+                "amount": "372.60"
               }
             ],
-            "amount": "23.00"
+            "amount": "372.60"
           }
         ],
-        "sum": "23.00"
+        "sum": "372.60"
       },
-      "tax": "23.00",
-      "total_with_tax": "123.00",
-      "payable": "123.00"
+      "tax": "372.60",
+      "total_with_tax": "1992.60",
+      "payable": "1992.60"
     }
   }
 }

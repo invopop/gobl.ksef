@@ -14,7 +14,8 @@
       "pl-favat-v3"
     ],
     "$tags": [
-      "partial"
+      "partial",
+      "bypass"
     ],
     "uuid": "00000000-0000-0000-0000-000000000000",
     "type": "credit-note",

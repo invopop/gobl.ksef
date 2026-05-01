@@ -14,7 +14,8 @@
       "pl-favat-v3"
     ],
     "$tags": [
-      "self-billed"
+      "self-billed",
+      "bypass"
     ],
     "uuid": "00000000-0000-0000-0000-000000000000",
     "type": "standard",

@@ -13,6 +13,9 @@
     "$addons": [
       "pl-favat-v3"
     ],
+    "$tags": [
+      "bypass"
+    ],
     "uuid": "00000000-0000-0000-0000-000000000000",
     "type": "credit-note",
     "code": "KOR/001/2026",
@@ -74,10 +77,10 @@
         "quantity": "1",
         "item": {
           "name": "Usługa transportowa Bilet Nr: 000001",
-          "price": "87.00",
+          "price": "87",
           "unit": "szt"
         },
-        "sum": "87.00",
+        "sum": "80.56",
         "taxes": [
           {
             "cat": "VAT",
@@ -89,7 +92,7 @@
             }
           }
         ],
-        "total": "87.00",
+        "total": "80.56",
         "notes": [
           {
             "text": "Before correction (stan przed korektą)"
@@ -102,7 +105,7 @@
         "quantity": "-1",
         "item": {
           "name": "Usługa transportowa Bilet Nr: 000001",
-          "price": "0.00",
+          "price": "0",
           "unit": "szt"
         },
         "sum": "0.00",
@@ -140,8 +143,7 @@
       }
     },
     "totals": {
-      "sum": "87.00",
-      "tax_included": "6.44",
+      "sum": "80.56",
       "total": "80.56",
       "taxes": {
         "categories": [
