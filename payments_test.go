@@ -49,9 +49,9 @@ func TestNewPayment(t *testing.T) {
 		payment := &bill.PaymentDetails{
 			Instructions: &pay.Instructions{
 				Key: "credit-transfer",
-				Ext: tax.Extensions{
+				Ext: tax.ExtensionsOf(tax.ExtMap{
 					favat.ExtKeyPaymentMeans: "6", // credit transfer code
-				},
+				}),
 			},
 		}
 		totals := &bill.Totals{}
@@ -211,9 +211,9 @@ func TestNewPayment(t *testing.T) {
 			Advances: []*pay.Advance{{
 				Date:   &d,
 				Amount: amt,
-				Ext: tax.Extensions{
+				Ext: tax.ExtensionsOf(tax.ExtMap{
 					favat.ExtKeyPaymentMeans: "1", // cash
-				},
+				}),
 			}},
 		}
 		totals := &bill.Totals{

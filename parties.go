@@ -186,10 +186,10 @@ func NewFavatBuyer(customer *org.Party) *Buyer {
 		buyer.Name = customer.Name
 	}
 
-	if customer.Ext != nil && customer.Ext.Get(favat.ExtKeyJST) != "" {
+	if customer.Ext.Get(favat.ExtKeyJST) != "" {
 		buyer.JST = customer.Ext.Get(favat.ExtKeyJST).String()
 	}
-	if customer.Ext != nil && customer.Ext.Get(favat.ExtKeyGroupVAT) != "" {
+	if customer.Ext.Get(favat.ExtKeyGroupVAT) != "" {
 		buyer.GV = customer.Ext.Get(favat.ExtKeyGroupVAT).String()
 	}
 
@@ -245,11 +245,6 @@ func NewThirdParties(invoice *bill.Invoice) []*ThirdParty {
 }
 
 func newThirdPartyFromIdentity(identity *org.Identity) *ThirdParty {
-
-	if identity.Ext == nil || identity.Ext.Get(favat.ExtKeyThirdPartyRole) == "" {
-		return nil
-	}
-
 	role := identity.Ext.Get(favat.ExtKeyThirdPartyRole)
 	if role == "" {
 		return nil
@@ -370,16 +365,16 @@ func (b *Buyer) ToGOBL() *org.Party {
 
 	// Parse extensions
 	if b.JST == "1" || b.GV == "1" {
-		if party.Ext == nil {
-			party.Ext = make(tax.Extensions)
+		if party.Ext.IsZero() {
+			party.Ext = tax.MakeExtensions()
 		}
 
 		if b.JST == "1" {
-			party.Ext[favat.ExtKeyJST] = "1"
+			party.Ext = party.Ext.Set(favat.ExtKeyJST, "1")
 		}
 
 		if b.GV == "1" {
-			party.Ext[favat.ExtKeyGroupVAT] = "1"
+			party.Ext = party.Ext.Set(favat.ExtKeyGroupVAT, "1")
 		}
 	}
 
@@ -393,12 +388,12 @@ func (tp *ThirdParty) toIdentity() *org.Identity {
 	}
 
 	identity := &org.Identity{
-		Ext: make(tax.Extensions),
+		Ext: tax.MakeExtensions(),
 	}
 
 	// Set role
 	if tp.Role != "" {
-		identity.Ext[favat.ExtKeyThirdPartyRole] = cbc.Code(tp.Role)
+		identity.Ext = identity.Ext.Set(favat.ExtKeyThirdPartyRole, cbc.Code(tp.Role))
 	}
 
 	// Parse tax ID

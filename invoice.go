@@ -172,7 +172,7 @@ func NewFavatInv(invoice *bill.Invoice) *Inv {
 		Period:           newInvoicePeriod(invoice.Ordering),
 		SequentialNumber: invoiceNumber(invoice.Series, invoice.Code),
 		Annotations:      newAnnotations(invoice),
-		Lines:            NewLines(invoice.Lines),
+		Lines:            NewLinesForInvoice(invoice),
 		Payment:          NewPayment(invoice.Payment, invoice.Totals),
 	}
 
@@ -186,7 +186,7 @@ func NewFavatInv(invoice *bill.Invoice) *Inv {
 		inv.TotalAmountDue = invoice.Totals.Payable.String()
 	}
 
-	if invoice.Tax != nil && invoice.Tax.Ext != nil {
+	if invoice.Tax != nil && !invoice.Tax.Ext.IsZero() {
 		inv.InvoiceType = invoice.Tax.Ext.Get(favat.ExtKeyInvoiceType).String()
 	}
 
@@ -294,6 +294,10 @@ func invoiceNumber(series cbc.Code, code cbc.Code) string {
 		return code.String()
 	}
 	return fmt.Sprintf("%s-%s", series, code)
+}
+
+func invoicePricesIncludeVAT(invoice *bill.Invoice) bool {
+	return invoice.Tax != nil && invoice.Tax.PricesInclude == tax.CategoryVAT
 }
 
 func (inv *Inv) setTaxRates(taxes *tax.Total, xr *currency.ExchangeRate) {
@@ -494,9 +498,9 @@ func (inv *Inv) parseInvoiceData(goblInv *bill.Invoice) error {
 				preceding.Reason = inv.CorrectionReason
 			}
 			if inv.CorrectionType != "" {
-				preceding.Ext = tax.Extensions{
+				preceding.Ext = tax.ExtensionsOf(tax.ExtMap{
 					favat.ExtKeyEffectiveDate: cbc.Code(inv.CorrectionType),
-				}
+				})
 			}
 			if corr.KsefNumberPresent == 1 && corr.KsefNumber != "" {
 				preceding.Stamps = []*head.Stamp{
@@ -744,9 +748,9 @@ func (inv *Inv) parseTotals(goblInv *bill.Invoice) error {
 			Key:     e.key,
 			Base:    netAmt,
 			Percent: e.percent,
-			Ext: tax.Extensions{
+			Ext: tax.ExtensionsOf(tax.ExtMap{
 				favat.ExtKeyTaxCategory: e.category,
-			},
+			}),
 		}
 
 		if e.tax != "" {

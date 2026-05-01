@@ -29,9 +29,9 @@ func TestNewFavatInv(t *testing.T) {
 				},
 			},
 			Tax: &bill.Tax{
-				Ext: tax.Extensions{
+				Ext: tax.ExtensionsOf(tax.ExtMap{
 					favat.ExtKeyInvoiceType: "VAT",
-				},
+				}),
 			},
 			Totals: &bill.Totals{
 				Taxes: &tax.Total{},
@@ -69,9 +69,9 @@ func TestNewFavatInv(t *testing.T) {
 		inv := baseInvoice()
 		inv.Preceding = []*org.DocumentRef{
 			{
-				Ext: tax.Extensions{
+				Ext: tax.ExtensionsOf(tax.ExtMap{
 					favat.ExtKeyEffectiveDate: "1",
-				},
+				}),
 			},
 		}
 
@@ -90,7 +90,7 @@ func TestNewFavatInv(t *testing.T) {
 
 	t.Run("sets the self-billing annotation to true in self-billed invoices", func(t *testing.T) {
 		inv := baseInvoice()
-		inv.Tax.Ext[favat.ExtKeySelfBilling] = "1"
+		inv.Tax.Ext = inv.Tax.Ext.Set(favat.ExtKeySelfBilling, "1")
 
 		invoice := ksef.NewFavatInv(inv)
 
@@ -99,7 +99,7 @@ func TestNewFavatInv(t *testing.T) {
 
 	t.Run("sets reverse charge annotation", func(t *testing.T) {
 		inv := baseInvoice()
-		inv.Tax.Ext[favat.ExtKeyReverseCharge] = "1"
+		inv.Tax.Ext = inv.Tax.Ext.Set(favat.ExtKeyReverseCharge, "1")
 
 		invoice := ksef.NewFavatInv(inv)
 
@@ -108,7 +108,7 @@ func TestNewFavatInv(t *testing.T) {
 
 	t.Run("sets cash accounting annotation", func(t *testing.T) {
 		inv := baseInvoice()
-		inv.Tax.Ext[favat.ExtKeyCashAccounting] = "1"
+		inv.Tax.Ext = inv.Tax.Ext.Set(favat.ExtKeyCashAccounting, "1")
 
 		invoice := ksef.NewFavatInv(inv)
 
@@ -117,7 +117,7 @@ func TestNewFavatInv(t *testing.T) {
 
 	t.Run("sets split payment annotation", func(t *testing.T) {
 		inv := baseInvoice()
-		inv.Tax.Ext[favat.ExtKeySplitPayment] = "1"
+		inv.Tax.Ext = inv.Tax.Ext.Set(favat.ExtKeySplitPayment, "1")
 
 		invoice := ksef.NewFavatInv(inv)
 
@@ -126,7 +126,7 @@ func TestNewFavatInv(t *testing.T) {
 
 	t.Run("sets tax exemption annotation with marker", func(t *testing.T) {
 		inv := baseInvoice()
-		inv.Tax.Ext[favat.ExtKeyExemption] = "A"
+		inv.Tax.Ext = inv.Tax.Ext.Set(favat.ExtKeyExemption, "A")
 
 		invoice := ksef.NewFavatInv(inv)
 
@@ -135,7 +135,7 @@ func TestNewFavatInv(t *testing.T) {
 
 	t.Run("sets margin scheme travel agency", func(t *testing.T) {
 		inv := baseInvoice()
-		inv.Tax.Ext[favat.ExtKeyMarginScheme] = "2"
+		inv.Tax.Ext = inv.Tax.Ext.Set(favat.ExtKeyMarginScheme, "2")
 
 		invoice := ksef.NewFavatInv(inv)
 
@@ -145,7 +145,7 @@ func TestNewFavatInv(t *testing.T) {
 
 	t.Run("sets margin scheme used goods", func(t *testing.T) {
 		inv := baseInvoice()
-		inv.Tax.Ext[favat.ExtKeyMarginScheme] = "3.1"
+		inv.Tax.Ext = inv.Tax.Ext.Set(favat.ExtKeyMarginScheme, "3.1")
 
 		invoice := ksef.NewFavatInv(inv)
 
@@ -155,7 +155,7 @@ func TestNewFavatInv(t *testing.T) {
 
 	t.Run("sets margin scheme art works", func(t *testing.T) {
 		inv := baseInvoice()
-		inv.Tax.Ext[favat.ExtKeyMarginScheme] = "3.2"
+		inv.Tax.Ext = inv.Tax.Ext.Set(favat.ExtKeyMarginScheme, "3.2")
 
 		invoice := ksef.NewFavatInv(inv)
 
@@ -165,7 +165,7 @@ func TestNewFavatInv(t *testing.T) {
 
 	t.Run("sets margin scheme collectibles and antiques", func(t *testing.T) {
 		inv := baseInvoice()
-		inv.Tax.Ext[favat.ExtKeyMarginScheme] = "3.3"
+		inv.Tax.Ext = inv.Tax.Ext.Set(favat.ExtKeyMarginScheme, "3.3")
 
 		invoice := ksef.NewFavatInv(inv)
 
@@ -723,7 +723,7 @@ func TestParsePrepaymentTotals(t *testing.T) {
 		rate := cat.Rates[0]
 		assert.Equal(t, "1000.00", rate.Base.String())
 		assert.Equal(t, "230.00", rate.Amount.String())
-		assert.Equal(t, cbc.Code("1"), rate.Ext[favat.ExtKeyTaxCategory])
+		assert.Equal(t, cbc.Code("1"), rate.Ext.Get(favat.ExtKeyTaxCategory))
 		require.NotNil(t, rate.Percent)
 		assert.Equal(t, "23.0%", rate.Percent.String())
 	})
@@ -929,7 +929,7 @@ func TestParsePaidInFull(t *testing.T) {
 		assert.Equal(t, pay.MeansKeyCreditTransfer, adv.Key)
 		require.NotNil(t, adv.Date)
 		assert.Equal(t, "2026-01-15", adv.Date.String())
-		assert.Equal(t, cbc.Code("6"), adv.Ext[favat.ExtKeyPaymentMeans])
+		assert.Equal(t, cbc.Code("6"), adv.Ext.Get(favat.ExtKeyPaymentMeans))
 	})
 
 	t.Run("does not create advance when Zaplacono is not 1", func(t *testing.T) {
@@ -1211,9 +1211,9 @@ func TestNewFavatInvLineNotes(t *testing.T) {
 				TaxID: &tax.Identity{Country: l10n.PL.Tax()},
 			},
 			Tax: &bill.Tax{
-				Ext: tax.Extensions{
+				Ext: tax.ExtensionsOf(tax.ExtMap{
 					favat.ExtKeyInvoiceType: "VAT",
-				},
+				}),
 			},
 			Lines: []*bill.Line{
 				{
@@ -1228,7 +1228,7 @@ func TestNewFavatInvLineNotes(t *testing.T) {
 						{
 							Category: tax.CategoryVAT,
 							Percent:  &pct23,
-							Ext:      tax.Extensions{favat.ExtKeyTaxCategory: "1"},
+							Ext:      tax.ExtensionsOf(tax.ExtMap{favat.ExtKeyTaxCategory: "1"}),
 						},
 					},
 				},
@@ -1420,9 +1420,9 @@ func TestAdjustSettlementTotals(t *testing.T) {
 				TaxID: &tax.Identity{Country: l10n.PL.Tax()},
 			},
 			Tax: &bill.Tax{
-				Ext: tax.Extensions{
+				Ext: tax.ExtensionsOf(tax.ExtMap{
 					favat.ExtKeyInvoiceType: "ROZ",
-				},
+				}),
 			},
 			Lines: []*bill.Line{
 				{
@@ -1437,7 +1437,7 @@ func TestAdjustSettlementTotals(t *testing.T) {
 						{
 							Category: tax.CategoryVAT,
 							Percent:  &pct23,
-							Ext:      tax.Extensions{favat.ExtKeyTaxCategory: "1"},
+							Ext:      tax.ExtensionsOf(tax.ExtMap{favat.ExtKeyTaxCategory: "1"}),
 						},
 					},
 				},
@@ -1465,7 +1465,7 @@ func TestAdjustSettlementTotals(t *testing.T) {
 									Base:    num.MakeAmount(1000000, 2),
 									Percent: &pct23,
 									Amount:  num.MakeAmount(230000, 2),
-									Ext:     tax.Extensions{favat.ExtKeyTaxCategory: "1"},
+									Ext:     tax.ExtensionsOf(tax.ExtMap{favat.ExtKeyTaxCategory: "1"}),
 								},
 							},
 							Amount: num.MakeAmount(230000, 2),
@@ -1552,7 +1552,7 @@ func TestAdjustSettlementTotals(t *testing.T) {
 	t.Run("non-settlement with advances does not adjust", func(t *testing.T) {
 		inv := baseSettlementInvoice()
 		inv.Totals.Taxes.Categories[0].Rates[0].Amount = num.MakeAmount(230000, 2)
-		inv.Tax.Ext[favat.ExtKeyInvoiceType] = "VAT"
+		inv.Tax.Ext = inv.Tax.Ext.Set(favat.ExtKeyInvoiceType, "VAT")
 
 		ksefInv := ksef.NewFavatInv(inv)
 
@@ -1601,9 +1601,9 @@ func TestForeignCurrencyExchangeRate(t *testing.T) {
 				TaxID: &tax.Identity{Country: l10n.PL.Tax()},
 			},
 			Tax: &bill.Tax{
-				Ext: tax.Extensions{
+				Ext: tax.ExtensionsOf(tax.ExtMap{
 					favat.ExtKeyInvoiceType: "VAT",
-				},
+				}),
 			},
 			ExchangeRates: []*currency.ExchangeRate{
 				{
@@ -1624,14 +1624,14 @@ func TestForeignCurrencyExchangeRate(t *testing.T) {
 									Base:    num.MakeAmount(100000, 2),
 									Percent: &pct23,
 									Amount:  num.MakeAmount(23000, 2),
-									Ext:     tax.Extensions{favat.ExtKeyTaxCategory: "1"},
+									Ext:     tax.ExtensionsOf(tax.ExtMap{favat.ExtKeyTaxCategory: "1"}),
 								},
 								{
 									Key:     tax.KeyStandard,
 									Base:    num.MakeAmount(75000, 2),
 									Percent: &pct8,
 									Amount:  num.MakeAmount(6000, 2),
-									Ext:     tax.Extensions{favat.ExtKeyTaxCategory: "2"},
+									Ext:     tax.ExtensionsOf(tax.ExtMap{favat.ExtKeyTaxCategory: "2"}),
 								},
 							},
 						},
@@ -1694,7 +1694,7 @@ func TestForeignCurrencyExchangeRate(t *testing.T) {
 				Key:    tax.KeyStandard,
 				Base:   num.MakeAmount(100000, 2),
 				Amount: num.MakeAmount(21000, 2),
-				Ext:    tax.Extensions{favat.ExtKeyTaxCategory: "5"},
+				Ext:    tax.ExtensionsOf(tax.ExtMap{favat.ExtKeyTaxCategory: "5"}),
 			},
 		}
 
@@ -1826,6 +1826,59 @@ func TestParseExchangeRate(t *testing.T) {
 		assert.Empty(t, inv.ExchangeRates)
 	})
 
+	t.Run("does not return error for EUR invoice missing KursWalutyZ", func(t *testing.T) {
+		doc := &ksef.Invoice{
+			Seller: &ksef.Seller{
+				NIP:  "1234567890",
+				Name: "Test Supplier",
+				Address: &ksef.Address{
+					CountryCode: "PL",
+					AddressL1:   "ul. Testowa 1 00-001 Warszawa",
+				},
+			},
+			Buyer: &ksef.Buyer{
+				NIP:  "9876543210",
+				Name: "Test Buyer",
+				Address: &ksef.Address{
+					CountryCode: "PL",
+					AddressL1:   "ul. Testowa 2 00-002 Warszawa",
+				},
+				JST: "2",
+				GV:  "2",
+			},
+			Inv: &ksef.Inv{
+				CurrencyCode:        "EUR",
+				IssueDate:           "2026-01-20",
+				SequentialNumber:    "FV-001",
+				InvoiceType:         "VAT",
+				StandardRateNetSale: "1000.00",
+				StandardRateTax:     "230.00",
+				TotalAmountDue:      "1230.00",
+				Annotations: &ksef.Annotations{
+					CashAccounting:                      "2",
+					SelfBilling:                         "2",
+					ReverseCharge:                       "2",
+					SplitPaymentMechanism:               "2",
+					SimplifiedProcedureBySecondTaxpayer: "2",
+					TaxExemption:                        &ksef.TaxExemption{NoExemption: "1"},
+					NewTransportMeans:                   &ksef.NewTransportMeans{NoNewTransportMeans: "1"},
+					MarginScheme:                        &ksef.MarginScheme{NoMarginScheme: "1"},
+				},
+				Lines: []*ksef.Line{
+					{
+						LineNumber:   1,
+						Name:         "Item",
+						Quantity:     "1",
+						NetUnitPrice: "1000.00",
+						VATRate:      "23",
+					},
+				},
+			},
+		}
+
+		_, err := doc.ToGOBL()
+		require.NoError(t, err)
+	})
 }
 
 func TestNoteCodeAsKey(t *testing.T) {
@@ -1835,7 +1888,7 @@ func TestNoteCodeAsKey(t *testing.T) {
 			TaxID: &tax.Identity{Country: l10n.PL.Tax()},
 		},
 		Tax: &bill.Tax{
-			Ext: tax.Extensions{favat.ExtKeyInvoiceType: "VAT"},
+			Ext: tax.ExtensionsOf(tax.ExtMap{favat.ExtKeyInvoiceType: "VAT"}),
 		},
 		Totals: &bill.Totals{Taxes: &tax.Total{}},
 		Notes: []*org.Note{

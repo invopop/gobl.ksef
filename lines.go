@@ -41,28 +41,51 @@ type Line struct {
 	BeforeCorrectionMarker  int    `xml:"StanPrzed,omitempty"`
 }
 
-// NewLines generates lines for the KSeF invoice
+// NewLines generates lines for the KSeF invoice assuming net-priced lines
+// (P_9A/P_11).
+//
+// Deprecated: prefer NewLinesForInvoice, which honors tax.prices_include=VAT
+// and emits gross fields (P_9B/P_11A, art. 106e(7)-(8)) for gross-priced
+// invoices.
 func NewLines(lines []*bill.Line) []*Line {
+	return newLines(lines, false)
+}
+
+// NewLinesForInvoice generates KSeF lines from a GOBL invoice, choosing
+// between net (P_9A/P_11) and gross (P_9B/P_11A) line fields based on
+// invoice.Tax.PricesInclude.
+func NewLinesForInvoice(invoice *bill.Invoice) []*Line {
+	return newLines(invoice.Lines, invoicePricesIncludeVAT(invoice))
+}
+
+func newLines(lines []*bill.Line, pricesIncludeVAT bool) []*Line {
 	var Lines []*Line
 
 	for _, line := range lines {
-		Lines = append(Lines, newLine(line))
+		Lines = append(Lines, newLine(line, pricesIncludeVAT))
 	}
 
 	return Lines
 }
 
-func newLine(line *bill.Line) *Line {
+func newLine(line *bill.Line, pricesIncludeVAT bool) *Line {
 	l := &Line{
-		LineNumber:    line.Index,
-		UniqueID:      string(line.UUID),
-		Name:          line.Item.Name,
-		Measure:       string(line.Item.Unit.UNECE()),
-		NetUnitPrice:  line.Item.Price.String(),
-		Quantity:      line.Quantity.String(),
-		Discount:      lineDiscount(line),
-		NetPriceTotal: line.Total.String(),
+		LineNumber: line.Index,
+		UniqueID:   string(line.UUID),
+		Name:       line.Item.Name,
+		Measure:    string(line.Item.Unit.UNECE()),
+		Quantity:   line.Quantity.String(),
+		Discount:   lineDiscount(line),
 	}
+
+	if pricesIncludeVAT {
+		l.GrossUnitPrice = line.Item.Price.String()
+		l.GrossPriceTotal = line.Total.String()
+	} else {
+		l.NetUnitPrice = line.Item.Price.String()
+		l.NetPriceTotal = line.Total.String()
+	}
+
 	if tc := line.Taxes.Get(tax.CategoryVAT); tc != nil {
 		if tc.Ext.Get(favat.ExtKeyTaxCategory) == "5" {
 			if tc.Percent != nil {
@@ -247,9 +270,9 @@ func (l *Line) ToGOBL() (*bill.Line, error) {
 			Key:      taxInfo.Key,
 			Rate:     taxInfo.Rate,
 			Percent:  taxInfo.Percent,
-			Ext: tax.Extensions{
+			Ext: tax.ExtensionsOf(tax.ExtMap{
 				favat.ExtKeyTaxCategory: taxInfo.TaxCategory,
-			},
+			}),
 		}
 		line.Taxes = tax.Set{taxCombo}
 	}
