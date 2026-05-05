@@ -322,14 +322,23 @@ func TestAdjustRounding(t *testing.T) {
 		err := inv.Calculate()
 		require.NoError(t, err)
 
+		calculated := inv.Totals.Payable
 		// Add a large difference (1.00 PLN - way beyond acceptable rounding)
-		expectedTotal := inv.Totals.Payable.Add(num.MakeAmount(100, 2))
+		expectedTotal := calculated.Add(num.MakeAmount(100, 2))
 
 		// Now test - should fail
 		inv2 := baseInvoice()
 		err = ksef.AdjustRounding(inv2, expectedTotal.String())
 		require.Error(t, err)
 		assert.Contains(t, err.Error(), "does not match KSeF total")
+
+		var rerr *ksef.RoundingError
+		require.ErrorAs(t, err, &rerr)
+		assert.Equal(t, calculated.String(), rerr.Calculated.String())
+		assert.Equal(t, expectedTotal.String(), rerr.Expected.String())
+		assert.Equal(t, "1.00", rerr.Diff.String())
+		// 1 line × 0.01 subunit tolerance for PLN
+		assert.Equal(t, "0.01", rerr.MaxAllowed.String())
 	})
 
 	t.Run("handles invoice with advances", func(t *testing.T) {
