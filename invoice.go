@@ -99,12 +99,16 @@ type PartialAdvancePayment struct {
 	CurrencyExchangeRate string `xml:"KursWalutyZW,omitempty"`
 }
 
-// Settlement defines the XML structure for additional charges and deductions
+// Settlement defines the XML structure for the additional charges and
+// deductions block (Rozliczenie). Per the FA(3) schema, each <Obciazenia>
+// and <Odliczenia> is itself a single entry (with <Kwota>/<Powod> children,
+// maxOccurs=100), and <SumaObciazen>/<SumaOdliczen> are siblings of those
+// entries — not nested wrappers.
 type Settlement struct {
-	Charges         []*ChargeOrDeduction `xml:"Obciazenia>Obciazenie,omitempty"`
-	TotalCharges    string               `xml:"Obciazenia>SumaObciazen,omitempty"`
-	Deductions      []*ChargeOrDeduction `xml:"Odliczenia>Odliczenie,omitempty"`
-	TotalDeductions string               `xml:"Odliczenia>SumaOdliczen,omitempty"`
+	Charges         []*ChargeOrDeduction `xml:"Obciazenia,omitempty"`
+	TotalCharges    string               `xml:"SumaObciazen,omitempty"`
+	Deductions      []*ChargeOrDeduction `xml:"Odliczenia,omitempty"`
+	TotalDeductions string               `xml:"SumaOdliczen,omitempty"`
 	AmountToPay     string               `xml:"DoZaplaty,omitempty"`
 	AmountToSettle  string               `xml:"DoRozliczenia,omitempty"`
 }
@@ -173,6 +177,7 @@ func NewFavatInv(invoice *bill.Invoice) *Inv {
 		SequentialNumber: invoiceNumber(invoice.Series, invoice.Code),
 		Annotations:      newAnnotations(invoice),
 		Lines:            NewLinesForInvoice(invoice),
+		Settlement:       newSettlement(invoice),
 		Payment:          NewPayment(invoice.Payment, invoice.Totals),
 	}
 
@@ -357,6 +362,79 @@ func (inv *Inv) setTaxRates(taxes *tax.Total, xr *currency.ExchangeRate) {
 			}
 		}
 	}
+}
+
+// newSettlement builds the KSeF Rozliczenie element from invoice-level
+// charges and discounts. Returns nil when neither is present so the
+// element is omitted from the XML output.
+func newSettlement(invoice *bill.Invoice) *Settlement {
+	if len(invoice.Charges) == 0 && len(invoice.Discounts) == 0 {
+		return nil
+	}
+
+	s := &Settlement{}
+
+	var totalCharges num.Amount
+	for _, c := range invoice.Charges {
+		s.Charges = append(s.Charges, &ChargeOrDeduction{
+			Amount: c.Amount.String(),
+			Reason: c.Reason,
+		})
+		totalCharges = totalCharges.MatchPrecision(c.Amount)
+		totalCharges = totalCharges.Add(c.Amount)
+	}
+	if len(s.Charges) > 0 {
+		s.TotalCharges = totalCharges.String()
+	}
+
+	var totalDeductions num.Amount
+	for _, d := range invoice.Discounts {
+		s.Deductions = append(s.Deductions, &ChargeOrDeduction{
+			Amount: d.Amount.String(),
+			Reason: d.Reason,
+		})
+		totalDeductions = totalDeductions.MatchPrecision(d.Amount)
+		totalDeductions = totalDeductions.Add(d.Amount)
+	}
+	if len(s.Deductions) > 0 {
+		s.TotalDeductions = totalDeductions.String()
+	}
+
+	return s
+}
+
+// parseSettlement maps the KSeF Rozliczenie element back to GOBL invoice-level
+// charges and discounts. KSeF's <Obciazenie> and <Odliczenie> carry no VAT
+// information, so they are mapped without taxes — the amounts flow into
+// Totals.Payable via Calculate, which is what the KSeF P_15 reflects.
+func (inv *Inv) parseSettlement(goblInv *bill.Invoice) error {
+	if inv.Settlement == nil {
+		return nil
+	}
+
+	for _, c := range inv.Settlement.Charges {
+		amount, err := parseAmount(c.Amount)
+		if err != nil {
+			return fmt.Errorf("parsing settlement charge amount: %w", err)
+		}
+		goblInv.Charges = append(goblInv.Charges, &bill.Charge{
+			Amount: amount,
+			Reason: c.Reason,
+		})
+	}
+
+	for _, d := range inv.Settlement.Deductions {
+		amount, err := parseAmount(d.Amount)
+		if err != nil {
+			return fmt.Errorf("parsing settlement deduction amount: %w", err)
+		}
+		goblInv.Discounts = append(goblInv.Discounts, &bill.Discount{
+			Amount: amount,
+			Reason: d.Reason,
+		})
+	}
+
+	return nil
 }
 
 // mapSettlementAdvanceRefs maps GOBL advance payment refs to KSeF
