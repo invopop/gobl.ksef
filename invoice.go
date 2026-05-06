@@ -407,15 +407,26 @@ func newSettlement(invoice *bill.Invoice) *Settlement {
 // charges and discounts. KSeF's <Obciazenia> and <Odliczenia> entries carry
 // no VAT information, so they are mapped without taxes — the amounts flow
 // into Totals.Payable via Calculate, which is what the KSeF P_15 reflects.
+//
+// For corrective invoices (KOR / KOR_ZAL / KOR_ROZ), the KSeF XML carries
+// negative monetary amounts (TKwotowy permits sign). parseLines and the
+// totalDue passed into AdjustRounding both flip credit-note amounts back
+// to GOBL's positive convention; settlement amounts must follow the same
+// rule so Calculate reconciles cleanly against the inverted P_15.
 func (inv *Inv) parseSettlement(goblInv *bill.Invoice) error {
 	if inv.Settlement == nil {
 		return nil
 	}
 
+	isCreditNote := goblInv.Type == bill.InvoiceTypeCreditNote
+
 	for _, c := range inv.Settlement.Charges {
 		amount, err := parseAmount(c.Amount)
 		if err != nil {
 			return fmt.Errorf("parsing settlement charge amount: %w", err)
+		}
+		if isCreditNote {
+			amount = amount.Invert()
 		}
 		goblInv.Charges = append(goblInv.Charges, &bill.Charge{
 			Amount: amount,
@@ -427,6 +438,9 @@ func (inv *Inv) parseSettlement(goblInv *bill.Invoice) error {
 		amount, err := parseAmount(d.Amount)
 		if err != nil {
 			return fmt.Errorf("parsing settlement deduction amount: %w", err)
+		}
+		if isCreditNote {
+			amount = amount.Invert()
 		}
 		goblInv.Discounts = append(goblInv.Discounts, &bill.Discount{
 			Amount: amount,

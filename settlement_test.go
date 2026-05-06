@@ -190,6 +190,91 @@ func TestSettlementInbound(t *testing.T) {
 		}
 	})
 
+	t.Run("KOR with negative Obciazenia maps to positive GOBL Charges", func(t *testing.T) {
+		// KSeF KOR XMLs carry negative monetary amounts (TKwotowy permits sign).
+		// parseLines flips line quantities back to positive, and ksef.go inverts
+		// totalDue before AdjustRounding. Settlement amounts must follow the
+		// same rule, otherwise the negative charge would subtract from Payable
+		// inside Calculate and the diff against the inverted P_15 would blow
+		// past the rounding tolerance.
+		const korXML = `<?xml version="1.0" encoding="UTF-8"?>
+<Faktura xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns="http://crd.gov.pl/wzor/2025/06/25/13775/">
+  <Naglowek>
+    <KodFormularza kodSystemowy="FA (3)" wersjaSchemy="1-0E">FA</KodFormularza>
+    <WariantFormularza>3</WariantFormularza>
+    <DataWytworzeniaFa>2026-01-27T09:17:03Z</DataWytworzeniaFa>
+    <SystemInfo>Invopop</SystemInfo>
+  </Naglowek>
+  <Podmiot1>
+    <DaneIdentyfikacyjne>
+      <NIP>9876543210</NIP>
+      <Nazwa>Testowa Firma Sp. z o.o.</Nazwa>
+    </DaneIdentyfikacyjne>
+    <Adres><KodKraju>PL</KodKraju><AdresL1>ul. Test 1</AdresL1></Adres>
+  </Podmiot1>
+  <Podmiot2>
+    <DaneIdentyfikacyjne>
+      <NIP>1111111111</NIP>
+      <Nazwa>Klient Testowy Sp. z o.o.</Nazwa>
+    </DaneIdentyfikacyjne>
+    <Adres><KodKraju>PL</KodKraju><AdresL1>ul. Test 2</AdresL1></Adres>
+  </Podmiot2>
+  <Fa>
+    <KodWaluty>PLN</KodWaluty>
+    <P_1>2026-01-20</P_1>
+    <P_2>KOR-002</P_2>
+    <P_13_1>-100.00</P_13_1>
+    <P_14_1>-23.00</P_14_1>
+    <P_15>-173.00</P_15>
+    <Adnotacje>
+      <P_16>2</P_16><P_17>2</P_17><P_18>2</P_18><P_18A>2</P_18A>
+      <Zwolnienie><P_19N>1</P_19N></Zwolnienie>
+      <NoweSrodkiTransportu><P_22N>1</P_22N></NoweSrodkiTransportu>
+      <P_23>2</P_23>
+      <PMarzy><P_PMarzyN>1</P_PMarzyN></PMarzy>
+    </Adnotacje>
+    <RodzajFaktury>KOR</RodzajFaktury>
+    <PrzyczynaKorekty>Price correction</PrzyczynaKorekty>
+    <TypKorekty>1</TypKorekty>
+    <DaneFaKorygowanej>
+      <DataWystFaKorygowanej>2026-01-20</DataWystFaKorygowanej>
+      <NrFaKorygowanej>INVOICE-001</NrFaKorygowanej>
+    </DaneFaKorygowanej>
+    <FaWiersz>
+      <NrWierszaFa>1</NrWierszaFa>
+      <P_7>Service correction</P_7>
+      <P_8A>HUR</P_8A>
+      <P_8B>-10</P_8B>
+      <P_9A>10.00</P_9A>
+      <P_11>-100.00</P_11>
+      <P_12>23</P_12>
+    </FaWiersz>
+    <Rozliczenie>
+      <Obciazenia>
+        <Kwota>-50.00</Kwota>
+        <Powod>Insurance correction</Powod>
+      </Obciazenia>
+      <SumaObciazen>-50.00</SumaObciazen>
+    </Rozliczenie>
+  </Fa>
+</Faktura>`
+
+		env, err := ksef.ParseKSeF([]byte(korXML))
+		require.NoError(t, err)
+
+		inv, ok := env.Extract().(*bill.Invoice)
+		require.True(t, ok)
+		assert.Equal(t, bill.InvoiceTypeCreditNote, inv.Type)
+
+		require.Len(t, inv.Charges, 1)
+		assert.Equal(t, "50.00", inv.Charges[0].Amount.String(),
+			"KOR negative Kwota must be inverted to positive GOBL convention")
+		assert.Equal(t, "Insurance correction", inv.Charges[0].Reason)
+
+		require.NotNil(t, inv.Totals)
+		assert.Equal(t, "173.00", inv.Totals.Payable.String())
+	})
+
 	t.Run("Odliczenia maps to invoice Discounts", func(t *testing.T) {
 		// Replace the Obciazenia block with an Odliczenia block.
 		modified := strings.Replace(reportedSettlementXML,
