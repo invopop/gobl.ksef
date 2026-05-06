@@ -12,6 +12,10 @@ import (
 	"github.com/invopop/gobl/uuid"
 )
 
+// metaKeyUnit holds the original KSeF unit of measure when it does not match
+// a value accepted by GOBL (neither a defined unit nor a UN/ECE code).
+const metaKeyUnit cbc.Key = "unit"
+
 // Line defines the XML structure for KSeF item line (element type FaWiersz, for VAT and KOR type invoices)
 type Line struct {
 	LineNumber              int    `xml:"NrWierszaFa"`
@@ -73,7 +77,7 @@ func newLine(line *bill.Line, pricesIncludeVAT bool) *Line {
 		LineNumber: line.Index,
 		UniqueID:   string(line.UUID),
 		Name:       line.Item.Name,
-		Measure:    string(line.Item.Unit.UNECE()),
+		Measure:    lineMeasure(line),
 		Quantity:   line.Quantity.String(),
 		Discount:   lineDiscount(line),
 	}
@@ -127,6 +131,17 @@ func vatRate(tc *tax.Combo) string {
 	default:
 		return ""
 	}
+}
+
+// lineMeasure resolves the KSeF P_8A unit of measure. When the GOBL item has
+// an Item.Meta["unit"] entry — typically set by ToGOBL for KSeF units that do
+// not match a GOBL or UN/ECE code — that original value is used so KSeF
+// round-trips preserve the supplier's wording.
+func lineMeasure(line *bill.Line) string {
+	if u, ok := line.Item.Meta[metaKeyUnit]; ok && u != "" {
+		return u
+	}
+	return string(line.Item.Unit.UNECE())
 }
 
 func lineDiscount(line *bill.Line) string {
@@ -204,9 +219,21 @@ func (l *Line) ToGOBL() (*bill.Line, error) {
 		}
 	}
 
-	// Parse unit of measure
+	// Parse unit of measure. KSeF accepts free-form unit strings (e.g. "kilo",
+	// "pcs."), but GOBL only accepts its own defined unit keys or 2-3 letter
+	// UN/ECE codes. When the measure is not a valid GOBL unit, preserve the
+	// original value under Item.Meta["unit"] so the information is not lost
+	// while keeping the resulting invoice valid.
 	if l.Measure != "" {
-		line.Item.Unit = org.Unit(l.Measure)
+		unit := org.Unit(l.Measure)
+		if err := unit.Validate(); err == nil {
+			line.Item.Unit = unit
+		} else {
+			if line.Item.Meta == nil {
+				line.Item.Meta = cbc.Meta{}
+			}
+			line.Item.Meta[metaKeyUnit] = l.Measure
+		}
 	}
 
 	// Parse discount — P_10 is the total line discount per the KSeF spec,

@@ -304,7 +304,9 @@
         "item": {
           "name": "Tubing 12x2 black",
           "price": "10.8000",
-          "unit": "M"
+          "meta": {
+            "unit": "M"
+          }
         },
         "sum": "540.00",
         "taxes": [
@@ -370,7 +372,9 @@
         "item": {
           "name": "Tubing 4x0.75 red",
           "price": "1.7800",
-          "unit": "M"
+          "meta": {
+            "unit": "M"
+          }
         },
         "sum": "89.00",
         "taxes": [
@@ -392,7 +396,9 @@
         "item": {
           "name": "Tubing 4x0.75 blue",
           "price": "1.7800",
-          "unit": "M"
+          "meta": {
+            "unit": "M"
+          }
         },
         "sum": "89.00",
         "taxes": [
@@ -414,7 +420,9 @@
         "item": {
           "name": "Tubing 4x0.75 yellow",
           "price": "1.7800",
-          "unit": "M"
+          "meta": {
+            "unit": "M"
+          }
         },
         "sum": "89.00",
         "taxes": [
@@ -436,7 +444,9 @@
         "item": {
           "name": "Tubing 4x0.75 green",
           "price": "1.7800",
-          "unit": "M"
+          "meta": {
+            "unit": "M"
+          }
         },
         "sum": "89.00",
         "taxes": [
@@ -458,7 +468,9 @@
         "item": {
           "name": "Tubing 4x0.75 black",
           "price": "1.7800",
-          "unit": "M"
+          "meta": {
+            "unit": "M"
+          }
         },
         "sum": "89.00",
         "taxes": [
@@ -480,7 +492,9 @@
         "item": {
           "name": "Tubing 4x0.75 silver",
           "price": "1.7800",
-          "unit": "M"
+          "meta": {
+            "unit": "M"
+          }
         },
         "sum": "89.00",
         "taxes": [

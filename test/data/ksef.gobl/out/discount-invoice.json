@@ -58,7 +58,9 @@
         "item": {
           "name": "Product 1",
           "price": "9.98",
-          "unit": "Szt."
+          "meta": {
+            "unit": "Szt."
+          }
         },
         "sum": "19.96",
         "taxes": [
@@ -80,7 +82,9 @@
         "item": {
           "name": "Product 2",
           "price": "3.58",
-          "unit": "Szt."
+          "meta": {
+            "unit": "Szt."
+          }
         },
         "sum": "3.58",
         "taxes": [
@@ -102,7 +106,9 @@
         "item": {
           "name": "Product 3",
           "price": "5.79",
-          "unit": "Szt."
+          "meta": {
+            "unit": "Szt."
+          }
         },
         "sum": "5.79",
         "taxes": [
@@ -124,7 +130,9 @@
         "item": {
           "name": "Product 4",
           "price": "5.79",
-          "unit": "Szt."
+          "meta": {
+            "unit": "Szt."
+          }
         },
         "sum": "5.79",
         "discounts": [
@@ -151,7 +159,9 @@
         "item": {
           "name": "Product 5",
           "price": "5.98",
-          "unit": "Szt."
+          "meta": {
+            "unit": "Szt."
+          }
         },
         "sum": "11.96",
         "discounts": [
@@ -178,7 +188,9 @@
         "item": {
           "name": "Product 6",
           "price": "5.55",
-          "unit": "Szt."
+          "meta": {
+            "unit": "Szt."
+          }
         },
         "sum": "11.10",
         "discounts": [
@@ -205,7 +217,9 @@
         "item": {
           "name": "Product 7",
           "price": "6.34",
-          "unit": "Szt."
+          "meta": {
+            "unit": "Szt."
+          }
         },
         "sum": "19.02",
         "discounts": [
@@ -232,7 +246,9 @@
         "item": {
           "name": "Product 8",
           "price": "4.37",
-          "unit": "Szt."
+          "meta": {
+            "unit": "Szt."
+          }
         },
         "sum": "17.48",
         "discounts": [
@@ -259,7 +275,9 @@
         "item": {
           "name": "Product 9",
           "price": "6.98",
-          "unit": "Kg."
+          "meta": {
+            "unit": "Kg."
+          }
         },
         "sum": "13.58",
         "discounts": [
@@ -286,7 +304,9 @@
         "item": {
           "name": "Product 10",
           "price": "5.31",
-          "unit": "Szt."
+          "meta": {
+            "unit": "Szt."
+          }
         },
         "sum": "10.62",
         "discounts": [
