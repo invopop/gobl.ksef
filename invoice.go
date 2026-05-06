@@ -404,9 +404,9 @@ func newSettlement(invoice *bill.Invoice) *Settlement {
 }
 
 // parseSettlement maps the KSeF Rozliczenie element back to GOBL invoice-level
-// charges and discounts. KSeF's <Obciazenie> and <Odliczenie> carry no VAT
-// information, so they are mapped without taxes — the amounts flow into
-// Totals.Payable via Calculate, which is what the KSeF P_15 reflects.
+// charges and discounts. KSeF's <Obciazenia> and <Odliczenia> entries carry
+// no VAT information, so they are mapped without taxes — the amounts flow
+// into Totals.Payable via Calculate, which is what the KSeF P_15 reflects.
 func (inv *Inv) parseSettlement(goblInv *bill.Invoice) error {
 	if inv.Settlement == nil {
 		return nil
