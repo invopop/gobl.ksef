@@ -76,7 +76,7 @@
           "name": "Usługa transportowa Bilet Nr: 000001",
           "price": "87.00",
           "meta": {
-            "unit": "szt"
+            "unit-label": "szt"
           }
         },
         "sum": "87.00",
@@ -106,7 +106,7 @@
           "name": "Usługa transportowa Bilet Nr: 000001",
           "price": "0.00",
           "meta": {
-            "unit": "szt"
+            "unit-label": "szt"
           }
         },
         "sum": "0.00",

@@ -71,7 +71,7 @@
           "name": "Vehicle pickup within city limits",
           "price": "48.78",
           "meta": {
-            "unit": "szt"
+            "unit-label": "szt"
           }
         },
         "sum": "-48.78",
@@ -95,7 +95,7 @@
           "name": "Vehicle rental, class A, 2026-02-10 to 2026-02-16",
           "price": "190.00",
           "meta": {
-            "unit": "d"
+            "unit-label": "d"
           }
         },
         "sum": "-1140.00",
@@ -120,7 +120,7 @@
           "name": "Vehicle rental, class A, 2026-02-10 to 2026-02-16",
           "price": "190.00",
           "meta": {
-            "unit": "d"
+            "unit-label": "d"
           }
         },
         "sum": "1140.00",
@@ -149,7 +149,7 @@
           "name": "Insurance package, 2026-02-10 to 2026-02-16",
           "price": "36.59",
           "meta": {
-            "unit": "d"
+            "unit-label": "d"
           }
         },
         "sum": "-219.54",
@@ -173,7 +173,7 @@
           "name": "Insurance package, 2026-02-10 to 2026-02-16",
           "price": "36.59",
           "meta": {
-            "unit": "d"
+            "unit-label": "d"
           }
         },
         "sum": "219.54",
@@ -251,7 +251,7 @@
           "name": "Initial delivery fee",
           "price": "48.78",
           "meta": {
-            "unit": "szt"
+            "unit-label": "szt"
           }
         },
         "sum": "-48.78",
@@ -275,7 +275,7 @@
           "name": "Initial delivery fee",
           "price": "48.78",
           "meta": {
-            "unit": "szt"
+            "unit-label": "szt"
           }
         },
         "sum": "48.78",

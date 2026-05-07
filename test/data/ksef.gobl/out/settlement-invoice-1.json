@@ -62,7 +62,7 @@
           "name": "Usługa pakowania - ECO",
           "price": "4.95",
           "meta": {
-            "unit": "szt"
+            "unit-label": "szt"
           }
         },
         "sum": "4.95",
@@ -86,7 +86,7 @@
           "name": "Napój aloesowy 500ml",
           "price": "76.20",
           "meta": {
-            "unit": "12pak"
+            "unit-label": "12pak"
           }
         },
         "sum": "304.80",
@@ -110,7 +110,7 @@
           "name": "Shot witaminowy Odporność",
           "price": "5.27",
           "meta": {
-            "unit": "szt"
+            "unit-label": "szt"
           }
         },
         "sum": "252.96",
@@ -134,7 +134,7 @@
           "name": "Sok 100% grejpfrut 1L",
           "price": "9.49",
           "meta": {
-            "unit": "szt"
+            "unit-label": "szt"
           }
         },
         "sum": "94.90",
@@ -158,7 +158,7 @@
           "name": "Kabanosy drobiowe 100g",
           "price": "7.59",
           "meta": {
-            "unit": "szt"
+            "unit-label": "szt"
           }
         },
         "sum": "151.80",
@@ -182,7 +182,7 @@
           "name": "Shot witaminowy Uroda",
           "price": "5.27",
           "meta": {
-            "unit": "szt"
+            "unit-label": "szt"
           }
         },
         "sum": "158.10",
@@ -206,7 +206,7 @@
           "name": "Espresso z tonikiem 250ml",
           "price": "8.54",
           "meta": {
-            "unit": "szt"
+            "unit-label": "szt"
           }
         },
         "sum": "170.80",
@@ -230,7 +230,7 @@
           "name": "Lemoniada grejpfrutowa 330ml",
           "price": "4.74",
           "meta": {
-            "unit": "szt"
+            "unit-label": "szt"
           }
         },
         "sum": "94.80",
@@ -254,7 +254,7 @@
           "name": "Espresso z lemoniadą 250ml",
           "price": "8.54",
           "meta": {
-            "unit": "szt"
+            "unit-label": "szt"
           }
         },
         "sum": "170.80",
@@ -278,7 +278,7 @@
           "name": "Lemoniada owocowa 330ml",
           "price": "4.74",
           "meta": {
-            "unit": "szt"
+            "unit-label": "szt"
           }
         },
         "sum": "94.80",
@@ -302,7 +302,7 @@
           "name": "Sok multiwitamina PET 1L",
           "price": "40.92",
           "meta": {
-            "unit": "12pak"
+            "unit-label": "12pak"
           }
         },
         "sum": "163.68",
@@ -326,7 +326,7 @@
           "name": "Sok pomarańczowy PET 1L",
           "price": "40.92",
           "meta": {
-            "unit": "12pak"
+            "unit-label": "12pak"
           }
         },
         "sum": "163.68",
@@ -350,7 +350,7 @@
           "name": "Napój energetyczny ZERO tropikalny 250ml",
           "price": "81.84",
           "meta": {
-            "unit": "24pak"
+            "unit-label": "24pak"
           }
         },
         "sum": "327.36",

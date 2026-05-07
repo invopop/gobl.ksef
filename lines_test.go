@@ -241,7 +241,7 @@ func TestNewLines(t *testing.T) {
 		assert.Empty(t, result[0].NetPriceTotal)
 	})
 
-	t.Run("uses Item.Meta unit when set", func(t *testing.T) {
+	t.Run("uses Item.Meta unit-label when set", func(t *testing.T) {
 		price, _ := num.AmountFromString("100.00")
 		qty, _ := num.AmountFromString("1")
 		total, _ := num.AmountFromString("100.00")
@@ -253,7 +253,7 @@ func TestNewLines(t *testing.T) {
 				Item: &org.Item{
 					Name:  "Item with non-GOBL unit",
 					Price: &price,
-					Meta:  cbc.Meta{"unit": "kilo"},
+					Meta:  cbc.Meta{"unit-label": "kilo"},
 				},
 				Total: &total,
 				Taxes: tax.Set{
@@ -561,7 +561,7 @@ func TestLineToGOBL(t *testing.T) {
 		assert.Equal(t, org.Unit("h"), line.Item.Unit)
 	})
 
-	t.Run("preserves invalid unit under Item.Meta", func(t *testing.T) {
+	t.Run("preserves invalid unit under Item.Meta unit-label", func(t *testing.T) {
 		ksefLine := &ksef.Line{
 			Name:         "Item with non-GOBL unit",
 			Quantity:     "1",
@@ -574,7 +574,7 @@ func TestLineToGOBL(t *testing.T) {
 
 		require.NoError(t, err)
 		assert.Equal(t, org.Unit(""), line.Item.Unit)
-		assert.Equal(t, "szt", line.Item.Meta["unit"])
+		assert.Equal(t, "szt", line.Item.Meta["unit-label"])
 		assert.NoError(t, line.Item.Unit.Validate())
 	})
 

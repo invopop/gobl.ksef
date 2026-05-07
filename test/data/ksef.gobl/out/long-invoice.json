@@ -71,7 +71,7 @@
           "name": "Opakowanie zbiorcze (w tym opłata środowiskowa)",
           "price": "5.95",
           "meta": {
-            "unit": "szt"
+            "unit-label": "szt"
           }
         },
         "sum": "5.95",
@@ -95,7 +95,7 @@
           "name": "Serek naturalny 200g",
           "price": "3.86",
           "meta": {
-            "unit": "szt"
+            "unit-label": "szt"
           }
         },
         "sum": "15.44",
@@ -119,7 +119,7 @@
           "name": "Serek owocowy brzoskwinia 150g",
           "price": "3.79",
           "meta": {
-            "unit": "szt"
+            "unit-label": "szt"
           }
         },
         "sum": "7.58",
@@ -143,7 +143,7 @@
           "name": "Serek owocowy truskawka 150g",
           "price": "3.79",
           "meta": {
-            "unit": "szt"
+            "unit-label": "szt"
           }
         },
         "sum": "7.58",
@@ -167,7 +167,7 @@
           "name": "Kefir tradycyjny 1,5% 400ml",
           "price": "3.29",
           "meta": {
-            "unit": "szt"
+            "unit-label": "szt"
           }
         },
         "sum": "6.58",
@@ -191,7 +191,7 @@
           "name": "Napój mleczny czekoladowy 250ml",
           "price": "3.99",
           "meta": {
-            "unit": "szt"
+            "unit-label": "szt"
           }
         },
         "sum": "59.85",
@@ -215,7 +215,7 @@
           "name": "Jogurt naturalny 370g",
           "price": "1.99",
           "meta": {
-            "unit": "szt"
+            "unit-label": "szt"
           }
         },
         "sum": "5.97",
@@ -239,7 +239,7 @@
           "name": "Orzechy włoskie 100g",
           "price": "6.99",
           "meta": {
-            "unit": "szt"
+            "unit-label": "szt"
           }
         },
         "sum": "41.94",
@@ -263,7 +263,7 @@
           "name": "Orzechy nerkowca 150g",
           "price": "9.99",
           "meta": {
-            "unit": "szt"
+            "unit-label": "szt"
           }
         },
         "sum": "49.95",
@@ -287,7 +287,7 @@
           "name": "Jogurt naturalny bez laktozy 370g",
           "price": "2.89",
           "meta": {
-            "unit": "szt"
+            "unit-label": "szt"
           }
         },
         "sum": "2.89",
@@ -311,7 +311,7 @@
           "name": "Szynka konserwowa 300g",
           "price": "6.35",
           "meta": {
-            "unit": "szt"
+            "unit-label": "szt"
           }
         },
         "sum": "6.35",
@@ -335,7 +335,7 @@
           "name": "Serek wiejski bez laktozy 200g",
           "price": "4.39",
           "meta": {
-            "unit": "szt"
+            "unit-label": "szt"
           }
         },
         "sum": "13.17",
@@ -359,7 +359,7 @@
           "name": "Kefir bez laktozy z probiotykiem 1,5% 400ml",
           "price": "3.69",
           "meta": {
-            "unit": "szt"
+            "unit-label": "szt"
           }
         },
         "sum": "7.38",
@@ -383,7 +383,7 @@
           "name": "Mieszanka orzechów 200g",
           "price": "9.99",
           "meta": {
-            "unit": "szt"
+            "unit-label": "szt"
           }
         },
         "sum": "49.95",
@@ -407,7 +407,7 @@
           "name": "Produkt sojowy jagodowy 400g",
           "price": "4.89",
           "meta": {
-            "unit": "szt"
+            "unit-label": "szt"
           }
         },
         "sum": "9.78",
@@ -431,7 +431,7 @@
           "name": "Produkt sojowy brzoskwiniowy 400g",
           "price": "4.89",
           "meta": {
-            "unit": "szt"
+            "unit-label": "szt"
           }
         },
         "sum": "9.78",
@@ -455,7 +455,7 @@
           "name": "Paluszki serowe 80g",
           "price": "6.19",
           "meta": {
-            "unit": "szt"
+            "unit-label": "szt"
           }
         },
         "sum": "30.95",
@@ -479,7 +479,7 @@
           "name": "Beef jerky proteinowy 25g",
           "price": "10.45",
           "meta": {
-            "unit": "szt"
+            "unit-label": "szt"
           }
         },
         "sum": "83.60",
@@ -503,7 +503,7 @@
           "name": "Kabanosy drobiowe bezglutenowe 120g",
           "price": "6.49",
           "meta": {
-            "unit": "szt"
+            "unit-label": "szt"
           }
         },
         "sum": "64.90",
@@ -527,7 +527,7 @@
           "name": "Jogurt pitny jagodowy 330ml",
           "price": "5.85",
           "meta": {
-            "unit": "szt"
+            "unit-label": "szt"
           }
         },
         "sum": "58.50",
@@ -551,7 +551,7 @@
           "name": "Jogurt pitny mango marakuja 330ml",
           "price": "5.85",
           "meta": {
-            "unit": "szt"
+            "unit-label": "szt"
           }
         },
         "sum": "29.25",
@@ -575,7 +575,7 @@
           "name": "Kiełbasa krakowska sucha 250g",
           "price": "8.39",
           "meta": {
-            "unit": "szt"
+            "unit-label": "szt"
           }
         },
         "sum": "8.39",
@@ -599,7 +599,7 @@
           "name": "Mus owocowy jabłko 120g",
           "price": "3.99",
           "meta": {
-            "unit": "szt"
+            "unit-label": "szt"
           }
         },
         "sum": "23.94",
@@ -623,7 +623,7 @@
           "name": "Mus owocowy jabłko truskawka 120g",
           "price": "3.99",
           "meta": {
-            "unit": "szt"
+            "unit-label": "szt"
           }
         },
         "sum": "39.90",
@@ -647,7 +647,7 @@
           "name": "Serek wiejski wysokobiałkowy 200g",
           "price": "4.39",
           "meta": {
-            "unit": "szt"
+            "unit-label": "szt"
           }
         },
         "sum": "17.56",
@@ -671,7 +671,7 @@
           "name": "Jogurt pitny wanilia 330ml",
           "price": "5.85",
           "meta": {
-            "unit": "szt"
+            "unit-label": "szt"
           }
         },
         "sum": "29.25",
@@ -695,7 +695,7 @@
           "name": "Jogurt pitny truskawka \u0026 kiwi 330ml",
           "price": "5.85",
           "meta": {
-            "unit": "szt"
+            "unit-label": "szt"
           }
         },
         "sum": "58.50",
@@ -719,7 +719,7 @@
           "name": "Mus owocowy jabłko mango 120g",
           "price": "3.99",
           "meta": {
-            "unit": "szt"
+            "unit-label": "szt"
           }
         },
         "sum": "59.85",
@@ -743,7 +743,7 @@
           "name": "Pudding proteinowy czekoladowy 200g",
           "price": "6.75",
           "meta": {
-            "unit": "szt"
+            "unit-label": "szt"
           }
         },
         "sum": "20.25",
@@ -767,7 +767,7 @@
           "name": "Pudding proteinowy waniliowy 200g",
           "price": "6.75",
           "meta": {
-            "unit": "szt"
+            "unit-label": "szt"
           }
         },
         "sum": "20.25",
@@ -791,7 +791,7 @@
           "name": "Pudding proteinowy ryżowy 200g",
           "price": "6.75",
           "meta": {
-            "unit": "szt"
+            "unit-label": "szt"
           }
         },
         "sum": "20.25",
@@ -815,7 +815,7 @@
           "name": "Chleb tostowy pszenny 550g",
           "price": "6.99",
           "meta": {
-            "unit": "szt"
+            "unit-label": "szt"
           }
         },
         "sum": "6.99",
@@ -839,7 +839,7 @@
           "name": "Jogurt sojowy truskawka-porzeczka-malina 400g",
           "price": "6.95",
           "meta": {
-            "unit": "szt"
+            "unit-label": "szt"
           }
         },
         "sum": "13.90",
@@ -863,7 +863,7 @@
           "name": "Jogurt sojowy mango-banan 400g",
           "price": "6.95",
           "meta": {
-            "unit": "szt"
+            "unit-label": "szt"
           }
         },
         "sum": "13.90",
@@ -887,7 +887,7 @@
           "name": "Pudding proteinowy biała czekolada 200g",
           "price": "6.75",
           "meta": {
-            "unit": "szt"
+            "unit-label": "szt"
           }
         },
         "sum": "20.25",
@@ -911,7 +911,7 @@
           "name": "Jogurt pitny nektarynka malina 330ml",
           "price": "5.89",
           "meta": {
-            "unit": "szt"
+            "unit-label": "szt"
           }
         },
         "sum": "29.45",

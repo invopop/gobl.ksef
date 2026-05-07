@@ -12,9 +12,11 @@ import (
 	"github.com/invopop/gobl/uuid"
 )
 
-// metaKeyUnit holds the original KSeF unit of measure when it does not match
-// a value accepted by GOBL (neither a defined unit nor a UN/ECE code).
-const metaKeyUnit cbc.Key = "unit"
+// metaKeyUnitLabel holds the original KSeF unit of measure when it does not
+// match a value accepted by GOBL (neither a defined unit nor a UN/ECE code).
+// The "-label" suffix marks it as a free-form human-readable label rather
+// than a canonical unit code.
+const metaKeyUnitLabel cbc.Key = "unit-label"
 
 // Line defines the XML structure for KSeF item line (element type FaWiersz, for VAT and KOR type invoices)
 type Line struct {
@@ -134,11 +136,11 @@ func vatRate(tc *tax.Combo) string {
 }
 
 // lineMeasure resolves the KSeF P_8A unit of measure. When the GOBL item has
-// an Item.Meta["unit"] entry — typically set by ToGOBL for KSeF units that do
-// not match a GOBL or UN/ECE code — that original value is used so KSeF
-// round-trips preserve the supplier's wording.
+// an Item.Meta["unit-label"] entry — typically set by ToGOBL for KSeF units
+// that do not match a GOBL or UN/ECE code — that original value is used so
+// KSeF round-trips preserve the supplier's wording.
 func lineMeasure(line *bill.Line) string {
-	if u, ok := line.Item.Meta[metaKeyUnit]; ok && u != "" {
+	if u, ok := line.Item.Meta[metaKeyUnitLabel]; ok && u != "" {
 		return u
 	}
 	return string(line.Item.Unit.UNECE())
@@ -222,8 +224,8 @@ func (l *Line) ToGOBL() (*bill.Line, error) {
 	// Parse unit of measure. KSeF accepts free-form unit strings (e.g. "kilo",
 	// "pcs."), but GOBL only accepts its own defined unit keys or 2-3 letter
 	// UN/ECE codes. When the measure is not a valid GOBL unit, preserve the
-	// original value under Item.Meta["unit"] so the information is not lost
-	// while keeping the resulting invoice valid.
+	// original value under Item.Meta["unit-label"] so the information is not
+	// lost while keeping the resulting invoice valid.
 	if l.Measure != "" {
 		unit := org.Unit(l.Measure)
 		if err := unit.Validate(); err == nil {
@@ -232,7 +234,7 @@ func (l *Line) ToGOBL() (*bill.Line, error) {
 			if line.Item.Meta == nil {
 				line.Item.Meta = cbc.Meta{}
 			}
-			line.Item.Meta[metaKeyUnit] = l.Measure
+			line.Item.Meta[metaKeyUnitLabel] = l.Measure
 		}
 	}
 
