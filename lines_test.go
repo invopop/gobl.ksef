@@ -578,6 +578,38 @@ func TestLineToGOBL(t *testing.T) {
 		assert.NoError(t, line.Item.Unit.Validate())
 	})
 
+	t.Run("trims whitespace around measure", func(t *testing.T) {
+		ksefLine := &ksef.Line{
+			Name:         "Padded canonical unit",
+			Quantity:     "1",
+			NetUnitPrice: "100.00",
+			Measure:      "  KGM  ",
+			VATRate:      "23",
+		}
+
+		line, err := ksefLine.ToGOBL()
+
+		require.NoError(t, err)
+		assert.Equal(t, org.Unit("KGM"), line.Item.Unit)
+		assert.Empty(t, line.Item.Meta["unit-label"])
+	})
+
+	t.Run("trims whitespace around non-canonical measure", func(t *testing.T) {
+		ksefLine := &ksef.Line{
+			Name:         "Padded label unit",
+			Quantity:     "1",
+			NetUnitPrice: "100.00",
+			Measure:      "  szt  ",
+			VATRate:      "23",
+		}
+
+		line, err := ksefLine.ToGOBL()
+
+		require.NoError(t, err)
+		assert.Equal(t, org.Unit(""), line.Item.Unit)
+		assert.Equal(t, "szt", line.Item.Meta["unit-label"])
+	})
+
 	t.Run("maps discount directly from P_10", func(t *testing.T) {
 		// Auchan-style data: P_9B=5.98, qty=2, P_10=2.40, P_11A=9.56
 		ksefLine := &ksef.Line{

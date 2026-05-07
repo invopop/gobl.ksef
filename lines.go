@@ -223,18 +223,20 @@ func (l *Line) ToGOBL() (*bill.Line, error) {
 
 	// Parse unit of measure. KSeF accepts free-form unit strings (e.g. "kilo",
 	// "pcs."), but GOBL only accepts its own defined unit keys or 2-3 letter
-	// UN/ECE codes. When the measure is not a valid GOBL unit, preserve the
-	// original value under Item.Meta["unit-label"] so the information is not
-	// lost while keeping the resulting invoice valid.
-	if l.Measure != "" {
-		unit := org.Unit(l.Measure)
+	// UN/ECE codes. Trim surrounding whitespace before validating so that
+	// user-entered values like " KGM " are still recognized as canonical.
+	// When the measure is not a valid GOBL unit, preserve the trimmed value
+	// under Item.Meta["unit-label"] so the information is not lost while
+	// keeping the resulting invoice valid.
+	if measure := strings.TrimSpace(l.Measure); measure != "" {
+		unit := org.Unit(measure)
 		if err := unit.Validate(); err == nil {
 			line.Item.Unit = unit
 		} else {
 			if line.Item.Meta == nil {
 				line.Item.Meta = cbc.Meta{}
 			}
-			line.Item.Meta[metaKeyUnitLabel] = l.Measure
+			line.Item.Meta[metaKeyUnitLabel] = measure
 		}
 	}
 
