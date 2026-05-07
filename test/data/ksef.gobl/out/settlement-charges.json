@@ -1,0 +1,202 @@
+{
+  "$schema": "https://gobl.org/draft-0/envelope",
+  "head": {
+    "uuid": "00000000-0000-0000-0000-000000000000",
+    "dig": {
+      "alg": "sha256",
+      "val": "0000000000000000000000000000000000000000000000000000000000000000"
+    }
+  },
+  "doc": {
+    "$schema": "https://gobl.org/draft-0/bill/invoice",
+    "$regime": "PL",
+    "$addons": [
+      "pl-favat-v3"
+    ],
+    "uuid": "00000000-0000-0000-0000-000000000000",
+    "type": "standard",
+    "code": "SETTLE-001",
+    "issue_date": "2026-05-01",
+    "currency": "PLN",
+    "tax": {
+      "rounding": "currency",
+      "ext": {
+        "pl-favat-invoice-type": "VAT"
+      }
+    },
+    "supplier": {
+      "name": "Testowa Firma Sp. z o.o.",
+      "tax_id": {
+        "country": "PL",
+        "code": "9876543210"
+      },
+      "addresses": [
+        {
+          "street": "ul. Główna 1 00-001 Warszawa",
+          "country": "PL"
+        }
+      ]
+    },
+    "customer": {
+      "name": "Klient Testowy Sp. z o.o.",
+      "tax_id": {
+        "country": "PL",
+        "code": "1111111111"
+      },
+      "addresses": [
+        {
+          "street": "ul. Testowa 10 30-001 Kraków",
+          "country": "PL"
+        }
+      ]
+    },
+    "lines": [
+      {
+        "i": 1,
+        "quantity": "1",
+        "item": {
+          "name": "Opłata serwisowa A",
+          "price": "782.02",
+          "unit": "PLN"
+        },
+        "sum": "782.02",
+        "taxes": [
+          {
+            "cat": "VAT",
+            "key": "standard",
+            "rate": "general",
+            "percent": "23.0%",
+            "ext": {
+              "pl-favat-tax-category": "1"
+            }
+          }
+        ],
+        "total": "782.02"
+      },
+      {
+        "i": 2,
+        "quantity": "1",
+        "item": {
+          "name": "Czynsz A",
+          "price": "2592.48",
+          "unit": "PLN"
+        },
+        "sum": "2592.48",
+        "taxes": [
+          {
+            "cat": "VAT",
+            "key": "standard",
+            "rate": "general",
+            "percent": "23.0%",
+            "ext": {
+              "pl-favat-tax-category": "1"
+            }
+          }
+        ],
+        "total": "2592.48"
+      },
+      {
+        "i": 3,
+        "quantity": "1",
+        "item": {
+          "name": "Opłata serwisowa B",
+          "price": "677.79",
+          "unit": "PLN"
+        },
+        "sum": "677.79",
+        "taxes": [
+          {
+            "cat": "VAT",
+            "key": "standard",
+            "rate": "general",
+            "percent": "23.0%",
+            "ext": {
+              "pl-favat-tax-category": "1"
+            }
+          }
+        ],
+        "total": "677.79"
+      },
+      {
+        "i": 4,
+        "quantity": "1",
+        "item": {
+          "name": "Czynsz B",
+          "price": "822.21",
+          "unit": "PLN"
+        },
+        "sum": "822.21",
+        "taxes": [
+          {
+            "cat": "VAT",
+            "key": "standard",
+            "rate": "general",
+            "percent": "23.0%",
+            "ext": {
+              "pl-favat-tax-category": "1"
+            }
+          }
+        ],
+        "total": "822.21"
+      }
+    ],
+    "charges": [
+      {
+        "i": 1,
+        "reason": "Ubezpieczenie",
+        "amount": "436.81"
+      }
+    ],
+    "payment": {
+      "terms": {
+        "due_dates": [
+          {
+            "date": "2026-05-15",
+            "amount": "6432.44",
+            "percent": "100%"
+          }
+        ]
+      },
+      "instructions": {
+        "key": "credit-transfer",
+        "credit_transfer": [
+          {
+            "number": "PL61109010140000071219812874"
+          }
+        ],
+        "ext": {
+          "pl-favat-payment-means": "6"
+        }
+      }
+    },
+    "totals": {
+      "sum": "4874.50",
+      "charge": "436.81",
+      "total": "5311.31",
+      "taxes": {
+        "categories": [
+          {
+            "code": "VAT",
+            "rates": [
+              {
+                "key": "standard",
+                "ext": {
+                  "pl-favat-tax-category": "1"
+                },
+                "base": "4874.50",
+                "percent": "23.0%",
+                "amount": "1121.14"
+              }
+            ],
+            "amount": "1121.14"
+          }
+        ],
+        "sum": "1121.14"
+      },
+      "tax": "1121.14",
+      "total_with_tax": "6432.45",
+      "rounding": "-0.01",
+      "payable": "6432.44"
+    }
+  }
+}

@@ -139,6 +139,12 @@ func (d *Invoice) ToGOBL() (*bill.Invoice, error) {
 		return inv, err
 	}
 
+	// Parse Rozliczenie charges/deductions to invoice-level Charges/Discounts
+	// before AdjustRounding, so Calculate sees them when reconciling P_15.
+	if err := d.Inv.parseSettlement(inv); err != nil {
+		return inv, err
+	}
+
 	// For bypass invoices (prepayment without lines), set totals directly
 	// from the invoice-level tax fields. Otherwise calculate and adjust rounding.
 	if inv.HasTags(tax.TagBypass) {

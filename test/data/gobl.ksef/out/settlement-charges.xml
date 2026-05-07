@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Faktura xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns="http://crd.gov.pl/wzor/2025/06/25/13775/">
+  <Naglowek>
+    <KodFormularza kodSystemowy="FA (3)" wersjaSchemy="1-0E">FA</KodFormularza>
+    <WariantFormularza>3</WariantFormularza>
+    <DataWytworzeniaFa>2026-01-01T00:00:00Z</DataWytworzeniaFa>
+    <SystemInfo>Invopop</SystemInfo>
+  </Naglowek>
+  <Podmiot1>
+    <PrefiksPodatnika>PL</PrefiksPodatnika>
+    <DaneIdentyfikacyjne>
+      <NIP>9876543210</NIP>
+      <Nazwa>Testowa Firma Sp. z o.o.</Nazwa>
+    </DaneIdentyfikacyjne>
+    <Adres>
+      <KodKraju>PL</KodKraju>
+      <AdresL1>ul. Główna 1, 00-001, Warsaw</AdresL1>
+    </Adres>
+  </Podmiot1>
+  <Podmiot2>
+    <DaneIdentyfikacyjne>
+      <NIP>1111111111</NIP>
+      <Nazwa>Klient Testowy Sp. z o.o.</Nazwa>
+    </DaneIdentyfikacyjne>
+    <Adres>
+      <KodKraju>PL</KodKraju>
+      <AdresL1>ul. Testowa 10, 30-001, Kraków</AdresL1>
+    </Adres>
+    <JST>2</JST>
+    <GV>2</GV>
+  </Podmiot2>
+  <Fa>
+    <KodWaluty>PLN</KodWaluty>
+    <P_1>2026-01-20</P_1>
+    <P_2>INVOICE-010</P_2>
+    <P_13_1>1000.00</P_13_1>
+    <P_14_1>230.00</P_14_1>
+    <P_15>1255.00</P_15>
+    <Adnotacje>
+      <P_16>2</P_16>
+      <P_17>2</P_17>
+      <P_18>2</P_18>
+      <P_18A>2</P_18A>
+      <Zwolnienie>
+        <P_19N>1</P_19N>
+      </Zwolnienie>
+      <NoweSrodkiTransportu>
+        <P_22N>1</P_22N>
+      </NoweSrodkiTransportu>
+      <P_23>2</P_23>
+      <PMarzy>
+        <P_PMarzyN>1</P_PMarzyN>
+      </PMarzy>
+    </Adnotacje>
+    <RodzajFaktury>VAT</RodzajFaktury>
+    <FaWiersz>
+      <NrWierszaFa>1</NrWierszaFa>
+      <P_7>Leasing czynsz</P_7>
+      <P_8A>HUR</P_8A>
+      <P_8B>10</P_8B>
+      <P_9A>100.00</P_9A>
+      <P_11>1000.00</P_11>
+      <P_12>23</P_12>
+    </FaWiersz>
+    <Rozliczenie>
+      <Obciazenia>
+        <Kwota>50.00</Kwota>
+        <Powod>Ubezpieczenie</Powod>
+      </Obciazenia>
+      <SumaObciazen>50.00</SumaObciazen>
+      <Odliczenia>
+        <Kwota>25.00</Kwota>
+        <Powod>Rabat lojalnościowy</Powod>
+      </Odliczenia>
+      <SumaOdliczen>25.00</SumaOdliczen>
+    </Rozliczenie>
+    <Platnosc>
+      <FormaPlatnosci>6</FormaPlatnosci>
+      <RachunekBankowy>
+        <NrRB>PL61109010140000071219812874</NrRB>
+        <NazwaBanku>Testowa Firma Sp. z o.o.</NazwaBanku>
+      </RachunekBankowy>
+    </Platnosc>
+  </Fa>
+</Faktura>
