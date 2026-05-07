@@ -12,6 +12,12 @@ import (
 	"github.com/invopop/gobl/uuid"
 )
 
+// metaKeyUnitLabel holds the original KSeF unit of measure when it does not
+// match a value accepted by GOBL (neither a defined unit nor a UN/ECE code).
+// The "-label" suffix marks it as a free-form human-readable label rather
+// than a canonical unit code.
+const metaKeyUnitLabel cbc.Key = "unit-label"
+
 // Line defines the XML structure for KSeF item line (element type FaWiersz, for VAT and KOR type invoices)
 type Line struct {
 	LineNumber              int    `xml:"NrWierszaFa"`
@@ -73,7 +79,7 @@ func newLine(line *bill.Line, pricesIncludeVAT bool) *Line {
 		LineNumber: line.Index,
 		UniqueID:   string(line.UUID),
 		Name:       line.Item.Name,
-		Measure:    string(line.Item.Unit.UNECE()),
+		Measure:    lineMeasure(line),
 		Quantity:   line.Quantity.String(),
 		Discount:   lineDiscount(line),
 	}
@@ -127,6 +133,17 @@ func vatRate(tc *tax.Combo) string {
 	default:
 		return ""
 	}
+}
+
+// lineMeasure resolves the KSeF P_8A unit of measure. When the GOBL item has
+// an Item.Meta["unit-label"] entry — typically set by ToGOBL for KSeF units
+// that do not match a GOBL or UN/ECE code — that original value is used so
+// KSeF round-trips preserve the supplier's wording.
+func lineMeasure(line *bill.Line) string {
+	if u, ok := line.Item.Meta[metaKeyUnitLabel]; ok && u != "" {
+		return u
+	}
+	return string(line.Item.Unit.UNECE())
 }
 
 func lineDiscount(line *bill.Line) string {
@@ -204,9 +221,23 @@ func (l *Line) ToGOBL() (*bill.Line, error) {
 		}
 	}
 
-	// Parse unit of measure
-	if l.Measure != "" {
-		line.Item.Unit = org.Unit(l.Measure)
+	// Parse unit of measure. KSeF accepts free-form unit strings (e.g. "kilo",
+	// "pcs."), but GOBL only accepts its own defined unit keys or 2-3 letter
+	// UN/ECE codes. Trim surrounding whitespace before validating so that
+	// user-entered values like " KGM " are still recognized as canonical.
+	// When the measure is not a valid GOBL unit, preserve the trimmed value
+	// under Item.Meta["unit-label"] so the information is not lost while
+	// keeping the resulting invoice valid.
+	if measure := strings.TrimSpace(l.Measure); measure != "" {
+		unit := org.Unit(measure)
+		if err := unit.Validate(); err == nil {
+			line.Item.Unit = unit
+		} else {
+			if line.Item.Meta == nil {
+				line.Item.Meta = cbc.Meta{}
+			}
+			line.Item.Meta[metaKeyUnitLabel] = measure
+		}
 	}
 
 	// Parse discount — P_10 is the total line discount per the KSeF spec,

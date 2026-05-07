@@ -6,6 +6,7 @@ import (
 	ksef "github.com/invopop/gobl.ksef"
 	"github.com/invopop/gobl/addons/pl/favat"
 	"github.com/invopop/gobl/bill"
+	"github.com/invopop/gobl/cbc"
 	"github.com/invopop/gobl/num"
 	"github.com/invopop/gobl/org"
 	"github.com/invopop/gobl/tax"
@@ -238,6 +239,36 @@ func TestNewLines(t *testing.T) {
 		assert.Equal(t, "35.00", result[0].GrossPriceTotal)
 		assert.Empty(t, result[0].NetUnitPrice)
 		assert.Empty(t, result[0].NetPriceTotal)
+	})
+
+	t.Run("uses Item.Meta unit-label when set", func(t *testing.T) {
+		price, _ := num.AmountFromString("100.00")
+		qty, _ := num.AmountFromString("1")
+		total, _ := num.AmountFromString("100.00")
+
+		lines := []*bill.Line{
+			{
+				Index:    1,
+				Quantity: qty,
+				Item: &org.Item{
+					Name:  "Item with non-GOBL unit",
+					Price: &price,
+					Meta:  cbc.Meta{"unit-label": "kilo"},
+				},
+				Total: &total,
+				Taxes: tax.Set{
+					&tax.Combo{
+						Category: tax.CategoryVAT,
+						Percent:  num.NewPercentage(23, 2),
+					},
+				},
+			},
+		}
+
+		result := ksef.NewLines(lines)
+
+		require.Len(t, result, 1)
+		assert.Equal(t, "kilo", result[0].Measure)
 	})
 }
 
@@ -528,6 +559,55 @@ func TestLineToGOBL(t *testing.T) {
 
 		require.NoError(t, err)
 		assert.Equal(t, org.Unit("h"), line.Item.Unit)
+	})
+
+	t.Run("preserves invalid unit under Item.Meta unit-label", func(t *testing.T) {
+		ksefLine := &ksef.Line{
+			Name:         "Item with non-GOBL unit",
+			Quantity:     "1",
+			NetUnitPrice: "100.00",
+			Measure:      "szt",
+			VATRate:      "23",
+		}
+
+		line, err := ksefLine.ToGOBL()
+
+		require.NoError(t, err)
+		assert.Equal(t, org.Unit(""), line.Item.Unit)
+		assert.Equal(t, "szt", line.Item.Meta["unit-label"])
+		assert.NoError(t, line.Item.Unit.Validate())
+	})
+
+	t.Run("trims whitespace around measure", func(t *testing.T) {
+		ksefLine := &ksef.Line{
+			Name:         "Padded canonical unit",
+			Quantity:     "1",
+			NetUnitPrice: "100.00",
+			Measure:      "  KGM  ",
+			VATRate:      "23",
+		}
+
+		line, err := ksefLine.ToGOBL()
+
+		require.NoError(t, err)
+		assert.Equal(t, org.Unit("KGM"), line.Item.Unit)
+		assert.Empty(t, line.Item.Meta["unit-label"])
+	})
+
+	t.Run("trims whitespace around non-canonical measure", func(t *testing.T) {
+		ksefLine := &ksef.Line{
+			Name:         "Padded label unit",
+			Quantity:     "1",
+			NetUnitPrice: "100.00",
+			Measure:      "  szt  ",
+			VATRate:      "23",
+		}
+
+		line, err := ksefLine.ToGOBL()
+
+		require.NoError(t, err)
+		assert.Equal(t, org.Unit(""), line.Item.Unit)
+		assert.Equal(t, "szt", line.Item.Meta["unit-label"])
 	})
 
 	t.Run("maps discount directly from P_10", func(t *testing.T) {
