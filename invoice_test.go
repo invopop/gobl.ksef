@@ -208,18 +208,39 @@ func TestNewFavatInv(t *testing.T) {
 		assert.Equal(t, "001", invoice.SequentialNumber)
 	})
 
-	t.Run("sets total amount due when due is specified", func(t *testing.T) {
+	t.Run("sets total amount due from payable for VAT invoices ignoring due", func(t *testing.T) {
 		inv := baseInvoice()
+		payable, err := num.AmountFromString("25.00")
+		require.NoError(t, err)
 		due, err := num.AmountFromString("10.00")
 		require.NoError(t, err)
+		inv.Totals.Payable = payable
 		inv.Totals.Due = &due
 
 		invoice := ksef.NewFavatInv(inv)
 
-		assert.Equal(t, "10.00", invoice.TotalAmountDue)
+		assert.Equal(t, "25.00", invoice.TotalAmountDue)
 	})
 
-	t.Run("sets total amount due from payable when due is nil", func(t *testing.T) {
+	t.Run("sets total amount due from payable for fully-prepaid VAT invoices", func(t *testing.T) {
+		// Regression: a standard VAT invoice fully paid via tracked
+		// payment.advances must still report the full gross total in P_15.
+		// The advance is tracking info, not a prior ZAL invoice, so it does
+		// not reduce P_15 (would otherwise render Brutto=0 in KSeF UI).
+		inv := baseInvoice()
+		payable, err := num.AmountFromString("205.00")
+		require.NoError(t, err)
+		zero, err := num.AmountFromString("0.00")
+		require.NoError(t, err)
+		inv.Totals.Payable = payable
+		inv.Totals.Due = &zero
+
+		invoice := ksef.NewFavatInv(inv)
+
+		assert.Equal(t, "205.00", invoice.TotalAmountDue)
+	})
+
+	t.Run("sets total amount due from payable for VAT invoices when due is nil", func(t *testing.T) {
 		inv := baseInvoice()
 		payable, err := num.AmountFromString("25.00")
 		require.NoError(t, err)
@@ -228,6 +249,36 @@ func TestNewFavatInv(t *testing.T) {
 		invoice := ksef.NewFavatInv(inv)
 
 		assert.Equal(t, "25.00", invoice.TotalAmountDue)
+	})
+
+	t.Run("sets total amount due from due for ZAL prepayment invoices", func(t *testing.T) {
+		inv := baseInvoice()
+		inv.Tax.Ext = inv.Tax.Ext.Set(favat.ExtKeyInvoiceType, "ZAL")
+		payable, err := num.AmountFromString("100.00")
+		require.NoError(t, err)
+		due, err := num.AmountFromString("40.00")
+		require.NoError(t, err)
+		inv.Totals.Payable = payable
+		inv.Totals.Due = &due
+
+		invoice := ksef.NewFavatInv(inv)
+
+		assert.Equal(t, "40.00", invoice.TotalAmountDue)
+	})
+
+	t.Run("sets total amount due from due for ROZ settlement invoices", func(t *testing.T) {
+		inv := baseInvoice()
+		inv.Tax.Ext = inv.Tax.Ext.Set(favat.ExtKeyInvoiceType, "ROZ")
+		payable, err := num.AmountFromString("100.00")
+		require.NoError(t, err)
+		due, err := num.AmountFromString("40.00")
+		require.NoError(t, err)
+		inv.Totals.Payable = payable
+		inv.Totals.Due = &due
+
+		invoice := ksef.NewFavatInv(inv)
+
+		assert.Equal(t, "40.00", invoice.TotalAmountDue)
 	})
 }
 

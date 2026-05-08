@@ -1,0 +1,172 @@
+{
+  "$schema": "https://gobl.org/draft-0/envelope",
+  "head": {
+    "uuid": "00000000-0000-0000-0000-000000000000",
+    "dig": {
+      "alg": "sha256",
+      "val": "0000000000000000000000000000000000000000000000000000000000000000"
+    }
+  },
+  "doc": {
+    "$schema": "https://gobl.org/draft-0/bill/invoice",
+    "$regime": "PL",
+    "$addons": [
+      "pl-favat-v3"
+    ],
+    "uuid": "00000000-0000-0000-0000-000000000000",
+    "type": "standard",
+    "code": "FV-001/2024/06",
+    "issue_date": "2024-06-15",
+    "currency": "PLN",
+    "tax": {
+      "prices_include": "VAT",
+      "rounding": "precise",
+      "ext": {
+        "pl-favat-invoice-type": "VAT"
+      }
+    },
+    "supplier": {
+      "name": "Example Supplier Sp. z o.o.",
+      "tax_id": {
+        "country": "PL",
+        "code": "9876543210"
+      },
+      "addresses": [
+        {
+          "street": "ul. Testowa 10 00-001 Warszawa",
+          "country": "PL"
+        }
+      ]
+    },
+    "customer": {
+      "name": "Example Buyer Sp. z o.o.",
+      "tax_id": {
+        "country": "PL",
+        "code": "1111111111"
+      },
+      "addresses": [
+        {
+          "street": "ul. Przykladowa 5 30-001 Krakow",
+          "country": "PL"
+        }
+      ]
+    },
+    "lines": [
+      {
+        "i": 1,
+        "quantity": "1.0000",
+        "item": {
+          "name": "Office Paper Shredder Model X",
+          "price": "309.9900",
+          "unit": "HUR"
+        },
+        "sum": "309.99",
+        "taxes": [
+          {
+            "cat": "VAT",
+            "key": "standard",
+            "rate": "general",
+            "percent": "23.0%",
+            "ext": {
+              "pl-favat-tax-category": "1"
+            }
+          }
+        ],
+        "total": "309.99"
+      },
+      {
+        "i": 2,
+        "quantity": "1.0000",
+        "item": {
+          "name": "SMS Notification Service",
+          "price": "0.9900",
+          "unit": "HUR"
+        },
+        "sum": "0.99",
+        "taxes": [
+          {
+            "cat": "VAT",
+            "key": "standard",
+            "rate": "general",
+            "percent": "23.0%",
+            "ext": {
+              "pl-favat-tax-category": "1"
+            }
+          }
+        ],
+        "total": "0.99"
+      },
+      {
+        "i": 3,
+        "quantity": "1.0000",
+        "item": {
+          "name": "Next Business Day Courier Delivery",
+          "price": "10.9900",
+          "unit": "HUR"
+        },
+        "sum": "10.99",
+        "taxes": [
+          {
+            "cat": "VAT",
+            "key": "standard",
+            "rate": "general",
+            "percent": "23.0%",
+            "ext": {
+              "pl-favat-tax-category": "1"
+            }
+          }
+        ],
+        "total": "10.99"
+      }
+    ],
+    "payment": {
+      "advances": [
+        {
+          "date": "2024-06-15",
+          "key": "credit-transfer",
+          "description": "Advance payment",
+          "amount": "321.97",
+          "ext": {
+            "pl-favat-payment-means": "6"
+          }
+        }
+      ],
+      "instructions": {
+        "key": "credit-transfer",
+        "ext": {
+          "pl-favat-payment-means": "6"
+        }
+      }
+    },
+    "totals": {
+      "sum": "321.97",
+      "tax_included": "60.20",
+      "total": "261.77",
+      "taxes": {
+        "categories": [
+          {
+            "code": "VAT",
+            "rates": [
+              {
+                "key": "standard",
+                "ext": {
+                  "pl-favat-tax-category": "1"
+                },
+                "base": "261.77",
+                "percent": "23.0%",
+                "amount": "60.20"
+              }
+            ],
+            "amount": "60.20"
+          }
+        ],
+        "sum": "60.20"
+      },
+      "tax": "60.20",
+      "total_with_tax": "321.97",
+      "payable": "321.97",
+      "advance": "321.97",
+      "due": "0.00"
+    }
+  }
+}
