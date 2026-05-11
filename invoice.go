@@ -185,14 +185,24 @@ func NewFavatInv(invoice *bill.Invoice) *Inv {
 		inv.CompletionDate = invoice.OperationDate.String()
 	}
 
-	if invoice.Totals.Due != nil {
+	if invoice.Tax != nil && !invoice.Tax.Ext.IsZero() {
+		inv.InvoiceType = invoice.Tax.Ext.Get(favat.ExtKeyInvoiceType).String()
+	}
+
+	// P_15 is "Total amount due". Per the FA(3) spec it varies by invoice type:
+	//   - Settlement (ROZ/KOR_ROZ, Art. 106f sec. 3): the amount remaining
+	//     after deducting prior advance invoices (Totals.Due).
+	//   - Advance (ZAL/KOR_ZAL): the amount of the prepayment documented
+	//     by the invoice (Totals.Due, which equals lines − previously-invoiced
+	//     advances).
+	//   - All other types, including standard VAT invoices that happen to
+	//     have been prepaid via tracked payment.advances: the full gross
+	//     total of the invoice (Totals.Payable). The prepayment is just
+	//     payment-tracking information and does not reduce P_15.
+	if (inv.isSettlementType() || inv.isPrepaymentType()) && invoice.Totals.Due != nil {
 		inv.TotalAmountDue = invoice.Totals.Due.String()
 	} else {
 		inv.TotalAmountDue = invoice.Totals.Payable.String()
-	}
-
-	if invoice.Tax != nil && !invoice.Tax.Ext.IsZero() {
-		inv.InvoiceType = invoice.Tax.Ext.Get(favat.ExtKeyInvoiceType).String()
 	}
 
 	taxes := invoice.Totals.Taxes
