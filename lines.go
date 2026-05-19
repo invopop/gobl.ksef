@@ -5,6 +5,7 @@ import (
 
 	"github.com/invopop/gobl/addons/pl/favat"
 	"github.com/invopop/gobl/bill"
+	"github.com/invopop/gobl/cal"
 	"github.com/invopop/gobl/cbc"
 	"github.com/invopop/gobl/num"
 	"github.com/invopop/gobl/org"
@@ -82,6 +83,10 @@ func newLine(line *bill.Line, pricesIncludeVAT bool) *Line {
 		Measure:    lineMeasure(line),
 		Quantity:   line.Quantity.String(),
 		Discount:   lineDiscount(line),
+	}
+
+	if line.Period != nil {
+		l.CompletionDate = line.Period.End.String()
 	}
 
 	if pricesIncludeVAT {
@@ -172,6 +177,14 @@ func (l *Line) ToGOBL() (*bill.Line, error) {
 		if id, err := uuid.Parse(l.UniqueID); err == nil {
 			line.UUID = id
 		}
+	}
+
+	if l.CompletionDate != "" {
+		d, err := parseDate(l.CompletionDate)
+		if err != nil {
+			return nil, err
+		}
+		line.Period = &cal.Period{Start: d, End: d}
 	}
 
 	// Parse quantity

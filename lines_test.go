@@ -6,6 +6,7 @@ import (
 	ksef "github.com/invopop/gobl.ksef"
 	"github.com/invopop/gobl/addons/pl/favat"
 	"github.com/invopop/gobl/bill"
+	"github.com/invopop/gobl/cal"
 	"github.com/invopop/gobl/cbc"
 	"github.com/invopop/gobl/num"
 	"github.com/invopop/gobl/org"
@@ -269,6 +270,31 @@ func TestNewLines(t *testing.T) {
 
 		require.Len(t, result, 1)
 		assert.Equal(t, "kilo", result[0].Measure)
+	})
+
+	t.Run("maps line period end to P_6A", func(t *testing.T) {
+		price, _ := num.AmountFromString("100.00")
+		qty, _ := num.AmountFromString("1")
+		total, _ := num.AmountFromString("100.00")
+
+		lines := []*bill.Line{
+			{
+				Index:    1,
+				Quantity: qty,
+				Period: &cal.Period{
+					Start: cal.MakeDate(2026, 4, 8),
+					End:   cal.MakeDate(2026, 4, 8),
+				},
+				Item:  &org.Item{Name: "Room night", Price: &price, Unit: "one"},
+				Total: &total,
+				Taxes: tax.Set{&tax.Combo{Category: tax.CategoryVAT, Percent: num.NewPercentage(23, 2)}},
+			},
+		}
+
+		result := ksef.NewLines(lines)
+
+		require.Len(t, result, 1)
+		assert.Equal(t, "2026-04-08", result[0].CompletionDate)
 	})
 }
 
@@ -627,5 +653,23 @@ func TestLineToGOBL(t *testing.T) {
 		require.Len(t, line.Discounts, 1)
 		// P_10 mapped directly as total line discount
 		assert.Equal(t, "2.40", line.Discounts[0].Amount.String())
+	})
+
+	t.Run("maps P_6A to line period", func(t *testing.T) {
+		ksefLine := &ksef.Line{
+			Name:           "Room night",
+			Quantity:       "1",
+			NetUnitPrice:   "300.00",
+			NetPriceTotal:  "300.00",
+			VATRate:        "23",
+			CompletionDate: "2026-04-08",
+		}
+
+		line, err := ksefLine.ToGOBL()
+
+		require.NoError(t, err)
+		require.NotNil(t, line.Period)
+		assert.Equal(t, "2026-04-08", line.Period.Start.String())
+		assert.Equal(t, "2026-04-08", line.Period.End.String())
 	})
 }
