@@ -1,8 +1,11 @@
 package api
 
 import (
+	"context"
 	"encoding/json"
+	"errors"
 	"fmt"
+	"net"
 	"strconv"
 	"strings"
 
@@ -60,6 +63,29 @@ func (e *ServiceError) Unwrap() error {
 // IsTransient returns true if this is a transient error (429 rate limit or 5xx server error).
 func (e *ServiceError) IsTransient() bool {
 	return e.StatusCode == 429 || e.StatusCode >= 500
+}
+
+// IsTransient reports whether err is a transient KSeF API failure that should
+// be retried rather than treated as a permanent failure. This covers both
+// service-side conditions (429 rate limit, 5xx) carried by *ServiceError and
+// transport-level conditions (request deadline exceeded, cancellation, other
+// network timeouts) that never produce an HTTP response.
+func IsTransient(err error) bool {
+	if err == nil {
+		return false
+	}
+	var se *ServiceError
+	if errors.As(err, &se) {
+		return se.IsTransient()
+	}
+	if errors.Is(err, context.DeadlineExceeded) || errors.Is(err, context.Canceled) {
+		return true
+	}
+	var netErr net.Error
+	if errors.As(err, &netErr) && netErr.Timeout() {
+		return true
+	}
+	return false
 }
 
 func newErrorResponse(resp *resty.Response) error {
