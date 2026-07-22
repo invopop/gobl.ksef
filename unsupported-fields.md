@@ -166,7 +166,6 @@ The following fields are now present in the structs but are not currently being 
 ### Other Not Mapped Fields
 | XML field | Notes |
 | --------- | ----- |
-| `Stopka` | Footer information - not required in schema, identifies parties in national databases |
 | `Zalacznik` | Attachment structure for custom data (key-value pairs or tables) - not required |
 
 ## Unset fields

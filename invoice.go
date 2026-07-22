@@ -167,6 +167,30 @@ type Carrier struct {
 	Address            *Address `xml:"AdresPrzewoznika"`
 }
 
+// Stopka defines the XML structure for the KSeF invoice footer.
+type Stopka struct {
+	Informacje []*StopkaInformacje `xml:"Informacje,omitempty"`
+}
+
+// StopkaInformacje defines the XML structure for free-text footer entries.
+type StopkaInformacje struct {
+	StopkaFaktury string `xml:"StopkaFaktury,omitempty"`
+}
+
+// NewFavatFooter builds a Stopka from GOBL invoice notes with src == NoteSourceFooter.
+func NewFavatFooter(inv *bill.Invoice) *Stopka {
+	var informacje []*StopkaInformacje
+	for _, note := range inv.Notes {
+		if note.Src == NoteSourceFooter {
+			informacje = append(informacje, &StopkaInformacje{StopkaFaktury: note.Text})
+		}
+	}
+	if len(informacje) == 0 {
+		return nil
+	}
+	return &Stopka{Informacje: informacje}
+}
+
 // NewFavatInv gets invoice data from GOBL invoice
 func NewFavatInv(invoice *bill.Invoice) *Inv {
 
@@ -230,6 +254,9 @@ func NewFavatInv(invoice *bill.Invoice) *Inv {
 
 	if len(invoice.Notes) > 0 {
 		for _, note := range invoice.Notes {
+			if note.Src == NoteSourceFooter {
+				continue
+			}
 			inv.AdditionalDescription = append(inv.AdditionalDescription, &AdditionalDescriptionLine{
 				Key:   noteKey(note),
 				Value: note.Text,

@@ -189,6 +189,25 @@ func TestNewFavatInv(t *testing.T) {
 		assert.Equal(t, "Test note text", invoice.AdditionalDescription[0].Value)
 	})
 
+	t.Run("excludes footer notes from additional description", func(t *testing.T) {
+		inv := baseInvoice()
+		inv.Notes = []*org.Note{
+			{
+				Key:  "general",
+				Text: "Regular note",
+			},
+			{
+				Src:  ksef.NoteSourceFooter,
+				Text: "Footer note",
+			},
+		}
+
+		invoice := ksef.NewFavatInv(inv)
+
+		assert.Len(t, invoice.AdditionalDescription, 1)
+		assert.Equal(t, "Regular note", invoice.AdditionalDescription[0].Value)
+	})
+
 	t.Run("sets invoice number with series", func(t *testing.T) {
 		inv := baseInvoice()
 		inv.Series = "INV"
@@ -2125,4 +2144,68 @@ func TestNoteCodeAsKey(t *testing.T) {
 
 	require.Len(t, result.AdditionalDescription, 1)
 	assert.Equal(t, "ABC123", result.AdditionalDescription[0].Key)
+}
+
+func TestNewFavatFooter(t *testing.T) {
+	baseInvoice := func() *bill.Invoice {
+		pct23 := num.MakePercentage(230, 3)
+		return &bill.Invoice{
+			Currency: currency.PLN,
+			Addons:   tax.WithAddons(favat.V3),
+			Supplier: &org.Party{
+				TaxID: &tax.Identity{Country: l10n.PL.Tax(), Code: "1234567890"},
+			},
+			IssueDate: cal.MakeDate(2024, 1, 15),
+			Lines: []*bill.Line{
+				{
+					Index:    1,
+					Quantity: num.MakeAmount(1, 0),
+					Item:     &org.Item{Name: "Test", Price: num.NewAmount(10000, 2)},
+					Taxes:    tax.Set{{Category: "VAT", Percent: &pct23}},
+				},
+			},
+		}
+	}
+
+	t.Run("returns nil when no footer notes", func(t *testing.T) {
+		inv := baseInvoice()
+		inv.Notes = []*org.Note{
+			{Key: "general", Text: "Regular note"},
+		}
+		assert.Nil(t, ksef.NewFavatFooter(inv))
+	})
+
+	t.Run("returns nil when notes is empty", func(t *testing.T) {
+		inv := baseInvoice()
+		assert.Nil(t, ksef.NewFavatFooter(inv))
+	})
+
+	t.Run("maps footer notes to Stopka", func(t *testing.T) {
+		inv := baseInvoice()
+		inv.Notes = []*org.Note{
+			{Src: ksef.NoteSourceFooter, Text: "Footer line 1"},
+			{Src: ksef.NoteSourceFooter, Text: "Footer line 2"},
+		}
+
+		footer := ksef.NewFavatFooter(inv)
+
+		require.NotNil(t, footer)
+		require.Len(t, footer.Informacje, 2)
+		assert.Equal(t, "Footer line 1", footer.Informacje[0].StopkaFaktury)
+		assert.Equal(t, "Footer line 2", footer.Informacje[1].StopkaFaktury)
+	})
+
+	t.Run("ignores non-footer notes", func(t *testing.T) {
+		inv := baseInvoice()
+		inv.Notes = []*org.Note{
+			{Key: "general", Text: "Regular note"},
+			{Src: ksef.NoteSourceFooter, Text: "Footer only"},
+		}
+
+		footer := ksef.NewFavatFooter(inv)
+
+		require.NotNil(t, footer)
+		require.Len(t, footer.Informacje, 1)
+		assert.Equal(t, "Footer only", footer.Informacje[0].StopkaFaktury)
+	})
 }

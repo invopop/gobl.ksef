@@ -22,6 +22,9 @@ const (
 	RootElementName = "Faktura"
 )
 
+// NoteSourceFooter identifies notes that should be mapped to KSeF's Stopka/Informacje/StopkaFaktury.
+const NoteSourceFooter cbc.Key = "footer"
+
 // Invoice is a pseudo-model for containing the XML document being created
 type Invoice struct {
 	XMLName      xml.Name
@@ -33,6 +36,7 @@ type Invoice struct {
 	Buyer        *Buyer        `xml:"Podmiot2"`
 	ThirdParties []*ThirdParty `xml:"Podmiot3,omitempty"` // third party (up to 100)
 	Inv          *Inv          `xml:"Fa"`
+	Footer       *Stopka       `xml:"Stopka,omitempty"`
 }
 
 // BuildFavat converts a GOBL envelope into a KSeF FA_VAT invoice document.
@@ -65,6 +69,7 @@ func BuildFavat(env *gobl.Envelope) (*Invoice, error) {
 		Buyer:        NewFavatBuyer(inv.Customer),
 		ThirdParties: NewThirdParties(inv),
 		Inv:          NewFavatInv(inv),
+		Footer:       NewFavatFooter(inv),
 	}
 
 	return invoice, nil
